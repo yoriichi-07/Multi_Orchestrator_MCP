@@ -20,7 +20,9 @@ python-json-logger = "^3.3.0"
 redis = "^6.4.0"
 openai = "^1.104.2"
 anthropic = "^0.65.0"
-pyjwt = "^2.10.1"
+pyjwt = {extras = ["crypto"], version = "^2.10.1"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+cryptography = "^42.0.8"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"

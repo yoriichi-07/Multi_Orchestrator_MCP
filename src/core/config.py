@@ -20,9 +20,28 @@ class Settings(BaseSettings):
     server_port: int = Field(default=8000, description="Server port")
     debug: bool = Field(default=False, description="Debug mode")
     
-    # Authentication
+    # Enhanced Descope Authentication
     descope_project_id: str = Field(default="test_project", description="Descope project ID")
-    descope_management_key: Optional[str] = Field(None, description="Descope management key")
+    descope_management_key: Optional[str] = Field(None, description="Descope management key for dynamic client registration")
+    descope_client_id: Optional[str] = Field(None, description="Descope client ID for machine-to-machine authentication")
+    descope_client_secret: Optional[str] = Field(None, description="Descope client secret for machine-to-machine authentication")
+    descope_demo_mode: bool = Field(default=True, description="Enable demo mode for authentication (for development/testing)")
+    
+    # JWT Configuration
+    jwt_algorithm: str = Field(default="RS256", description="JWT algorithm for token validation")
+    jwt_verify_expiration: bool = Field(default=True, description="Verify JWT token expiration")
+    jwt_require_claims: List[str] = Field(default=["exp", "iat", "sub", "aud"], description="Required JWT claims")
+    
+    # Security Settings
+    token_cache_ttl: int = Field(default=3600, description="Token cache TTL in seconds")
+    max_token_age_hours: int = Field(default=24, description="Maximum token age in hours")
+    enable_token_refresh: bool = Field(default=True, description="Enable automatic token refresh")
+    
+    # Authentication Middleware
+    auth_exclude_paths: List[str] = Field(
+        default=["/health", "/docs", "/openapi.json", "/favicon.ico"],
+        description="Paths excluded from authentication"
+    )
     
     # LLM Configuration
     openai_api_key: Optional[str] = Field(None, description="OpenAI API key")
