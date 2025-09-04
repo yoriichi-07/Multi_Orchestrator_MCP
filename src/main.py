@@ -1,6 +1,6 @@
 """
 Autonomous Software Foundry - MCP Server Entry Point
-Enhanced with Descope OAuth 2.1 + PKCE Authentication and Cequence AI Gateway Integration
+Enhanced with Descope OAuth 2.1 + PKCE Authentication, Cequence AI Gateway Integration, and Full MCP Protocol Support
 """
 import asyncio
 import logging
@@ -16,6 +16,7 @@ import structlog
 from src.core.config import settings
 from src.core.descope_auth import get_descope_client
 from src.core.cequence_integration import CequenceMiddleware
+from src.core.mcp_server import initialize_mcp_server
 from src.middleware.auth_middleware import DescopeAuthMiddleware, get_auth_context
 from src.tools.authenticated_tools import router as authenticated_router
 from src.tools.basic import router as basic_router
@@ -56,7 +57,7 @@ async def lifespan(app: FastAPI):
 # Initialize FastAPI app
 app = FastAPI(
     title="Autonomous Software Foundry",
-    description="MCP Server with AI Agent Orchestration, Self-Healing Capabilities, and Cequence AI Gateway Integration",
+    description="MCP Server with AI Agent Orchestration, Self-Healing Capabilities, Full MCP Protocol Support, and Cequence AI Gateway Integration",
     version="2.0.0",
     lifespan=lifespan
 )
@@ -87,6 +88,11 @@ app.add_middleware(
     exclude_paths=settings.auth_exclude_paths
 )
 
+# Initialize MCP server
+mcp_server = initialize_mcp_server(app)
+
+logger.info("MCP server initialized with full protocol support")
+
 # Security
 security = HTTPBearer()
 
@@ -110,7 +116,12 @@ async def health_check():
         "service": "autonomous-software-foundry",
         "version": "2.0.0",
         "authentication": "Descope OAuth 2.1 + PKCE",
-        "analytics": "Cequence AI Gateway" if settings.cequence_gateway_id else "Disabled"
+        "analytics": "Cequence AI Gateway" if settings.cequence_gateway_id else "Disabled",
+        "mcp_protocol": "2024-11-05",
+        "capabilities": {
+            "tools": len(mcp_server.tools),
+            "resources": len(mcp_server.resources)
+        }
     }
 
 
@@ -135,7 +146,7 @@ async def mcp_capabilities(auth: get_auth_context = Depends(get_auth_context)):
         "serverInfo": {
             "name": "autonomous-software-foundry",
             "version": "2.0.0",
-            "description": "MCP server with AI agent orchestration and Cequence AI Gateway integration"
+            "description": "MCP server with AI agent orchestration, self-healing capabilities, and Cequence AI Gateway integration"
         }
     }
 
@@ -153,6 +164,42 @@ async def initialize_services():
         logger.info("Cequence AI Gateway configured", gateway_id=settings.cequence_gateway_id)
     else:
         logger.info("Cequence AI Gateway not configured")
+    
+    # Register MCP tools and resources
+    await register_mcp_tools()
+    await register_mcp_resources()
+    
+    logger.info(
+        "MCP server fully initialized",
+        tools_count=len(mcp_server.tools),
+        resources_count=len(mcp_server.resources)
+    )
+
+
+async def register_mcp_tools():
+    """Register all MCP tools"""
+    # Import tools to register them with the MCP server
+    from src.tools import infrastructure_tools
+    from src.tools import generation_tools  
+    from src.tools import quality_tools
+    
+    # Register any deferred tools
+    from src.core.tool_registry import register_deferred_tools
+    register_deferred_tools()
+    
+    logger.info(f"MCP tools registered: {len(mcp_server.tools)} tools")
+
+
+async def register_mcp_resources():
+    """Register all MCP resources"""
+    # Import resources to register them with the MCP server
+    from src.resources import project_resources
+    
+    # Register any deferred resources
+    from src.core.tool_registry import register_deferred_resources
+    register_deferred_resources()
+    
+    logger.info(f"MCP resources registered: {len(mcp_server.resources)} resources")
 
 
 async def cleanup_services():
