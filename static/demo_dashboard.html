@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Software Foundry - Live Metrics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 2.5em;
+        }
+        
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        
+        .metrics-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px;
+        }
+        
+        .metric-card { 
+            background: white;
+            border: 1px solid #e0e6ed; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .metric-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.1em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        
+        .metric-value { 
+            font-size: 2.5em; 
+            font-weight: bold; 
+            color: #3498db;
+            margin: 15px 0;
+        }
+        
+        .status-good { color: #27ae60; }
+        .status-warning { color: #f39c12; }
+        .status-error { color: #e74c3c; }
+        
+        .agents-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .agent-item {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chart-container h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .operations-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .operation-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .operation-success { border-left-color: #27ae60; }
+        .operation-warning { border-left-color: #f39c12; }
+        .operation-error { border-left-color: #e74c3c; }
+        
+        .timestamp {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .connected { background: #27ae60; color: white; }
+        .disconnected { background: #e74c3c; color: white; }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connection-status">🔴 Disconnected</div>
+    
+    <div class="header">
+        <h1>🏭 Autonomous Software Foundry</h1>
+        <div class="subtitle">Live Metrics Dashboard - Cequence AI Gateway Integration</div>
+    </div>
+    
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3>🚀 Active Requests</h3>
+            <div id="active-requests" class="metric-value loading">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <h3>⏱️ Requests/Minute</h3>
+            <div id="requests-per-minute" class="metric-value loading">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <h3>✅ Success Rate</h3>
+            <div id="success-rate" class="metric-value status-good loading">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <h3>⚡ Avg Response Time</h3>
+            <div id="response-time" class="metric-value loading">-- ms</div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h2>🤖 Active Agents</h2>
+        <div id="agents-status" class="agents-status loading">Loading agent status...</div>
+    </div>
+    
+    <div class="metrics-grid">
+        <div class="chart-container">
+            <h2>🔒 Security Status</h2>
+            <div class="metric-value status-good" id="threat-level">--</div>
+            <div style="margin-top: 15px;">
+                <div>Blocked Requests: <span id="blocked-requests">--</span></div>
+                <div>Rate Limited: <span id="rate-limited">--</span></div>
+                <div>Auth Failures: <span id="auth-failures">--</span></div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h2>📊 Generation Stats</h2>
+            <div>Total Projects: <span class="metric-value" style="font-size: 1.5em;" id="total-projects">--</span></div>
+            <div>Success Rate: <span id="generation-success">--</span>%</div>
+            <div>Self-Healing Events: <span id="healing-events">--</span></div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h2>📈 Request Volume (Last Hour)</h2>
+        <canvas id="request-chart" width="400" height="200"></canvas>
+    </div>
+    
+    <div class="chart-container">
+        <h2>🔄 Recent Operations</h2>
+        <div id="recent-operations" class="operations-list loading">Loading recent operations...</div>
+    </div>
+    
+    <script>
+        let chart;
+        let isConnected = false;
+        let requestData = [];
+        let timeLabels = [];
+        
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('request-chart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeLabels,
+                    datasets: [{
+                        label: 'Requests per Minute',
+                        data: requestData,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connection-status');
+            if (connected && !isConnected) {
+                statusEl.textContent = '🟢 Connected';
+                statusEl.className = 'connection-status connected';
+                isConnected = true;
+            } else if (!connected && isConnected) {
+                statusEl.textContent = '🔴 Disconnected';
+                statusEl.className = 'connection-status disconnected';
+                isConnected = false;
+            }
+        }
+        
+        // Real-time dashboard updates
+        async function updateMetrics() {
+            try {
+                const response = await fetch('/mcp/v1/analytics/dashboard_data', {
+                    headers: {
+                        'Authorization': 'Bearer ' + (localStorage.getItem('demo_token') || 'demo_token_placeholder')
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                const metrics = data.real_time_metrics;
+                const security = data.security_status;
+                const generation = data.generation_stats;
+                
+                updateConnectionStatus(true);
+                
+                // Update basic metrics
+                document.getElementById('active-requests').textContent = metrics.active_requests;
+                document.getElementById('requests-per-minute').textContent = metrics.requests_per_minute;
+                document.getElementById('success-rate').textContent = metrics.success_rate + '%';
+                document.getElementById('response-time').textContent = metrics.average_response_time_ms + ' ms';
+                
+                // Update security status
+                const threatLevel = document.getElementById('threat-level');
+                threatLevel.textContent = security.threat_level.toUpperCase();
+                threatLevel.className = 'metric-value ' + (security.threat_level === 'low' ? 'status-good' : 
+                                                           security.threat_level === 'medium' ? 'status-warning' : 'status-error');
+                
+                document.getElementById('blocked-requests').textContent = security.blocked_requests;
+                document.getElementById('rate-limited').textContent = security.rate_limited_requests;
+                document.getElementById('auth-failures').textContent = security.authentication_failures;
+                
+                // Update generation stats
+                document.getElementById('total-projects').textContent = generation.total_projects_generated;
+                document.getElementById('generation-success').textContent = 
+                    Math.round((generation.successful_generations / generation.total_projects_generated) * 100);
+                document.getElementById('healing-events').textContent = generation.self_healing_events;
+                
+                // Update agents status
+                const agentsHtml = Object.entries(metrics.active_agents)
+                    .map(([type, count]) => 
+                        `<div class="agent-item">${type.charAt(0).toUpperCase() + type.slice(1)}: ${count}</div>`
+                    ).join('');
+                document.getElementById('agents-status').innerHTML = agentsHtml;
+                
+                // Update recent operations
+                const operationsHtml = data.recent_operations
+                    .map(op => {
+                        const statusClass = op.status === 'success' ? 'operation-success' : 
+                                          op.status === 'warning' ? 'operation-warning' : 'operation-error';
+                        return `
+                            <div class="operation-item ${statusClass}">
+                                <div>
+                                    <strong>${op.operation.replace('_', ' ').toUpperCase()}</strong><br>
+                                    User: ${op.user}
+                                </div>
+                                <div>
+                                    <div>${op.duration_ms}ms</div>
+                                    <div class="timestamp">${new Date(op.timestamp).toLocaleTimeString()}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                document.getElementById('recent-operations').innerHTML = operationsHtml;
+                
+                // Update chart data
+                const now = new Date().toLocaleTimeString();
+                timeLabels.push(now);
+                requestData.push(metrics.requests_per_minute);
+                
+                // Keep only last 20 data points
+                if (timeLabels.length > 20) {
+                    timeLabels.shift();
+                    requestData.shift();
+                }
+                
+                chart.update('none');
+                
+            } catch (error) {
+                console.error('Failed to update metrics:', error);
+                updateConnectionStatus(false);
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.textContent = `Connection Error: ${error.message}`;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    document.body.removeChild(errorMsg);
+                }, 5000);
+            }
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initChart();
+            updateMetrics(); // Initial load
+            
+            // Update every 5 seconds
+            setInterval(updateMetrics, 5000);
+            
+            // Add some demo data to the chart initially
+            const currentTime = new Date();
+            for (let i = 19; i >= 0; i--) {
+                const time = new Date(currentTime.getTime() - i * 60000);
+                timeLabels.push(time.toLocaleTimeString());
+                requestData.push(Math.floor(Math.random() * 50) + 20);
+            }
+            chart.update();
+        });
+        
+        // Handle demo token input (for development)
+        if (!localStorage.getItem('demo_token')) {
+            const token = prompt('Enter demo token (or leave blank for demo mode):');
+            if (token) {
+                localStorage.setItem('demo_token', token);
+            } else {
+                localStorage.setItem('demo_token', 'demo_token_placeholder');
+            }
+        }
+    </script>
+</body>
+</html>

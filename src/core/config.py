@@ -59,6 +59,21 @@ class Settings(BaseSettings):
     )
     max_generation_time_seconds: int = Field(default=300, description="Max time for generation")
     
+    # Cequence AI Gateway Integration
+    cequence_gateway_id: Optional[str] = Field(None, description="Cequence Gateway ID")
+    cequence_api_key: Optional[str] = Field(None, description="Cequence API Key")
+    cequence_gateway_url: Optional[str] = Field(None, description="Cequence Gateway URL")
+    
+    # Analytics Configuration
+    enable_analytics: bool = Field(default=True, description="Enable analytics collection")
+    analytics_buffer_size: int = Field(default=100, description="Analytics buffer size")
+    analytics_flush_interval: int = Field(default=60, description="Analytics flush interval (seconds)")
+    
+    # Security Monitoring
+    enable_security_monitoring: bool = Field(default=True, description="Enable security monitoring")
+    max_request_size_mb: int = Field(default=10, description="Maximum request size in MB")
+    rate_limit_per_minute: int = Field(default=100, description="Rate limit per minute per user")
+    
     # Monitoring
     enable_metrics: bool = Field(default=True, description="Enable metrics collection")
     log_level: str = Field(default="INFO", description="Logging level")

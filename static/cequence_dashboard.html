@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cequence AI Gateway - Real-time Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .metric-card h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .metric-change {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        .positive { color: #4CAF50; background: rgba(76,175,80,0.1); }
+        .negative { color: #f44336; background: rgba(244,67,54,0.1); }
+        .neutral { color: #666; background: rgba(150,150,150,0.1); }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .chart-canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+        
+        .operation-breakdown {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+        
+        .breakdown-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .operation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .operation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .operation-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .operation-count {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .top-users {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .users-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(103,126,234,0.1);
+            border-radius: 8px;
+        }
+        
+        .user-id {
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+        
+        .user-operations {
+            color: #666;
+            margin-right: 15px;
+        }
+        
+        .user-success-rate {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(76,175,80,0.1);
+            color: #4CAF50;
+        }
+        
+        .last-updated {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .metric-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Cequence AI Gateway</h1>
+            <p>Real-time Analytics & Performance Monitoring</p>
+        </div>
+        
+        <div class="connection-status">
+            <div class="status-indicator"></div>
+            <span style="color: white; font-weight: 500;">Connected to Analytics Stream</span>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Total Requests</h3>
+                <div class="metric-value" id="total-requests">0</div>
+                <div class="metric-change positive" id="requests-change">+5.2%</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Success Rate</h3>
+                <div class="metric-value" id="success-rate">0%</div>
+                <div class="metric-change positive" id="success-change">+1.1%</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Avg Response Time</h3>
+                <div class="metric-value" id="avg-response">0ms</div>
+                <div class="metric-change positive" id="response-change">-12ms</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Active Users</h3>
+                <div class="metric-value" id="active-users">0</div>
+                <div class="metric-change positive" id="users-change">+3</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Security Events</h3>
+                <div class="metric-value" id="security-events">0</div>
+                <div class="metric-change neutral" id="security-change">±0</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Error Rate</h3>
+                <div class="metric-value" id="error-rate">0%</div>
+                <div class="metric-change positive" id="error-change">-0.5%</div>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">Request Volume (Last 24h)</div>
+                <canvas id="requests-chart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Response Time Trends</div>
+                <canvas id="response-time-chart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="operation-breakdown">
+            <div class="breakdown-title">Operation Breakdown</div>
+            <div id="operation-list">
+                <!-- Operations will be populated here -->
+            </div>
+        </div>
+        
+        <div class="top-users">
+            <div class="users-title">Top Users (24h)</div>
+            <div id="users-list">
+                <!-- Users will be populated here -->
+            </div>
+        </div>
+        
+        <div class="last-updated">
+            Last updated: <span id="last-update">Never</span>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for charts
+        let requestsChart;
+        let responseTimeChart;
+        
+        // Demo configuration
+        const DEMO_CONFIG = {
+            updateInterval: 3000, // 3 seconds
+            animationDuration: 750,
+            maxDataPoints: 20
+        };
+        
+        // Initialize charts
+        function initializeCharts() {
+            // Requests Chart
+            const requestsCtx = document.getElementById('requests-chart').getContext('2d');
+            requestsChart = new Chart(requestsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Requests/min',
+                        data: [],
+                        borderColor: 'rgb(103, 126, 234)',
+                        backgroundColor: 'rgba(103, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: DEMO_CONFIG.animationDuration
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Response Time Chart
+            const responseCtx = document.getElementById('response-time-chart').getContext('2d');
+            responseTimeChart = new Chart(responseCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Response Time (ms)',
+                        data: [],
+                        borderColor: 'rgb(118, 75, 162)',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: DEMO_CONFIG.animationDuration
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Generate realistic demo data
+        function generateDemoData() {
+            const now = new Date();
+            const base = {
+                totalRequests: 1250 + Math.floor(Math.random() * 100),
+                successfulOps: 1180 + Math.floor(Math.random() * 90),
+                avgResponseTime: 125 + Math.random() * 50,
+                activeUsers: 45 + Math.floor(Math.random() * 20),
+                securityEvents: Math.floor(Math.random() * 8),
+                requestsPerMin: 80 + Math.random() * 40
+            };
+            
+            base.failedOps = base.totalRequests - base.successfulOps;
+            base.successRate = ((base.successfulOps / base.totalRequests) * 100).toFixed(1);
+            base.errorRate = ((base.failedOps / base.totalRequests) * 100).toFixed(1);
+            
+            return {
+                ...base,
+                timestamp: now.toLocaleTimeString(),
+                operations: {
+                    application_generation: 320 + Math.floor(Math.random() * 30),
+                    code_review: 450 + Math.floor(Math.random() * 40),
+                    test_generation: 280 + Math.floor(Math.random() * 25),
+                    deployment: 150 + Math.floor(Math.random() * 15),
+                    self_healing: 50 + Math.floor(Math.random() * 10)
+                },
+                topUsers: [
+                    { id: 'dev_team_lead', operations: 145 + Math.floor(Math.random() * 20), successRate: 0.96 },
+                    { id: 'senior_dev_01', operations: 132 + Math.floor(Math.random() * 15), successRate: 0.94 },
+                    { id: 'automation_bot', operations: 98 + Math.floor(Math.random() * 25), successRate: 0.98 },
+                    { id: 'qa_engineer', operations: 67 + Math.floor(Math.random() * 10), successRate: 0.92 }
+                ]
+            };
+        }
+        
+        // Update dashboard with new data
+        function updateDashboard() {
+            const data = generateDemoData();
+            
+            // Update metric cards
+            document.getElementById('total-requests').textContent = data.totalRequests.toLocaleString();
+            document.getElementById('success-rate').textContent = data.successRate + '%';
+            document.getElementById('avg-response').textContent = Math.round(data.avgResponseTime) + 'ms';
+            document.getElementById('active-users').textContent = data.activeUsers;
+            document.getElementById('security-events').textContent = data.securityEvents;
+            document.getElementById('error-rate').textContent = data.errorRate + '%';
+            
+            // Update charts
+            updateChart(requestsChart, data.timestamp, data.requestsPerMin);
+            updateChart(responseTimeChart, data.timestamp, data.avgResponseTime);
+            
+            // Update operation breakdown
+            updateOperationBreakdown(data.operations);
+            
+            // Update top users
+            updateTopUsers(data.topUsers);
+            
+            // Update timestamp
+            document.getElementById('last-update').textContent = new Date().toLocaleString();
+        }
+        
+        // Update chart data
+        function updateChart(chart, label, value) {
+            chart.data.labels.push(label);
+            chart.data.datasets[0].data.push(value);
+            
+            // Keep only last N data points
+            if (chart.data.labels.length > DEMO_CONFIG.maxDataPoints) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+            }
+            
+            chart.update('none'); // No animation for smoother updates
+        }
+        
+        // Update operation breakdown
+        function updateOperationBreakdown(operations) {
+            const container = document.getElementById('operation-list');
+            container.innerHTML = '';
+            
+            Object.entries(operations).forEach(([name, count]) => {
+                const item = document.createElement('div');
+                item.className = 'operation-item';
+                item.innerHTML = `
+                    <span class="operation-name">${name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                    <span class="operation-count">${count.toLocaleString()}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        // Update top users
+        function updateTopUsers(users) {
+            const container = document.getElementById('users-list');
+            container.innerHTML = '';
+            
+            users.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'user-item';
+                item.innerHTML = `
+                    <span class="user-id">${user.id}</span>
+                    <span class="user-operations">${user.operations} ops</span>
+                    <span class="user-success-rate">${(user.successRate * 100).toFixed(1)}%</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateDashboard(); // Initial load
+            
+            // Set up periodic updates
+            setInterval(updateDashboard, DEMO_CONFIG.updateInterval);
+            
+            console.log('🚀 Cequence AI Gateway Dashboard initialized');
+            console.log('📊 Real-time analytics streaming...');
+        });
+        
+        // Add some visual flair with random status indicator changes
+        setInterval(() => {
+            const indicator = document.querySelector('.status-indicator');
+            indicator.style.background = Math.random() > 0.1 ? '#4CAF50' : '#ff9800';
+            setTimeout(() => indicator.style.background = '#4CAF50', 200);
+        }, 10000);
+        
+    </script>
+</body>
+</html>

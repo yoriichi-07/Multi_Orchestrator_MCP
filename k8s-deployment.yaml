@@ -1,0 +1,181 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cequence-mcp-server
+  labels:
+    app: cequence-mcp-server
+    version: v2.0.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cequence-mcp-server
+  template:
+    metadata:
+      labels:
+        app: cequence-mcp-server
+        version: v2.0.0
+    spec:
+      containers:
+      - name: mcp-server
+        image: cequence-mcp-server:v2.0.0
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: SERVER_HOST
+          value: "0.0.0.0"
+        - name: SERVER_PORT
+          value: "8000"
+        - name: DESCOPE_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: descope-project-id
+        - name: DESCOPE_MANAGEMENT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: descope-management-key
+        - name: DESCOPE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: descope-client-id
+        - name: DESCOPE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: descope-client-secret
+        - name: CEQUENCE_GATEWAY_ID
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: cequence-gateway-id
+        - name: CEQUENCE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: cequence-api-key
+        - name: CEQUENCE_GATEWAY_URL
+          valueFrom:
+            secretKeyRef:
+              name: mcp-secrets
+              key: cequence-gateway-url
+        - name: ENABLE_ANALYTICS
+          value: "true"
+        - name: ENABLE_SECURITY_MONITORING
+          value: "true"
+        - name: ANALYTICS_BUFFER_SIZE
+          value: "100"
+        - name: ANALYTICS_FLUSH_INTERVAL
+          value: "60"
+        - name: LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: var-run
+          mountPath: /var/run
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: var-run
+        emptyDir: {}
+      securityContext:
+        fsGroup: 1000
+      serviceAccountName: mcp-server-sa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cequence-mcp-server
+  labels:
+    app: cequence-mcp-server
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: cequence-mcp-server
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mcp-server-sa
+  labels:
+    app: cequence-mcp-server
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cequence-mcp-server
+  labels:
+    app: cequence-mcp-server
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - mcp.cequence.ai
+    secretName: mcp-tls
+  rules:
+  - host: mcp.cequence.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cequence-mcp-server
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mcp-secrets
+  labels:
+    app: cequence-mcp-server
+type: Opaque
+stringData:
+  descope-project-id: "REPLACE_WITH_DESCOPE_PROJECT_ID"
+  descope-management-key: "REPLACE_WITH_DESCOPE_MANAGEMENT_KEY"
+  descope-client-id: "REPLACE_WITH_DESCOPE_CLIENT_ID"
+  descope-client-secret: "REPLACE_WITH_DESCOPE_CLIENT_SECRET"
+  cequence-gateway-id: "REPLACE_WITH_CEQUENCE_GATEWAY_ID"
+  cequence-api-key: "REPLACE_WITH_CEQUENCE_API_KEY"
+  cequence-gateway-url: "REPLACE_WITH_CEQUENCE_GATEWAY_URL"
