@@ -1,0 +1,16 @@
+fastapi==0.116.1
+uvicorn==0.35.0
+pydantic==2.11.7
+pydantic-settings==2.10.1
+python-dotenv==1.1.1
+python-jose==3.5.0
+pyjwt==2.10.1
+structlog==25.4.0
+httpx==0.28.1
+aiofiles==24.1.0
+python-multipart==0.0.20
+anthropic==0.65.0
+openai==1.104.2
+redis==6.4.0
+cryptography==42.0.8
+python-json-logger==3.3.0

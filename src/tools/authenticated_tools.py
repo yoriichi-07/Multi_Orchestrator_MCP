@@ -184,7 +184,7 @@ async def deploy_project_tool(
         "status": "deployment_started",
         "project_id": project_id,
         "deployment_id": correlation_id,
-        "target_platform": deployment_config.get("platform", "fly.io"),
+        "target_platform": deployment_config.get("platform", "vercel"),
         "estimated_completion": "10 minutes",
         "correlation_id": correlation_id,
         "authorized_by": {

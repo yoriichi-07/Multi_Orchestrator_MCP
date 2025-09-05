@@ -1,6 +1,23 @@
 # ��� Autonomous Software Foundry - MCP Server
 
-A sophisticated Model Context Protocol (MCP) server for autonomous software generation with self-healing capabilities.
+A sophisticated Model Context Protocol (MCP) server for autonomous software generation with self-healing ## 🚀 Production Deployment
+
+### Vercel Deployment
+See [VERCEL-DEPLOYMENT-GUIDE.md](VERCEL-DEPLOYMENT-GUIDE.md) for complete instructions.
+
+### Environment Variables
+Environment variables should be configured in the Vercel dashboard. See `.env.production.template` for required configuration.
+
+### External Services
+- **Database**: Supabase, PlanetScale, or Neon
+- **Redis Cache**: Upstash or Redis Cloud
+- **Authentication**: Descope OAuth 2.1 + PKCE
+- **Monitoring**: Cequence AI Gateway integration
+
+### Monitoring
+- Structured JSON logging with correlation IDs
+- Health check endpoints for serverless functions
+- Metrics collection via external monitoring servicesies.
 
 ## ��� Features
 
@@ -42,8 +59,9 @@ poetry install
 
 2. **Configure Environment**
 ```bash
-cp .env.production.template .env
-# Edit .env with your API keys and configuration
+# Review environment template (do not copy to .env)
+# Environment variables should be configured in Vercel dashboard
+cat .env.production.template
 ```
 
 3. **Run Tests**
@@ -56,10 +74,16 @@ poetry run pytest
 poetry run uvicorn src.main:app --reload
 ```
 
-### Docker Deployment
+### Vercel Deployment
+
+See [VERCEL-DEPLOYMENT-GUIDE.md](VERCEL-DEPLOYMENT-GUIDE.md) for complete deployment instructions.
 
 ```bash
-docker-compose up --build
+# Validate deployment configuration
+powershell scripts/validate-vercel-deployment.ps1
+
+# Deploy to Vercel
+vercel --prod
 ```
 
 ## ��� Testing

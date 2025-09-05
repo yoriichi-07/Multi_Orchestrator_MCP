@@ -1,0 +1,3 @@
+# runtime.txt
+# Specify Python version for buildpack
+python-3.11.10
