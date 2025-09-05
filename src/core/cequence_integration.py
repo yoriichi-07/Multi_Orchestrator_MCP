@@ -4,7 +4,7 @@ Cequence AI Gateway integration for enhanced observability
 import asyncio
 import uuid
 from typing import Dict, Any, Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 import httpx
 import structlog
 from fastapi import Request, Response
@@ -31,7 +31,7 @@ class CequenceAnalytics:
         self.http_client = httpx.AsyncClient(timeout=10.0)
         self._metrics_buffer: List[Dict[str, Any]] = []
         self._buffer_size = 100
-        self._last_flush = datetime.utcnow()
+        self._last_flush = datetime.now(timezone.utc)
     
     async def track_request(
         self, 
@@ -44,7 +44,7 @@ class CequenceAnalytics:
         """Track individual request metrics"""
         try:
             request_data = {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "correlation_id": correlation_id,
                 "gateway_id": self.gateway_id,
                 "request": {
@@ -72,7 +72,7 @@ class CequenceAnalytics:
             
             # Flush if buffer is full or enough time has passed
             if (len(self._metrics_buffer) >= self._buffer_size or 
-                (datetime.utcnow() - self._last_flush).seconds > 60):
+                (datetime.now(timezone.utc) - self._last_flush).seconds > 60):
                 await self._flush_metrics()
             
             logger.info(
@@ -103,7 +103,7 @@ class CequenceAnalytics:
         """Track agent-specific operations"""
         try:
             operation_data = {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "correlation_id": correlation_id,
                 "gateway_id": self.gateway_id,
                 "operation": {
@@ -145,7 +145,7 @@ class CequenceAnalytics:
         """Track security-related events"""
         try:
             security_event = {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "correlation_id": correlation_id,
                 "gateway_id": self.gateway_id,
                 "security_event": {
@@ -243,7 +243,7 @@ class CequenceAnalytics:
         try:
             await self._send_metrics(self._metrics_buffer.copy())
             self._metrics_buffer.clear()
-            self._last_flush = datetime.utcnow()
+            self._last_flush = datetime.now(timezone.utc)
             
             logger.debug("metrics_flushed", count=len(self._metrics_buffer))
             
@@ -270,7 +270,7 @@ class CequenceAnalytics:
             payload = {
                 "gateway_id": self.gateway_id,
                 "metrics": metrics,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
             
             response = await self.http_client.post(
@@ -298,7 +298,7 @@ class CequenceMiddleware(BaseHTTPMiddleware):
     
     async def dispatch(self, request: Request, call_next):
         """Process request through Cequence analytics"""
-        start_time = datetime.utcnow()
+        start_time = datetime.now(timezone.utc)
         correlation_id = str(uuid.uuid4())
         
         # Add correlation ID to request state
@@ -309,7 +309,7 @@ class CequenceMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             
             # Calculate processing time
-            processing_time = (datetime.utcnow() - start_time).total_seconds() * 1000
+            processing_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
             
             # Get auth context if available
             auth_context = None

@@ -1,0 +1,1478 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Autonomous Software Foundry - MCP Server",
+    "description": "A sophisticated Model Context Protocol (MCP) server implementing autonomous software generation capabilities with AI agent orchestration, self-healing systems, and comprehensive observability.\n\n**Key Features:**\n- 🤖 Multi-Agent System (Frontend, Backend, DevOps, Reviewer Agents)\n- 🔄 Self-Healing Capabilities with LLM-powered failure analysis\n- 🔐 Descope OAuth 2.1 + PKCE Authentication with Non-Human Identity\n- 📊 Cequence AI Gateway Integration for analytics and security monitoring\n- 🛠️ Full MCP Protocol Compliance (JSON-RPC 2.0)\n- 🚀 Autonomous Code Generation and Deployment\n\n**Competition Innovation:**\nThis MCP server demonstrates advanced autonomous capabilities by orchestrating multiple specialized AI agents to generate, test, heal, and deploy full-stack applications automatically. The self-healing loop continuously monitors generated applications and applies fixes using LLM-powered analysis.\n",
+    "version": "2.0.0",
+    "contact": {
+      "name": "Autonomous Software Foundry",
+      "url": "https://github.com/yoriichi-07/Multi_Orchestrator_MCP"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://your-mcp-server.smithery.com",
+      "description": "Production server on Smithery (competition hosting)"
+    },
+    {
+      "url": "https://your-mcp-server.vercel.app",
+      "description": "Staging server on Vercel"
+    },
+    {
+      "url": "http://localhost:8000",
+      "description": "Local development server"
+    }
+  ],
+  "security": [
+    {
+      "DescopeBearer": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Check server health and basic status information",
+        "tags": [
+          "Health"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/initialize": {
+      "post": {
+        "summary": "MCP Initialization Handshake",
+        "description": "Initialize MCP client-server connection with capability negotiation",
+        "tags": [
+          "MCP Protocol"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCPInitializeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Initialization successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPInitializeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/capabilities": {
+      "get": {
+        "summary": "Get MCP Server Capabilities",
+        "description": "Retrieve server capabilities and supported features",
+        "tags": [
+          "MCP Protocol"
+        ],
+        "responses": {
+          "200": {
+            "description": "Server capabilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPCapabilitiesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/list": {
+      "post": {
+        "summary": "List Available MCP Tools",
+        "description": "Get list of all available MCP tools with their schemas",
+        "tags": [
+          "MCP Tools"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCPListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of available tools",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPToolsListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/call": {
+      "post": {
+        "summary": "Execute MCP Tool",
+        "description": "Execute a specific MCP tool with provided arguments",
+        "tags": [
+          "MCP Tools"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCPToolCallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tool execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPToolCallResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/resources/list": {
+      "post": {
+        "summary": "List Available MCP Resources",
+        "description": "Get list of all available MCP resources",
+        "tags": [
+          "MCP Resources"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCPListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of available resources",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPResourcesListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/resources/read": {
+      "post": {
+        "summary": "Read MCP Resource Content",
+        "description": "Read the content of a specific MCP resource",
+        "tags": [
+          "MCP Resources"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCPResourceReadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPResourceReadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/v1/tools/generate_application": {
+      "post": {
+        "summary": "Generate Full-Stack Application",
+        "description": "**Autonomous Application Generation**\n\nThis is the flagship autonomous tool that orchestrates multiple AI agents to generate a complete full-stack application from a high-level description. The system coordinates:\n- Frontend Agent: React/Next.js/Vue.js generation\n- Backend Agent: FastAPI/Express.js/Django generation  \n- DevOps Agent: Deployment and infrastructure setup\n- Reviewer Agent: Code quality analysis and testing\n",
+        "tags": [
+          "Autonomous Generation"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateApplicationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateApplicationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/v1/tools/self_heal": {
+      "post": {
+        "summary": "Self-Healing System",
+        "description": "**Autonomous Self-Healing**\n\nAdvanced self-healing capability that automatically detects, analyzes, and fixes issues in generated applications using LLM-powered failure analysis. This demonstrates true autonomous operation by continuously monitoring and improving generated code.\n",
+        "tags": [
+          "Autonomous Healing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelfHealRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Healing process completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelfHealResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/v1/tools/code_review": {
+      "post": {
+        "summary": "AI-Powered Code Review",
+        "description": "Comprehensive code review using AI agents for quality analysis, security scanning, and improvement suggestions",
+        "tags": [
+          "Quality Assurance"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CodeReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Code review completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CodeReviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/v1/tools/ping": {
+      "post": {
+        "summary": "Connectivity Test",
+        "description": "Basic connectivity and health test with scope validation",
+        "tags": [
+          "Infrastructure"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ping successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/v1/tools/system_status": {
+      "post": {
+        "summary": "System Status and Metrics",
+        "description": "Comprehensive system status including resource usage, agent health, and performance metrics",
+        "tags": [
+          "Infrastructure"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SystemStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "System status retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Cequence Analytics Dashboard",
+        "description": "Serve the integrated Cequence AI Gateway analytics dashboard",
+        "tags": [
+          "Analytics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard HTML page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "DescopeBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Descope OAuth 2.1 + PKCE JWT token with Non-Human Identity support.\n\n**Required Scopes:**\n- `tools:ping` - Basic connectivity testing\n- `tools:generate` - Application generation capabilities\n- `tools:review` - Code review and quality analysis\n- `tools:fix` - Self-healing and fixing capabilities\n- `tools:deploy` - Deployment and infrastructure management\n- `admin:logs` - Access to system logs and monitoring\n- `admin:config` - Configuration management\n"
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "healthy"
+          },
+          "service": {
+            "type": "string",
+            "example": "autonomous-software-foundry"
+          },
+          "version": {
+            "type": "string",
+            "example": "2.0.0"
+          },
+          "authentication": {
+            "type": "string",
+            "example": "Descope OAuth 2.1 + PKCE"
+          },
+          "analytics": {
+            "type": "string",
+            "example": "Cequence AI Gateway"
+          },
+          "mcp_protocol": {
+            "type": "string",
+            "example": "2024-11-05"
+          },
+          "capabilities": {
+            "type": "object",
+            "properties": {
+              "tools": {
+                "type": "integer",
+                "example": 12
+              },
+              "resources": {
+                "type": "integer",
+                "example": 8
+              }
+            }
+          }
+        }
+      },
+      "MCPInitializeRequest": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "method": {
+            "type": "string",
+            "example": "initialize"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "protocolVersion": {
+                "type": "string",
+                "example": "2024-11-05"
+              },
+              "capabilities": {
+                "type": "object"
+              },
+              "clientInfo": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Claude Desktop"
+                  },
+                  "version": {
+                    "type": "string",
+                    "example": "1.0.0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "MCPInitializeResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "protocolVersion": {
+                "type": "string",
+                "example": "2024-11-05"
+              },
+              "capabilities": {
+                "$ref": "#/components/schemas/MCPCapabilities"
+              },
+              "serverInfo": {
+                "$ref": "#/components/schemas/MCPServerInfo"
+              }
+            }
+          }
+        }
+      },
+      "MCPCapabilities": {
+        "type": "object",
+        "properties": {
+          "experimental": {
+            "type": "object"
+          },
+          "logging": {
+            "type": "object"
+          },
+          "prompts": {
+            "type": "object",
+            "properties": {
+              "listChanged": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "resources": {
+            "type": "object",
+            "properties": {
+              "subscribe": {
+                "type": "boolean",
+                "example": true
+              },
+              "listChanged": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "tools": {
+            "type": "object",
+            "properties": {
+              "listChanged": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "MCPServerInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "autonomous-software-foundry"
+          },
+          "version": {
+            "type": "string",
+            "example": "2.0.0"
+          },
+          "description": {
+            "type": "string",
+            "example": "MCP server with AI agent orchestration, self-healing capabilities, and Cequence AI Gateway integration"
+          }
+        }
+      },
+      "MCPCapabilitiesResponse": {
+        "type": "object",
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "example": "2024-11-05"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/MCPCapabilities"
+          },
+          "serverInfo": {
+            "$ref": "#/components/schemas/MCPServerInfo"
+          }
+        }
+      },
+      "MCPListRequest": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "2"
+          },
+          "method": {
+            "type": "string",
+            "example": "tools/list"
+          }
+        }
+      },
+      "MCPToolsListResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "2"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "tools": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MCPTool"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MCPTool": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "generate_application"
+          },
+          "description": {
+            "type": "string",
+            "example": "Generate a complete full-stack application using AI agent orchestration"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "object"
+              },
+              "properties": {
+                "type": "object"
+              },
+              "required": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MCPToolCallRequest": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "3"
+          },
+          "method": {
+            "type": "string",
+            "example": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "generate_application"
+              },
+              "arguments": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "MCPToolCallResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "3"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "text"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GenerateApplicationRequest": {
+        "type": "object",
+        "required": [
+          "project_description"
+        ],
+        "properties": {
+          "project_description": {
+            "type": "string",
+            "description": "High-level description of the application to generate",
+            "example": "Create a task management app with user authentication, real-time updates, and mobile-responsive design"
+          },
+          "project_type": {
+            "type": "string",
+            "enum": [
+              "fullstack",
+              "frontend",
+              "backend",
+              "mobile"
+            ],
+            "default": "fullstack",
+            "description": "Type of application to generate"
+          },
+          "framework_preferences": {
+            "type": "object",
+            "properties": {
+              "frontend": {
+                "type": "string",
+                "enum": [
+                  "react",
+                  "nextjs",
+                  "vue",
+                  "angular"
+                ],
+                "example": "nextjs"
+              },
+              "backend": {
+                "type": "string",
+                "enum": [
+                  "fastapi",
+                  "express",
+                  "django",
+                  "flask"
+                ],
+                "example": "fastapi"
+              },
+              "database": {
+                "type": "string",
+                "enum": [
+                  "postgresql",
+                  "mysql",
+                  "mongodb",
+                  "sqlite"
+                ],
+                "example": "postgresql"
+              }
+            }
+          },
+          "additional_requirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "user authentication",
+              "real-time chat",
+              "file uploads"
+            ]
+          }
+        }
+      },
+      "GenerateApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "project_id": {
+            "type": "string",
+            "example": "proj_12345"
+          },
+          "generated_files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "example": "src/components/TaskList.tsx"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "agent": {
+                  "type": "string",
+                  "example": "frontend"
+                }
+              }
+            }
+          },
+          "agent_reports": {
+            "type": "object",
+            "properties": {
+              "frontend": {
+                "$ref": "#/components/schemas/AgentReport"
+              },
+              "backend": {
+                "$ref": "#/components/schemas/AgentReport"
+              },
+              "devops": {
+                "$ref": "#/components/schemas/AgentReport"
+              },
+              "reviewer": {
+                "$ref": "#/components/schemas/AgentReport"
+              }
+            }
+          },
+          "deployment_info": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "example": "https://task-app-12345.vercel.app"
+              },
+              "status": {
+                "type": "string",
+                "example": "deployed"
+              }
+            }
+          }
+        }
+      },
+      "AgentReport": {
+        "type": "object",
+        "properties": {
+          "agent_type": {
+            "type": "string",
+            "example": "frontend"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "in_progress",
+              "failed"
+            ]
+          },
+          "files_generated": {
+            "type": "integer",
+            "example": 8
+          },
+          "technologies_used": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "React",
+              "TypeScript",
+              "Tailwind CSS"
+            ]
+          },
+          "completion_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Generated responsive UI with modern design patterns"
+          }
+        }
+      },
+      "SelfHealRequest": {
+        "type": "object",
+        "required": [
+          "project_id",
+          "issue_description"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "ID of the project to heal",
+            "example": "proj_12345"
+          },
+          "issue_description": {
+            "type": "string",
+            "description": "Description of the issue to fix",
+            "example": "API endpoints are returning 500 errors on user authentication"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "default": "medium"
+          },
+          "auto_deploy": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to automatically deploy fixes"
+          }
+        }
+      },
+      "SelfHealResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "healing_completed"
+          },
+          "healing_id": {
+            "type": "string",
+            "example": "heal_67890"
+          },
+          "issues_found": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "authentication_error"
+                },
+                "severity": {
+                  "type": "string",
+                  "example": "high"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "JWT token validation failing"
+                },
+                "file": {
+                  "type": "string",
+                  "example": "src/auth/middleware.py"
+                }
+              }
+            }
+          },
+          "fixes_applied": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "issue_type": {
+                  "type": "string",
+                  "example": "authentication_error"
+                },
+                "fix_description": {
+                  "type": "string",
+                  "example": "Updated JWT token validation logic"
+                },
+                "files_modified": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "src/auth/middleware.py",
+                    "tests/test_auth.py"
+                  ]
+                }
+              }
+            }
+          },
+          "test_results": {
+            "type": "object",
+            "properties": {
+              "passed": {
+                "type": "integer",
+                "example": 47
+              },
+              "failed": {
+                "type": "integer",
+                "example": 0
+              },
+              "coverage": {
+                "type": "number",
+                "format": "float",
+                "example": 94.5
+              }
+            }
+          }
+        }
+      },
+      "CodeReviewRequest": {
+        "type": "object",
+        "required": [
+          "project_id"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "proj_12345"
+          },
+          "review_type": {
+            "type": "string",
+            "enum": [
+              "security",
+              "performance",
+              "quality",
+              "full"
+            ],
+            "default": "full"
+          },
+          "include_suggestions": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "CodeReviewResponse": {
+        "type": "object",
+        "properties": {
+          "review_id": {
+            "type": "string",
+            "example": "review_98765"
+          },
+          "overall_score": {
+            "type": "number",
+            "format": "float",
+            "example": 8.7
+          },
+          "categories": {
+            "type": "object",
+            "properties": {
+              "security": {
+                "type": "number",
+                "format": "float",
+                "example": 9.2
+              },
+              "performance": {
+                "type": "number",
+                "format": "float",
+                "example": 8.5
+              },
+              "maintainability": {
+                "type": "number",
+                "format": "float",
+                "example": 8.9
+              },
+              "test_coverage": {
+                "type": "number",
+                "format": "float",
+                "example": 94.5
+              }
+            }
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "severity": {
+                  "type": "string",
+                  "enum": [
+                    "info",
+                    "warning",
+                    "error",
+                    "critical"
+                  ]
+                },
+                "category": {
+                  "type": "string",
+                  "example": "security"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Potential SQL injection vulnerability"
+                },
+                "file": {
+                  "type": "string",
+                  "example": "src/database/queries.py"
+                },
+                "line": {
+                  "type": "integer",
+                  "example": 45
+                },
+                "suggestion": {
+                  "type": "string",
+                  "example": "Use parameterized queries instead of string concatenation"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PingRequest": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Hello from MCP client"
+          }
+        }
+      },
+      "PingResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "pong"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "server_info": {
+            "type": "object",
+            "properties": {
+              "python_version": {
+                "type": "string",
+                "example": "3.11.5"
+              },
+              "platform": {
+                "type": "string",
+                "example": "Linux-5.4.0-x86_64"
+              },
+              "cpu_count": {
+                "type": "integer",
+                "example": 4
+              },
+              "memory_gb": {
+                "type": "number",
+                "format": "float",
+                "example": 16.0
+              }
+            }
+          },
+          "authentication": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "example": "machine_user_123"
+              },
+              "is_machine": {
+                "type": "boolean",
+                "example": true
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "tools:ping",
+                  "tools:generate"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "SystemStatusRequest": {
+        "type": "object",
+        "properties": {
+          "include_metrics": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "SystemStatusResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "healthy"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "system_metrics": {
+            "type": "object",
+            "properties": {
+              "cpu": {
+                "type": "object",
+                "properties": {
+                  "usage_percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 23.5
+                  },
+                  "count": {
+                    "type": "integer",
+                    "example": 4
+                  }
+                }
+              },
+              "memory": {
+                "type": "object",
+                "properties": {
+                  "total_gb": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 16.0
+                  },
+                  "used_gb": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 8.2
+                  },
+                  "usage_percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 51.25
+                  }
+                }
+              },
+              "disk": {
+                "type": "object",
+                "properties": {
+                  "total_gb": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 100.0
+                  },
+                  "free_gb": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 65.3
+                  },
+                  "usage_percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 34.7
+                  }
+                }
+              }
+            }
+          },
+          "agent_status": {
+            "type": "object",
+            "properties": {
+              "frontend_agent": {
+                "$ref": "#/components/schemas/AgentStatus"
+              },
+              "backend_agent": {
+                "$ref": "#/components/schemas/AgentStatus"
+              },
+              "devops_agent": {
+                "$ref": "#/components/schemas/AgentStatus"
+              },
+              "reviewer_agent": {
+                "$ref": "#/components/schemas/AgentStatus"
+              }
+            }
+          },
+          "active_projects": {
+            "type": "integer",
+            "example": 3
+          },
+          "healing_queue": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "AgentStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "busy",
+              "error"
+            ],
+            "example": "idle"
+          },
+          "last_activity": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "current_task": {
+            "type": "string",
+            "example": "Generating React components"
+          },
+          "tasks_completed": {
+            "type": "integer",
+            "example": 47
+          }
+        }
+      },
+      "MCPResourcesListResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "4"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "resources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MCPResource"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MCPResource": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "example": "projects://active/list"
+          },
+          "name": {
+            "type": "string",
+            "example": "Active Projects"
+          },
+          "description": {
+            "type": "string",
+            "example": "List of currently active projects in the system"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "application/json"
+          }
+        }
+      },
+      "MCPResourceReadRequest": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "5"
+          },
+          "method": {
+            "type": "string",
+            "example": "resources/read"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "uri": {
+                "type": "string",
+                "example": "projects://active/list"
+              }
+            }
+          }
+        }
+      },
+      "MCPResourceReadResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "example": "2.0"
+          },
+          "id": {
+            "type": "string",
+            "example": "5"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "contents": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "uri": {
+                      "type": "string",
+                      "example": "projects://active/list"
+                    },
+                    "mimeType": {
+                      "type": "string",
+                      "example": "application/json"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "The resource content"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health check and server status endpoints"
+    },
+    {
+      "name": "MCP Protocol",
+      "description": "Core MCP protocol implementation (JSON-RPC 2.0)"
+    },
+    {
+      "name": "MCP Tools",
+      "description": "MCP tool listing and execution"
+    },
+    {
+      "name": "MCP Resources",
+      "description": "MCP resource management"
+    },
+    {
+      "name": "Autonomous Generation",
+      "description": "AI-powered autonomous application generation"
+    },
+    {
+      "name": "Autonomous Healing",
+      "description": "Self-healing and automated fixing capabilities"
+    },
+    {
+      "name": "Quality Assurance",
+      "description": "Code review and quality analysis tools"
+    },
+    {
+      "name": "Infrastructure",
+      "description": "System monitoring and infrastructure tools"
+    },
+    {
+      "name": "Analytics",
+      "description": "Cequence AI Gateway analytics and monitoring"
+    }
+  ]
+}
