@@ -12,6 +12,17 @@ import structlog
 
 logger = structlog.get_logger()
 
+# Healing system integration (lazy loaded to avoid circular imports)
+_healing_loop = None
+
+def get_healing_loop():
+    """Get or create healing loop instance"""
+    global _healing_loop
+    if _healing_loop is None:
+        from src.healing.healing_loop import HealingLoop
+        _healing_loop = HealingLoop()
+    return _healing_loop
+
 
 class TaskStatus(Enum):
     """Task execution status"""
@@ -89,10 +100,16 @@ class AgentOrchestrator:
         # Orchestration state
         self.workflow_templates = self._initialize_workflow_templates()
         
+        # Healing integration
+        self.healing_enabled = True
+        self.auto_healing_threshold = 2  # Number of failures before triggering healing
+        self.project_health_status = {}  # Track health status per project
+        
         logger.info(
             "agent_orchestrator_initialized",
             correlation_id=self.correlation_id,
-            agents_count=len(self.agents)
+            agents_count=len(self.agents),
+            healing_enabled=self.healing_enabled
         )
     
     async def generate_complete_application(
@@ -115,6 +132,10 @@ class AgentOrchestrator:
                 project_type=project_type,
                 description_length=len(description)
             )
+            
+            # Enable healing for this project by default
+            if self.healing_enabled:
+                await self.enable_healing_for_project(project_id)
             
             # Analyze requirements and create task breakdown
             task_breakdown = await self._analyze_requirements(
@@ -165,6 +186,39 @@ class AgentOrchestrator:
                 error=str(e),
                 correlation_id=self.correlation_id
             )
+            
+            # Trigger healing for application generation failures
+            if self.healing_enabled and project_id in self.project_health_status:
+                from src.healing.health_monitor import HealthIssue, IssueType
+                
+                trigger_issue = HealthIssue(
+                    id=str(uuid.uuid4()),
+                    type=IssueType.SYSTEM_ERROR,
+                    severity=9,  # Very high severity for complete generation failures
+                    description=f"Application generation failed: {str(e)}",
+                    location=f"orchestrator_generation_{project_id}",
+                    error_message=str(e),
+                    stack_trace=None,
+                    first_detected=datetime.utcnow(),
+                    agent_context={
+                        "project_id": project_id,
+                        "project_type": project_type,
+                        "orchestrator_correlation_id": self.correlation_id,
+                        "failure_context": "application_generation"
+                    }
+                )
+                
+                healing_loop = get_healing_loop()
+                session_id = await healing_loop.trigger_healing_session(project_id, trigger_issue)
+                
+                if session_id:
+                    self.logger.info(
+                        "healing_triggered_for_generation_failure",
+                        project_id=project_id,
+                        session_id=session_id,
+                        correlation_id=self.correlation_id
+                    )
+            
             raise
     
     async def _analyze_requirements(
@@ -527,6 +581,11 @@ class AgentOrchestrator:
             if session_id in self.active_sessions:
                 self.active_sessions[session_id].tasks_failed += 1
             
+            # Trigger healing on task failure if enabled
+            project_id = task.parameters.get("project_id")
+            if project_id:
+                await self.trigger_healing_on_failure(project_id, task, str(e))
+            
             raise
     
     async def _execute_reviewer_task(self, agent, task: Task) -> Dict[str, Any]:
@@ -884,6 +943,226 @@ class AgentOrchestrator:
             total_duration += phase_duration
         
         return total_duration
+    
+    async def enable_healing_for_project(self, project_id: str) -> Dict[str, Any]:
+        """Enable self-healing monitoring for a project"""
+        try:
+            healing_loop = get_healing_loop()
+            
+            # Start health monitoring
+            from src.healing.health_monitor import HealthMonitor
+            health_monitor = HealthMonitor()
+            
+            monitor_task = await health_monitor.start_continuous_monitoring(
+                project_id=project_id,
+                interval_seconds=300  # Check every 5 minutes
+            )
+            
+            # Start healing loop
+            healing_task = await healing_loop.start_healing_loop(project_id)
+            
+            self.project_health_status[project_id] = {
+                "healing_enabled": True,
+                "monitor_task": monitor_task,
+                "healing_task": healing_task,
+                "enabled_at": datetime.utcnow(),
+                "failure_count": 0
+            }
+            
+            self.logger.info(
+                "healing_enabled_for_project",
+                project_id=project_id,
+                correlation_id=self.correlation_id
+            )
+            
+            return {
+                "success": True,
+                "project_id": project_id,
+                "healing_enabled": True,
+                "monitoring_active": True
+            }
+            
+        except Exception as e:
+            self.logger.error(
+                "failed_to_enable_healing",
+                project_id=project_id,
+                error=str(e),
+                correlation_id=self.correlation_id
+            )
+            return {
+                "success": False,
+                "project_id": project_id,
+                "error": str(e)
+            }
+    
+    async def disable_healing_for_project(self, project_id: str) -> Dict[str, Any]:
+        """Disable self-healing monitoring for a project"""
+        try:
+            if project_id in self.project_health_status:
+                status = self.project_health_status[project_id]
+                
+                # Stop health monitoring
+                from src.healing.health_monitor import HealthMonitor
+                health_monitor = HealthMonitor()
+                await health_monitor.stop_monitoring(project_id)
+                
+                # Stop healing loop
+                healing_loop = get_healing_loop()
+                await healing_loop.stop_healing_loop(project_id)
+                
+                del self.project_health_status[project_id]
+                
+                self.logger.info(
+                    "healing_disabled_for_project",
+                    project_id=project_id,
+                    correlation_id=self.correlation_id
+                )
+            
+            return {
+                "success": True,
+                "project_id": project_id,
+                "healing_enabled": False
+            }
+            
+        except Exception as e:
+            self.logger.error(
+                "failed_to_disable_healing",
+                project_id=project_id,
+                error=str(e),
+                correlation_id=self.correlation_id
+            )
+            return {
+                "success": False,
+                "project_id": project_id,
+                "error": str(e)
+            }
+    
+    async def trigger_healing_on_failure(self, project_id: str, task: Task, error: str) -> bool:
+        """Trigger healing when task failures occur"""
+        try:
+            if not self.healing_enabled or project_id not in self.project_health_status:
+                return False
+            
+            project_status = self.project_health_status[project_id]
+            project_status["failure_count"] += 1
+            
+            # Check if we've hit the threshold for auto-healing
+            if project_status["failure_count"] >= self.auto_healing_threshold:
+                self.logger.info(
+                    "triggering_auto_healing",
+                    project_id=project_id,
+                    failure_count=project_status["failure_count"],
+                    task_type=task.type,
+                    correlation_id=self.correlation_id
+                )
+                
+                # Create a health issue for the healing system
+                from src.healing.health_monitor import HealthIssue, IssueType
+                
+                trigger_issue = HealthIssue(
+                    id=str(uuid.uuid4()),
+                    type=IssueType.ORCHESTRATION_FAILURE,
+                    severity=8,  # High severity for orchestration failures
+                    description=f"Task '{task.type}' failed during orchestration: {error}",
+                    location=f"orchestrator_task_{task.id}",
+                    error_message=error,
+                    stack_trace=None,
+                    first_detected=datetime.utcnow(),
+                    agent_context={
+                        "task_id": task.id,
+                        "task_type": task.type,
+                        "agent_type": task.agent_type.value,
+                        "orchestrator_correlation_id": self.correlation_id
+                    }
+                )
+                
+                # Trigger healing session
+                healing_loop = get_healing_loop()
+                session_id = await healing_loop.trigger_healing_session(project_id, trigger_issue)
+                
+                if session_id:
+                    self.logger.info(
+                        "healing_session_triggered",
+                        project_id=project_id,
+                        session_id=session_id,
+                        task_id=task.id,
+                        correlation_id=self.correlation_id
+                    )
+                    
+                    # Reset failure count after triggering healing
+                    project_status["failure_count"] = 0
+                    return True
+                else:
+                    self.logger.warning(
+                        "healing_session_not_triggered",
+                        project_id=project_id,
+                        task_id=task.id,
+                        reason="may_be_at_session_limit",
+                        correlation_id=self.correlation_id
+                    )
+            
+            return False
+            
+        except Exception as e:
+            self.logger.error(
+                "error_triggering_healing",
+                project_id=project_id,
+                task_id=task.id,
+                error=str(e),
+                correlation_id=self.correlation_id
+            )
+            return False
+    
+    async def get_project_health_status(self, project_id: str) -> Dict[str, Any]:
+        """Get current health status for a project"""
+        try:
+            if project_id not in self.project_health_status:
+                return {
+                    "project_id": project_id,
+                    "healing_enabled": False,
+                    "health_status": "unknown"
+                }
+            
+            from src.healing.health_monitor import HealthMonitor
+            health_monitor = HealthMonitor()
+            
+            # Get current health report
+            health_report = await health_monitor.get_current_health_status(project_id)
+            
+            project_status = self.project_health_status[project_id]
+            
+            result = {
+                "project_id": project_id,
+                "healing_enabled": project_status["healing_enabled"],
+                "failure_count": project_status["failure_count"],
+                "enabled_at": project_status["enabled_at"].isoformat(),
+                "health_status": "unknown",
+                "health_score": 0.0,
+                "issues_count": 0
+            }
+            
+            if health_report:
+                result.update({
+                    "health_status": health_report.overall_status.value,
+                    "health_score": health_report.health_score,
+                    "issues_count": len(health_report.issues),
+                    "last_check": health_report.timestamp.isoformat()
+                })
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(
+                "error_getting_health_status",
+                project_id=project_id,
+                error=str(e),
+                correlation_id=self.correlation_id
+            )
+            return {
+                "project_id": project_id,
+                "healing_enabled": False,
+                "error": str(e)
+            }
     
     def _initialize_workflow_templates(self) -> Dict[str, Any]:
         """Initialize workflow templates for different project types"""

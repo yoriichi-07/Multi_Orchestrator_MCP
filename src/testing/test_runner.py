@@ -205,3 +205,52 @@ class TestRunner:
             recommendations.append("Run tests again after fixing issues")
         
         return recommendations
+    
+    async def validate_healing_fix(
+        self,
+        project_id: str,
+        healing_session_id: str,
+        correlation_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Validate that a healing fix was successful"""
+        self.logger.info(
+            "healing_validation_started",
+            project_id=project_id,
+            healing_session_id=healing_session_id,
+            correlation_id=correlation_id or self.correlation_id
+        )
+        
+        # Run focused tests to validate the fix
+        validation_results = await self.run_comprehensive_tests(
+            project_id=project_id,
+            test_types=["unit", "integration"]
+        )
+        
+        # Check if validation passed
+        validation_success = validation_results.get("success_rate", 0) >= 90
+        
+        self.logger.info(
+            "healing_validation_completed",
+            project_id=project_id,
+            healing_session_id=healing_session_id,
+            success=validation_success,
+            correlation_id=correlation_id or self.correlation_id
+        )
+        
+        return {
+            "project_id": project_id,
+            "healing_session_id": healing_session_id,
+            "validation_success": validation_success,
+            "test_results": validation_results,
+            "correlation_id": correlation_id or self.correlation_id
+        }
+    
+    def get_test_statistics(self) -> Dict[str, Any]:
+        """Get overall test statistics"""
+        return {
+            "total_runs": 0,
+            "success_rate": 0.0,
+            "average_duration": 0.0,
+            "most_common_failures": [],
+            "correlation_id": self.correlation_id
+        }

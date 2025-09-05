@@ -182,6 +182,8 @@ async def register_mcp_tools():
     from src.tools import infrastructure_tools
     from src.tools import generation_tools  
     from src.tools import quality_tools
+    from src.healing import healing_tools
+    from src.agents import orchestrator_mcp_tools
     
     # Register any deferred tools
     from src.core.tool_registry import register_deferred_tools
