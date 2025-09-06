@@ -25,10 +25,12 @@ from smithery.decorators import smithery
 
 # Import existing core components
 from src.core.config import settings
-from src.core.descope_auth import get_descope_client
+from src.core.descope_auth import get_descope_client, validate_token
 from src.core.cequence_integration import get_cequence_analytics, track_agent_operation
 from src.agents.orchestrator import AgentOrchestrator
-from src.healing.solution_generator import SolutionGenerator
+from src.healing.code_fixer import SelfHealingCodeFixer
+from src.tools.generation_tools import ArchitectureGenerator
+from src.tools.quality_tools import TestGenerator
 
 # Configure structured logging
 structlog.configure(
@@ -134,7 +136,7 @@ def create_server(config: ConfigSchema):
     
     # Initialize components
     orchestrator = AgentOrchestrator(max_agents=config.max_agents)
-    code_fixer = SolutionGenerator() if config.healing_enabled else None
+    code_fixer = SelfHealingCodeFixer() if config.healing_enabled else None
     architecture_generator = ArchitectureGenerator()
     test_generator = TestGenerator()
     
@@ -503,11 +505,7 @@ def create_server(config: ConfigSchema):
         
         try:
             # Use existing Descope validation
-            async def validate():
-                client = await get_descope_client()
-                return await client.validate_jwt_token(token)
-            
-            auth_result = asyncio.run(validate())
+            auth_result = asyncio.run(validate_token(token))
             
             logger.info("auth_validation_completed", success=True)
             return json.dumps(auth_result, indent=2)
@@ -726,6 +724,9 @@ async def get_dashboard_data() -> Dict[str, Any]:
 
 
 # Fallback imports for missing components
+try:
+    from src.agents.orchestrator import AgentOrchestrator
+except ImportError:
     class AgentOrchestrator:
         def __init__(self, max_agents=5):
             self.max_agents = max_agents
@@ -739,7 +740,10 @@ async def get_dashboard_data() -> Dict[str, Any]:
                 "quality_score": 0.95
             }
 
-    class SolutionGenerator:
+try:
+    from src.healing.code_fixer import SelfHealingCodeFixer
+except ImportError:
+    class SelfHealingCodeFixer:
         def fix_code(self, code, error_message, language, context):
             return {
                 "success": True,
@@ -756,6 +760,9 @@ async def get_dashboard_data() -> Dict[str, Any]:
                 "retry_recommended": True
             }
 
+try:
+    from src.tools.generation_tools import ArchitectureGenerator
+except ImportError:
     class ArchitectureGenerator:
         def generate_architecture(self, project_type, scale, cloud_provider, include_security=True, include_monitoring=True):
             return {
@@ -773,6 +780,9 @@ async def get_dashboard_data() -> Dict[str, Any]:
                 "scalability": f"Supports {scale == 'small' and '1K' or scale == 'medium' and '10K' or '100K+'} users"
             }
 
+try:
+    from src.tools.quality_tools import TestGenerator
+except ImportError:
     class TestGenerator:
         def generate_tests(self, code, test_type, framework, coverage_target=0.9):
             return {
