@@ -1,0 +1,48 @@
+{
+  "name": "multi-orchestrator-mcp",
+  "version": "2.0.0",
+  "description": "Multi-Agent Orchestrator MCP Server with Autonomous Development",
+  "main": "mcp_server.py",
+  "type": "mcp-server",
+  "runtime": "python",
+  "python": {
+    "version": "3.11",
+    "requirements": "requirements.txt"
+  },
+  "mcp": {
+    "transport": "stdio",
+    "capabilities": {
+      "tools": true,
+      "resources": true,
+      "prompts": true
+    }
+  },
+  "competition": {
+    "category": "Enterprise MCP Stack",
+    "features": [
+      "Multi-Agent Orchestration",
+      "Self-Healing Code Generation", 
+      "Descope OAuth 2.1 + PKCE",
+      "Cequence AI Gateway Analytics"
+    ]
+  },
+  "environment": {
+    "required": [
+      "DESCOPE_PROJECT_ID",
+      "DESCOPE_CLIENT_SECRET",
+      "DESCOPE_MANAGEMENT_KEY"
+    ],
+    "optional": [
+      "CEQUENCE_GATEWAY_ID",
+      "CEQUENCE_API_KEY",
+      "OPENAI_API_KEY",
+      "ANTHROPIC_API_KEY"
+    ]
+  },
+  "health_check": "/health",
+  "endpoints": {
+    "mcp": "/mcp",
+    "capabilities": "/mcp/capabilities",
+    "dashboard": "/dashboard"
+  }
+}

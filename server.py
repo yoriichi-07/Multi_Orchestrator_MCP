@@ -24,15 +24,15 @@ from fastmcp import FastMCP
 
 # Try to import smithery, use fallback if not available
 try:
-    from smithery import smithery
+    from fastmcp.integrations.smithery import smithery_app
     SMITHERY_AVAILABLE = True
 except ImportError:
     try:
-        from smithery.decorators import smithery
+        from smithery import app as smithery_app
         SMITHERY_AVAILABLE = True
     except ImportError:
         # Fallback for development/testing when smithery isn't installed
-        def smithery(**kwargs):
+        def smithery_app(**kwargs):
             def decorator(func):
                 return func
             return decorator
@@ -123,7 +123,7 @@ class ConfigSchema(BaseModel):
     )
 
 
-@smithery(
+@smithery_app(
     config_schema=ConfigSchema,
     name="Multi-Agent Orchestrator MCP",
     description="Competition-ready MCP server with multi-agent orchestration, self-healing, and enterprise integrations"
