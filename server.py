@@ -21,7 +21,22 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 from fastmcp import FastMCP
-from smithery.decorators import smithery
+
+# Try to import smithery, use fallback if not available
+try:
+    from smithery import smithery
+    SMITHERY_AVAILABLE = True
+except ImportError:
+    try:
+        from smithery.decorators import smithery
+        SMITHERY_AVAILABLE = True
+    except ImportError:
+        # Fallback for development/testing when smithery isn't installed
+        def smithery(**kwargs):
+            def decorator(func):
+                return func
+            return decorator
+        SMITHERY_AVAILABLE = False
 
 # Import existing core components
 from src.core.config import settings
@@ -135,8 +150,10 @@ def create_server(config: ConfigSchema):
     # Initialize components
     orchestrator = AgentOrchestrator(max_agents=config.max_agents)
     code_fixer = SolutionGenerator() if config.healing_enabled else None
-    architecture_generator = ArchitectureGenerator()
-    test_generator = TestGenerator()
+    
+    # Architecture and test generation will be handled by orchestrator
+    architecture_generator = None  # TODO: Implement if needed
+    test_generator = None  # TODO: Implement if needed
     
     logger.info(
         "mcp_server_initializing",

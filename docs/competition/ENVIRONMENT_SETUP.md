@@ -18,12 +18,39 @@ DESCOPE_CLIENT_ID=TPA32BuPmTYXCbmbAj4JpAqOrKh5Ao
 DESCOPE_CLIENT_SECRET=bGHOuAXycXfMDlo6HUKnVWb2G925JGYf26EB70KHg75
 ```
 
-### ⚠️ **Cequence AI Gateway (Missing)**
+### ⚠️ **Cequence AI Gateway (Requires Setup)**
+
+To complete the competition requirements, you need Cequence AI Gateway credentials:
+
 ```bash
-# You need to add these:
-CEQUENCE_GATEWAY_ID=your_gateway_id_here
-CEQUENCE_API_KEY=your_api_key_here
-CEQUENCE_GATEWAY_URL=your_gateway_url_here  # Optional
+# Add these to your .env file:
+CEQUENCE_GATEWAY_ID=your_actual_gateway_id
+CEQUENCE_API_KEY=your_actual_api_key
+CEQUENCE_GATEWAY_URL=https://your-gateway.cequence.ai  # Optional
+
+# Enable analytics and monitoring:
+ENABLE_ANALYTICS=true
+ENABLE_SECURITY_MONITORING=true
+ANALYTICS_BUFFER_SIZE=100
+ANALYTICS_FLUSH_INTERVAL=60
+```
+
+**How to Get Cequence Credentials:**
+
+1. **Visit Cequence Security**: https://www.cequence.ai/
+2. **Request Trial Access**: Contact their team for AI Gateway trial
+3. **Mention MCP Competition**: This may expedite your request
+4. **Get Your Credentials**: You'll receive:
+   - Gateway ID
+   - API Key  
+   - Dashboard access URL
+
+**Alternative for Development:**
+```bash
+# For development/testing without real Cequence access:
+CEQUENCE_GATEWAY_ID=demo_gateway_comp_2024
+CEQUENCE_API_KEY=demo_api_key_mcp_competition
+ENABLE_ANALYTICS=false  # Disable actual analytics calls
 ```
 
 ---

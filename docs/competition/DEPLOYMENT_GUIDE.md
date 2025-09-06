@@ -4,39 +4,58 @@
 
 Before deploying to Smithery, ensure you have:
 
-- ✅ Smithery account created
-- ✅ Repository pushed to GitHub
+- ✅ Smithery account created at [smithery.ai](https://smithery.ai)
+- ✅ Repository pushed to GitHub: `yoriichi-07/Multi_Orchestrator_MCP`
 - ✅ Descope project configured (Project ID: `P31WC6A6Vybbt7N5NhnH4dZLQgXY`)
-- ✅ Cequence AI Gateway access
-- ✅ Environment variables ready
+- ✅ Cequence AI Gateway credentials obtained
+- ✅ Environment variables configured (see [Environment Setup](ENVIRONMENT_SETUP.md))
+- ✅ Node.js 18+ installed (for Smithery CLI)
 
 ## 🔧 **Step 1: Prepare Environment Variables**
 
-Create a secure list of your environment variables:
+Create your production environment configuration:
 
 ```bash
-# Required for Competition
+# Competition Requirements
 DESCOPE_PROJECT_ID=P31WC6A6Vybbt7N5NhnH4dZLQgXY
 DESCOPE_CLIENT_SECRET=your-client-secret-from-descope-dashboard
 DESCOPE_MANAGEMENT_KEY=your-management-key-from-descope
 CEQUENCE_GATEWAY_ID=your-cequence-gateway-id
 CEQUENCE_API_KEY=your-cequence-api-key
 
-# Optional AI Providers
-OPENAI_API_KEY=sk-your-openai-key
-ANTHROPIC_API_KEY=sk-ant-your-anthropic-key
-
 # Server Configuration
 DEBUG=false
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8000
+ENVIRONMENT=production
+
+# AI Providers (Optional but Recommended)
+OPENAI_API_KEY=sk-your-openai-key
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-key
+DEFAULT_LLM_PROVIDER=openai
+
+# Orchestrator Settings
 MAX_AGENTS=5
 HEALING_ENABLED=true
 ANALYTICS_ENABLED=true
-ENVIRONMENT=production
+ENABLE_METRICS=true
+LOG_LEVEL=INFO
+
+# Security
+MAX_REQUEST_SIZE_MB=10
+RATE_LIMIT_PER_MINUTE=100
+MAX_GENERATION_TIME_SECONDS=300
+
+# Analytics
+ANALYTICS_BUFFER_SIZE=100
+ANALYTICS_FLUSH_INTERVAL=60
 ```
 
-## 🌐 **Step 2: Deploy to Smithery**
+⚠️ **Important**: Never commit these values to your repository. Use Smithery's environment variable management.
 
-### **Option A: Smithery CLI (Recommended)**
+## 🌐 **Step 2: Deploy to Smithery Platform**
+
+### **Option A: Smithery CLI (Recommended for Developers)**
 
 1. **Install Smithery CLI**
 ```bash
@@ -46,44 +65,106 @@ npm install -g @smithery/cli
 2. **Login to Smithery**
 ```bash
 smithery login
+# Follow the authentication flow in your browser
 ```
 
-3. **Deploy from Repository Root**
+3. **Initialize Your Project**
 ```bash
 cd "d:\intel\projects\global mcp hack"
-smithery deploy --config server.py
+smithery init
+# This will create smithery.json configuration
 ```
 
-4. **Configure Environment Variables**
+4. **Configure for FastMCP**
+Update `smithery.json`:
+```json
+{
+  "name": "multi-orchestrator-mcp",
+  "version": "1.0.0",
+  "framework": "fastmcp",
+  "entry": "server.py",
+  "python": {
+    "version": "3.11",
+    "requirements": "requirements.txt"
+  },
+  "environment": {
+    "variables": [
+      "DESCOPE_PROJECT_ID",
+      "DESCOPE_CLIENT_SECRET",
+      "DESCOPE_MANAGEMENT_KEY",
+      "CEQUENCE_GATEWAY_ID",
+      "CEQUENCE_API_KEY",
+      "OPENAI_API_KEY",
+      "ANTHROPIC_API_KEY"
+    ]
+  },
+  "health_check": "/health",
+  "scaling": {
+    "min_instances": 1,
+    "max_instances": 5,
+    "auto_scale": true
+  }
+}
+```
+
+5. **Deploy to Smithery**
 ```bash
-# Set environment variables through CLI
-smithery env set DESCOPE_PROJECT_ID P31WC6A6Vybbt7N5NhnH4dZLQgXY
-smithery env set DESCOPE_CLIENT_SECRET your-secret
-smithery env set CEQUENCE_GATEWAY_ID your-gateway-id
-smithery env set CEQUENCE_API_KEY your-api-key
+smithery deploy
+# This will build, package, and deploy your MCP server
 ```
 
-### **Option B: Smithery Web Dashboard**
+6. **Set Environment Variables**
+```bash
+# Set each environment variable securely
+smithery env set DESCOPE_PROJECT_ID P31WC6A6Vybbt7N5NhnH4dZLQgXY
+smithery env set DESCOPE_CLIENT_SECRET your-secret --secret
+smithery env set CEQUENCE_GATEWAY_ID your-gateway-id
+smithery env set CEQUENCE_API_KEY your-api-key --secret
+# Continue for all variables...
+```
 
-1. **Connect Repository**
-   - Go to [Smithery Dashboard](https://smithery.ai/new)
-   - Connect your GitHub repository: `yoriichi-07/Multi_Orchestrator_MCP`
-   - Select the `main` branch
+### **Option B: Smithery Web Dashboard (Recommended for Quick Setup)**
 
-2. **Configure Build Settings**
+1. **Access Smithery Dashboard**
+   - Go to [dashboard.smithery.ai](https://dashboard.smithery.ai)
+   - Sign in with your account
+
+2. **Create New Project**
+   - Click **"New Project"**
+   - Select **"Import from GitHub"**
+   - Connect your GitHub account if needed
+   - Select repository: `yoriichi-07/Multi_Orchestrator_MCP`
+   - Choose branch: `main`
+
+3. **Configure Project Settings**
+   - **Framework**: FastMCP
+   - **Python Version**: 3.11
+   - **Entry Point**: `server.py`
    - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `python server.py`
-   - **Environment**: `Python 3.11+`
+   - **Health Check**: `/health`
 
-3. **Set Environment Variables**
-   - In the Smithery dashboard, go to **Environment Variables**
+4. **Set Environment Variables**
+   - Navigate to **"Environment Variables"**
    - Add all variables from Step 1
-   - **Important**: Mark sensitive variables as "Secret"
+   - **Important**: Mark sensitive variables (API keys, secrets) as "Secret"
+   - This ensures they're encrypted and not visible in logs
 
-4. **Deploy**
+5. **Deploy**
    - Click **"Deploy"** button
-   - Monitor deployment logs
-   - Wait for deployment to complete
+   - Monitor deployment logs in real-time
+   - Wait for "Deployment Successful" message
+
+### **Option C: GitHub Integration (Automatic Deployments)**
+
+1. **Connect GitHub Repository**
+   - In Smithery dashboard, enable GitHub integration
+   - Select your repository and branch
+   - Configure deployment triggers (e.g., on push to main)
+
+2. **Automatic Deployment Pipeline**
+   - Every push to main branch triggers deployment
+   - Automatic testing and validation
+   - Zero-downtime rolling updates
 
 ## 🔍 **Step 3: Verify Deployment**
 

@@ -43,13 +43,13 @@ def test_client(initialized_services):
     """Test client for FastAPI app with mocked authentication"""
     from src.main import app
     from unittest.mock import patch
-    from src.core.descope_auth import AuthContext
+    from src.core.auth import AuthContext
     
     # Create mock auth context
     mock_auth_context = AuthContext(
         user_id="test_user",
         scopes=["tools:ping", "tools:generate", "admin:metrics"],
-        is_machine=False,
+        token_claims={"sub": "test_user", "permissions": ["tools:ping", "tools:generate", "admin:metrics"]},
         correlation_id="test_correlation"
     )
     
