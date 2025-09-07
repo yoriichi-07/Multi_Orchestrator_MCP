@@ -24,10 +24,8 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: https://your-mcp-server.smithery.com
+  - url: https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp
     description: Production server on Smithery (competition hosting)
-  - url: https://your-mcp-server.vercel.app  
-    description: Staging server on Vercel
   - url: http://localhost:8000
     description: Local development server
 
@@ -605,7 +603,7 @@ components:
           properties:
             url:
               type: string
-              example: "https://task-app-12345.vercel.app"
+              example: "https://task-app-12345.smithery.ai"
             status:
               type: string
               example: "deployed"

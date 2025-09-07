@@ -44,13 +44,13 @@ First, add the Multi-Agent Orchestrator MCP server to your client configuration.
 
 **Smithery deployment** (recommended for production):
 
-Access our live deployment at: `https://your-mcp-server.smithery.com`
+Access our live deployment at: `https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp`
 
 ```json
 {
   "mcpServers": {
     "multi-orchestrator": {
-      "url": "https://your-mcp-server.smithery.com/mcp"
+      "url": "https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp"
     }
   }
 }
@@ -268,7 +268,7 @@ This MCP server was developed for the **Model Context Protocol Competition** and
 - **Complete MCP Protocol Compliance**: Tools, resources, and prompts with full schema validation
 - **Innovation**: First-of-its-kind multi-agent orchestration for autonomous software development
 
-**Live Demo**: [Smithery Deployment](https://your-mcp-server.smithery.com)
+**Live Demo**: [Smithery Deployment](https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp)
 **Repository**: [GitHub](https://github.com/yoriichi-07/Multi_Orchestrator_MCP)
 
 ### License
