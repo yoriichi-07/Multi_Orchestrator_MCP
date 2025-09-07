@@ -1,46 +1,22 @@
-# Multi-Agent Orchestrator MCP Server - Production Dockerfile
+# Smithery Compatible MCP Server Dockerfile
 FROM python:3.11-slim
 
-# Set environment variables for Python
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PORT=8080
-
-# Create app user for security (production best practice)
-RUN useradd --create-home --shell /bin/bash app
-
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+# Install uv for package management
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy project configuration
+COPY pyproject.toml ./
 
-# Copy the application code
+# Install dependencies using uv
+RUN uv sync --frozen
+
+# Copy source code
 COPY . .
 
-# Create necessary directories and set permissions
-RUN mkdir -p outputs static logs && \
-    chown -R app:app /app
+# Ensure the MCP server script is available at root level for easy access
+COPY mcp_server.py ./main.py
 
-# Switch to non-root user for security
-USER app
-
-# Health check for container monitoring (production requirement)
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
-
-# Expose the port
-EXPOSE 8080
-
-# Use the FastAPI server for HTTP mode (reliable and well-tested)
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]
+# Start the MCP server - Smithery sets PORT=8081
+CMD ["uv", "run", "python", "main.py"]

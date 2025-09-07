@@ -1,13 +1,13 @@
 """
-Multi-Agent Orchestrator MCP Server - Competition Ready
-FastMCP Server with Full Enterprise Integration
+Multi-Agent Orchestrator MCP Server - Smithery Compatible
+FastMCP Server with HTTP transport for Smithery deployment
 
 This server provides:
 - Multi-agent orchestration capabilities 
 - Self-healing code generation
 - OAuth 2.1 + PKCE authentication with Descope
 - Analytics integration with Cequence AI Gateway
-- Full MCP protocol compliance
+- Full MCP protocol compliance with HTTP transport
 """
 
 import os
@@ -18,6 +18,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
 
 from fastmcp import FastMCP
+from starlette.middleware.cors import CORSMiddleware
 
 # Import core components
 from src.core.config import settings
@@ -48,7 +49,7 @@ structlog.configure(
 logger = structlog.get_logger()
 
 # Create the FastMCP server instance
-mcp = FastMCP("multi-orchestrator")
+mcp = FastMCP("Multi-Agent Orchestrator MCP")
 
 # Initialize global components
 orchestrator = AgentOrchestrator()
@@ -347,7 +348,34 @@ The quality assurance agent will provide detailed feedback and improvement sugge
 If issues are found, use the `auto_fix_code` tool to automatically apply fixes.
 """
 
+def main():
+    """Main entry point for Smithery deployment"""
+    print("Multi-Agent Orchestrator MCP Server starting...")
+    
+    # Get port from environment (Smithery sets PORT=8081)
+    port = int(os.environ.get("PORT", 8080))
+    
+    # Create Starlette app with MCP HTTP transport
+    app = mcp.http_app()
+    
+    # Add CORS middleware for cross-origin requests (required for MCP)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["*"],
+        expose_headers=["mcp-session-id", "mcp-protocol-version"],
+        max_age=86400,
+    )
+    
+    print(f"Starting HTTP server on port {port}")
+    
+    # Run the server
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+
 # Initialize the server
 if __name__ == "__main__":
-    logger.info("mcp_server_starting", version="1.0.0")
-    mcp.run()
+    logger.info("mcp_server_starting", version="2.0.0", mode="http")
+    main()

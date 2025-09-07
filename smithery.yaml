@@ -1,27 +1,35 @@
-# Smithery deployment configuration for Multi-Agent Orchestrator MCP
-version: 1
-
-# Build configuration
+runtime: "container"
 build:
-  type: docker
-  dockerfile: Dockerfile
-  context: .
-
-# Runtime configuration  
-runtime:
-  port: 8080
-  health_check: /health
-  timeout: 300
-
-# Environment requirements for production
-env:
-  required:
-    - DESCOPE_PROJECT_ID
-    - DESCOPE_CLIENT_SECRET
-    - DESCOPE_MANAGEMENT_KEY
-  optional:
-    - CEQUENCE_GATEWAY_ID
-    - CEQUENCE_API_KEY
-    - OPENAI_API_KEY
-    - ANTHROPIC_API_KEY
-    - DEBUG
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
+startCommand:
+  type: "http"
+configSchema:
+  type: "object"
+  properties:
+    descope_project_id:
+      type: "string"
+      description: "Descope project ID for authentication"
+    descope_client_secret:
+      type: "string"
+      description: "Descope client secret for OAuth"
+    descope_management_key:
+      type: "string"
+      description: "Descope management key for admin operations"
+    cequence_gateway_id:
+      type: "string"
+      description: "Cequence AI Gateway ID for analytics"
+    cequence_api_key:
+      type: "string"
+      description: "Cequence API key for analytics"
+    openai_api_key:
+      type: "string"
+      description: "OpenAI API key for AI operations"
+    anthropic_api_key:
+      type: "string"
+      description: "Anthropic API key for Claude"
+  required: ["descope_project_id", "descope_client_secret", "descope_management_key"]
+exampleConfig:
+  descope_project_id: "your-descope-project-id"
+  descope_client_secret: "your-descope-client-secret"
+  descope_management_key: "your-descope-management-key"
