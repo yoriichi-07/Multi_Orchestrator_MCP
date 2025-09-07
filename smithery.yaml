@@ -1,6 +1,4 @@
 # Smithery deployment configuration for Multi-Agent Orchestrator MCP
-# This tells Smithery exactly how to build and deploy your server
-
 version: 1
 
 # Build configuration
@@ -9,13 +7,13 @@ build:
   dockerfile: Dockerfile
   context: .
 
-# Runtime configuration
+# Runtime configuration  
 runtime:
   port: 8080
   health_check: /health
-  timeout: 180
+  timeout: 300
 
-# Environment requirements
+# Environment requirements for production
 env:
   required:
     - DESCOPE_PROJECT_ID
@@ -27,24 +25,3 @@ env:
     - OPENAI_API_KEY
     - ANTHROPIC_API_KEY
     - DEBUG
-
-# MCP Server metadata
-mcp:
-  name: "Multi-Agent Orchestrator MCP"
-  description: "Competition-ready MCP server with multi-agent orchestration, self-healing, and enterprise integrations"
-  version: "2.0.0"
-  transport: "stdio"
-  capabilities:
-    tools: true
-    resources: true
-    prompts: true
-
-# Competition metadata
-competition:
-  category: "Enterprise MCP Stack"
-  features:
-    - "Multi-Agent Orchestration"
-    - "Self-Healing Code Generation"
-    - "Descope OAuth 2.1 + PKCE"
-    - "Cequence AI Gateway Analytics"
-    - "FastMCP Framework"
