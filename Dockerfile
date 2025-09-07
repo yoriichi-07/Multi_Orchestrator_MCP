@@ -1,22 +1,31 @@
 # Smithery Compatible MCP Server Dockerfile
-FROM python:3.11-slim
+FROM ghcr.io/astral-sh/uv:python3.11-alpine
 
 WORKDIR /app
 
-# Install uv for package management
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
 
-# Copy project configuration
-COPY pyproject.toml ./
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
 
-# Install dependencies using uv
-RUN uv sync --frozen
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-dev
 
-# Copy source code
-COPY . .
+# Then, add the rest of the project source code and install it
+# Installing separately from its dependencies allows optimal layer caching
+COPY . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev
 
-# Ensure the MCP server script is available at root level for easy access
-COPY mcp_server.py ./main.py
+# Place executables in the environment at the front of the path
+ENV PATH="/app/.venv/bin:$PATH"
 
-# Start the MCP server - Smithery sets PORT=8081
-CMD ["uv", "run", "python", "main.py"]
+# Reset the entrypoint, don't invoke `uv`
+ENTRYPOINT []
+
+# Run the application directly using the venv Python
+CMD ["python", "mcp_server.py"]
