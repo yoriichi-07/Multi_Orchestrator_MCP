@@ -83,21 +83,31 @@ async def orchestrate_task(
                 "description_length": len(task_description)
             })
         
-        # Execute orchestration
-        result = await orchestrator.execute_task({
-            "description": task_description,
-            "type": task_type,
-            "priority": priority,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        })
+        # Execute orchestration using the correct method
+        result = await orchestrator.generate_complete_application(
+            description=task_description,
+            project_type=task_type,
+            technology_stack=None,  # Could be enhanced to parse from task_description
+            user_context={
+                "priority": priority,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+        )
         
         return {
-            "success": True,
-            "task_id": result.get("task_id"),
-            "status": result.get("status", "completed"),
+            "success": result.get("success", False),
+            "task_id": result.get("project_id"),
+            "status": "completed" if result.get("success") else "failed",
             "agents_used": result.get("agents_used", []),
-            "execution_time": result.get("execution_time"),
-            "output": result.get("output"),
+            "execution_time": result.get("total_duration_seconds"),
+            "output": {
+                "project_id": result.get("project_id"),
+                "generation_timestamp": result.get("generation_timestamp"),
+                "task_breakdown": result.get("task_breakdown"),
+                "execution_summary": result.get("execution_summary"),
+                "files_generated": result.get("files_generated", []),
+                "recommendations": result.get("recommendations", [])
+            },
             "healing_applied": result.get("healing_applied", False)
         }
         
