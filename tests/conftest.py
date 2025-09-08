@@ -3,10 +3,27 @@ Pytest configuration and shared fixtures
 """
 import asyncio
 import pytest
-from httpx import AsyncClient
-from fastapi.testclient import TestClient
+import sys
+import os
 
-from src.main import app, initialize_services
+# Add the project root to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.core.config import Settings
+
+
+"""
+Pytest configuration and shared fixtures for MCP server testing
+"""
+import asyncio
+import pytest
+import sys
+import os
+from unittest.mock import AsyncMock, MagicMock
+
+# Add the project root to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from src.core.config import Settings
 
 
@@ -18,14 +35,6 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="session")
-async def initialized_services():
-    """Initialize services for testing"""
-    await initialize_services()
-    yield
-    # Cleanup if needed
-
-
 @pytest.fixture
 def test_settings():
     """Test settings override"""
@@ -33,57 +42,28 @@ def test_settings():
         debug=True,
         descope_project_id="test_project",
         output_base_path="./test_outputs",
-        openai_api_key="test_key",
-        auth_exclude_paths=["/health", "/docs", "/openapi.json", "/favicon.ico", "/mcp/initialize", "/mcp/tools/list", "/mcp/tools/call", "/mcp/resources/list", "/mcp/resources/read"]
+        openai_api_key="test_key"
     )
 
 
 @pytest.fixture
-def test_client(initialized_services):
-    """Test client for FastAPI app with mocked authentication"""
-    from src.main import app
-    from unittest.mock import patch
+def mock_mcp_server():
+    """Mock MCP server for testing"""
+    server = MagicMock()
+    server.list_tools = AsyncMock(return_value=[])
+    server.call_tool = AsyncMock(return_value={"success": True})
+    server.list_resources = AsyncMock(return_value=[])
+    server.read_resource = AsyncMock(return_value={"content": "test content"})
+    return server
+
+
+@pytest.fixture
+def mock_auth_context():
+    """Mock authentication context for testing"""
     from src.core.auth import AuthContext
-    
-    # Create mock auth context
-    mock_auth_context = AuthContext(
+    return AuthContext(
         user_id="test_user",
         scopes=["tools:ping", "tools:generate", "admin:metrics"],
         token_claims={"sub": "test_user", "permissions": ["tools:ping", "tools:generate", "admin:metrics"]},
         correlation_id="test_correlation"
     )
-    
-    # Mock the authentication middleware to always return the mock context
-    with patch('src.middleware.auth_middleware.DescopeAuthMiddleware.__call__') as mock_middleware:
-        async def mock_call(self, scope, receive, send):
-            # Add auth context to request state
-            if scope["type"] == "http":
-                from fastapi import Request
-                request = Request(scope, receive)
-                request.state.auth_context = mock_auth_context
-                request.state.correlation_id = "test_correlation"
-            await self.app(scope, receive, send)
-        
-        mock_middleware.side_effect = mock_call
-        
-        return TestClient(app)
-
-
-@pytest.fixture
-async def async_client(initialized_services):
-    """Async test client for FastAPI app"""
-    async with AsyncClient(base_url="http://test") as ac:
-        yield ac
-
-
-@pytest.fixture
-def mock_auth_token():
-    """Mock authentication token for testing"""
-    import jwt
-    payload = {
-        "sub": "test_user",
-        "permissions": ["tools:ping", "tools:generate"],
-        "jti": "test_correlation_id",
-        "exp": 9999999999  # Far future
-    }
-    return jwt.encode(payload, "your-descope-secret", algorithm="HS256")

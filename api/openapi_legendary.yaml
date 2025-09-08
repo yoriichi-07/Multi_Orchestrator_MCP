@@ -1,0 +1,1798 @@
+openapi: 3.0.3
+info:
+  title: Multi-Agent Orchestrator MCP Server - Revolutionary Edition
+  description: |
+    **🚀 REVOLUTIONARY MULTI-AGENT ORCHESTRATOR MCP SERVER 🚀**
+    
+    A cutting-edge Model Context Protocol (MCP) server featuring **5 LEGENDARY AI AGENTS** that transform software development through autonomous intelligence and revolutionary capabilities.
+    
+    **🌟 LEGENDARY AGENTS:**
+    1. **🏗️ Autonomous Architect Agent** - Self-evolving system architecture with dynamic DAG generation
+    2. **🛡️ Proactive Quality Framework** - Policy-as-code quality assurance with predictive analysis  
+    3. **🧬 Evolutionary Prompt Engine** - Self-improving prompts with genetic algorithms
+    4. **☁️ Last Mile Cloud Agent** - Autonomous deployment across AWS, Azure, GCP with verification
+    5. **🎯 Legendary Application Generator** - Orchestrates all agents for revolutionary app creation
+
+    **🔥 REVOLUTIONARY FEATURES:**
+    - 🤖 Multi-Agent System (Frontend, Backend, DevOps, Reviewer + 4 Legendary Agents)
+    - 🔄 Autonomous Self-Healing with LLM-powered failure analysis and auto-recovery
+    - 🔐 Descope OAuth 2.1 + PKCE Authentication with Non-Human Identity support
+    - 📊 Cequence AI Gateway Integration for real-time analytics and security monitoring
+    - 🛠️ Full MCP Protocol Compliance (JSON-RPC 2.0) with legendary tool extensions
+    - 🚀 Revolutionary Code Generation with architectural evolution and quality policies
+    - 🧠 Self-Improving Intelligence through evolutionary prompt optimization
+    - ☁️ Multi-Cloud Deployment Automation with autonomous verification
+
+    **💡 COMPETITION INNOVATION:**
+    This MCP server represents the pinnacle of autonomous software development by introducing revolutionary AI agents that not only generate applications but continuously evolve their own capabilities. The system demonstrates true intelligence through self-improvement, predictive quality assurance, and autonomous cloud orchestration.
+
+  version: 3.0.0-LEGENDARY
+  contact:
+    name: Revolutionary AI Systems
+    url: https://github.com/yoriichi-07/Multi_Orchestrator_MCP
+    email: legendary@ai-systems.dev
+  license:
+    name: MIT Revolutionary License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp
+    description: Production server on Smithery (revolutionary competition deployment)
+  - url: http://localhost:8080
+    description: Local development server with legendary capabilities
+
+security:
+  - DescopeBearer: []
+
+paths:
+  # === LEGENDARY TOOLS - REVOLUTIONARY CAPABILITIES ===
+  
+  /mcp/v3/legendary/generate_application:
+    post:
+      summary: 🎯 Legendary Application Generator
+      description: |
+        **🚀 REVOLUTIONARY APPLICATION GENERATION**
+        
+        The ultimate autonomous application generator that orchestrates all 4 legendary agents plus the core multi-agent system to create revolutionary applications with:
+        
+        - **Autonomous Architecture**: Self-evolving system design with dynamic DAG optimization
+        - **Proactive Quality**: Policy-as-code with predictive issue prevention
+        - **Evolutionary Prompts**: Self-improving generation through genetic algorithms
+        - **Cloud-Native Deployment**: Multi-cloud autonomous deployment with verification
+        - **Continuous Evolution**: Applications that improve themselves over time
+        
+        This represents the pinnacle of autonomous software development.
+      tags: [🌟 Legendary Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegendaryGenerateApplicationRequest'
+      responses:
+        '200':
+          description: Revolutionary application generated with legendary capabilities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegendaryGenerateApplicationResponse'
+
+  /mcp/v3/legendary/autonomous_architect:
+    post:
+      summary: 🏗️ Autonomous Architect Agent
+      description: |
+        **🏗️ SELF-EVOLVING ARCHITECTURAL INTELLIGENCE**
+        
+        The Autonomous Architect Agent creates and evolves system architectures using:
+        
+        - **Dynamic DAG Generation**: Creates optimal dependency graphs that adapt to requirements
+        - **Architectural Evolution**: Continuously improves designs based on performance feedback
+        - **Pattern Recognition**: Learns from successful architectures to optimize future designs
+        - **Constraint Optimization**: Balances performance, cost, and maintainability automatically
+        - **Future-Proofing**: Designs systems that adapt to changing requirements
+        
+        This agent represents autonomous architectural intelligence that surpasses human capabilities.
+      tags: [🌟 Legendary Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutonomousArchitectRequest'
+      responses:
+        '200':
+          description: Revolutionary architecture generated with evolutionary capabilities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutonomousArchitectResponse'
+
+  /mcp/v3/legendary/proactive_quality_assurance:
+    post:
+      summary: 🛡️ Proactive Quality Framework
+      description: |
+        **🛡️ PREDICTIVE QUALITY INTELLIGENCE**
+        
+        The Proactive Quality Framework revolutionizes software quality through:
+        
+        - **Policy-as-Code**: Automated quality policies that evolve with codebase
+        - **Predictive Analysis**: Identifies potential issues before they manifest
+        - **Continuous Improvement**: Learns from past issues to prevent future problems
+        - **Multi-Dimensional Quality**: Security, performance, maintainability, and innovation metrics
+        - **Autonomous Remediation**: Automatically applies fixes based on policy violations
+        
+        This framework ensures legendary quality that improves autonomously over time.
+      tags: [🌟 Legendary Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProactiveQualityRequest'
+      responses:
+        '200':
+          description: Comprehensive quality analysis with proactive recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProactiveQualityResponse'
+
+  /mcp/v3/legendary/evolutionary_prompt_optimization:
+    post:
+      summary: 🧬 Evolutionary Prompt Engine
+      description: |
+        **🧬 SELF-IMPROVING PROMPT INTELLIGENCE**
+        
+        The Evolutionary Prompt Engine creates and evolves prompts using:
+        
+        - **Genetic Algorithms**: Evolves prompts through selection, crossover, and mutation
+        - **Performance Feedback**: Learns from execution results to improve effectiveness
+        - **Multi-Objective Optimization**: Balances accuracy, creativity, and efficiency
+        - **Adaptive Learning**: Adjusts strategies based on domain and context
+        - **Continuous Evolution**: Prompts become more effective over time autonomously
+        
+        This engine demonstrates true AI self-improvement capabilities.
+      tags: [🌟 Legendary Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvolutionaryPromptRequest'
+      responses:
+        '200':
+          description: Optimized prompts with evolutionary improvements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvolutionaryPromptResponse'
+
+  /mcp/v3/legendary/last_mile_cloud_deployment:
+    post:
+      summary: ☁️ Last Mile Cloud Agent
+      description: |
+        **☁️ AUTONOMOUS MULTI-CLOUD ORCHESTRATION**
+        
+        The Last Mile Cloud Agent provides revolutionary cloud deployment through:
+        
+        - **Multi-Cloud Intelligence**: Automatically selects optimal cloud providers and regions
+        - **Autonomous Verification**: Validates deployments and performance automatically
+        - **Cost Optimization**: Dynamically optimizes cloud resources for minimum cost
+        - **Zero-Downtime Deployments**: Ensures continuous availability during updates
+        - **Self-Healing Infrastructure**: Automatically recovers from infrastructure failures
+        
+        This agent transforms cloud deployment into an autonomous, intelligent process.
+      tags: [🌟 Legendary Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LastMileCloudRequest'
+      responses:
+        '200':
+          description: Autonomous cloud deployment with multi-provider orchestration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LastMileCloudResponse'
+
+  # === CORE MCP PROTOCOL ENDPOINTS ===
+  
+  /health:
+    get:
+      summary: Health Check with Legendary Status
+      description: Enhanced health check including legendary agent status and revolutionary capabilities
+      tags: [Health & Status]
+      security: []
+      responses:
+        '200':
+          description: Server is healthy with legendary capabilities active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /mcp/initialize:
+    post:
+      summary: MCP Initialization with Legendary Capabilities
+      description: Initialize MCP client-server connection with legendary agent capability negotiation
+      tags: [MCP Protocol]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPInitializeRequest'
+      responses:
+        '200':
+          description: Initialization successful with legendary capabilities enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPInitializeResponse'
+
+  /mcp/tools/list:
+    post:
+      summary: List All MCP Tools (Including Legendary)
+      description: Get comprehensive list of all available MCP tools including legendary agents
+      tags: [MCP Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPListRequest'
+      responses:
+        '200':
+          description: Complete list of tools including legendary capabilities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPToolsListResponse'
+
+  /mcp/tools/call:
+    post:
+      summary: Execute MCP Tool (Core + Legendary)
+      description: Execute any MCP tool including legendary agents with full capability support
+      tags: [MCP Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPToolCallRequest'
+      responses:
+        '200':
+          description: Tool execution result with legendary enhancement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPToolCallResponse'
+
+  # === CORE AGENT TOOLS ===
+  
+  /mcp/v1/tools/orchestrate_task:
+    post:
+      summary: Multi-Agent Task Orchestration
+      description: Orchestrate complex tasks across multiple specialized AI agents
+      tags: [Core Agent Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrchestateTaskRequest'
+      responses:
+        '200':
+          description: Task orchestrated successfully across agents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchestateTaskResponse'
+
+  /mcp/v1/tools/generate_architecture:
+    post:
+      summary: AI-Powered Architecture Generation
+      description: Generate comprehensive system architecture using AI analysis
+      tags: [Core Agent Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateArchitectureRequest'
+      responses:
+        '200':
+          description: Architecture generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateArchitectureResponse'
+
+  /mcp/v1/tools/auto_fix_code:
+    post:
+      summary: Autonomous Code Fixing
+      description: Automatically fix code issues using self-healing capabilities
+      tags: [Core Agent Tools]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutoFixCodeRequest'
+      responses:
+        '200':
+          description: Code fixed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoFixCodeResponse'
+
+  # === INFRASTRUCTURE TOOLS ===
+  
+  /mcp/v1/tools/ping:
+    post:
+      summary: Enhanced Connectivity Test
+      description: Advanced ping with scope validation and legendary status
+      tags: [Infrastructure]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PingRequest'
+      responses:
+        '200':
+          description: Ping successful with enhanced information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponse'
+
+  /mcp/v1/tools/get_system_status:
+    post:
+      summary: Comprehensive System Status
+      description: Detailed system status including legendary agents and revolutionary metrics
+      tags: [Infrastructure]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemStatusRequest'
+      responses:
+        '200':
+          description: Comprehensive system status with legendary insights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatusResponse'
+
+  /mcp/v1/tools/list_capabilities:
+    post:
+      summary: List All System Capabilities
+      description: Comprehensive list of all system capabilities including legendary features
+      tags: [Infrastructure]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                include_legendary:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Complete capability list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapabilitiesResponse'
+
+  # === ANALYTICS & MONITORING ===
+  
+  /dashboard/legendary:
+    get:
+      summary: Legendary Analytics Dashboard
+      description: Advanced Cequence AI Gateway analytics dashboard with legendary agent metrics
+      tags: [Analytics & Monitoring]
+      responses:
+        '200':
+          description: Enhanced analytics dashboard with legendary insights
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    DescopeBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Descope OAuth 2.1 + PKCE JWT token with Non-Human Identity support for revolutionary capabilities.
+        
+        **Required Scopes for Legendary Tools:**
+        - `legendary:architect` - Autonomous architecture generation and evolution
+        - `legendary:quality` - Proactive quality assurance and policy management
+        - `legendary:prompts` - Evolutionary prompt optimization and self-improvement
+        - `legendary:cloud` - Last mile cloud deployment and multi-provider orchestration
+        - `legendary:generate` - Complete revolutionary application generation
+        - `tools:*` - All core MCP tools
+        - `admin:*` - Administrative and monitoring capabilities
+
+  schemas:
+    # === LEGENDARY TOOL SCHEMAS ===
+    
+    LegendaryGenerateApplicationRequest:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          description: Detailed description of the revolutionary application to create
+          example: "Create a next-generation social media platform with AI-powered content curation, real-time collaboration, and autonomous scaling"
+        complexity_level:
+          type: string
+          enum: [simple, advanced, enterprise, revolutionary]
+          default: revolutionary
+          description: Target complexity level for the application
+        innovation_requirements:
+          type: array
+          items:
+            type: string
+          example: ["AI-powered UX", "autonomous scaling", "predictive analytics", "self-healing infrastructure"]
+          description: List of innovative features to include
+        deployment_strategy:
+          type: string
+          enum: [local, cloud-native, multi-cloud, edge, revolutionary]
+          default: revolutionary
+          description: Deployment approach with autonomous optimization
+        evolutionary_goals:
+          type: array
+          items:
+            type: string
+          example: ["continuous self-improvement", "adaptive user experience", "autonomous feature development"]
+          description: Long-term evolutionary goals for the application
+        quality_policies:
+          type: object
+          properties:
+            security_level:
+              type: string
+              enum: [standard, high, revolutionary]
+              default: revolutionary
+            performance_targets:
+              type: object
+              properties:
+                response_time_ms:
+                  type: integer
+                  example: 50
+                throughput_rps:
+                  type: integer
+                  example: 10000
+            maintainability_score:
+              type: number
+              format: float
+              minimum: 8.0
+              maximum: 10.0
+              example: 9.5
+
+    LegendaryGenerateApplicationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        revolutionary_features:
+          type: array
+          items:
+            type: string
+          example: ["autonomous architecture evolution", "predictive quality assurance", "self-improving prompts", "multi-cloud orchestration"]
+        autonomous_architecture:
+          type: object
+          properties:
+            dag_structure:
+              type: object
+              description: Dynamic dependency graph structure
+            optimization_metrics:
+              type: object
+              properties:
+                performance_score:
+                  type: number
+                  format: float
+                  example: 9.7
+                maintainability_score:
+                  type: number
+                  format: float
+                  example: 9.3
+                innovation_score:
+                  type: number
+                  format: float
+                  example: 9.8
+        proactive_quality_policies:
+          type: array
+          items:
+            type: object
+            properties:
+              policy_name:
+                type: string
+                example: "security_predictive_analysis"
+              enforcement_level:
+                type: string
+                enum: [warning, error, blocking]
+              success_rate:
+                type: number
+                format: float
+                example: 0.95
+        evolutionary_prompts:
+          type: object
+          properties:
+            generation_1_prompts:
+              type: integer
+              example: 50
+            optimized_prompts:
+              type: integer
+              example: 127
+            improvement_factor:
+              type: number
+              format: float
+              example: 2.54
+        cloud_deployment_plan:
+          type: object
+          properties:
+            primary_provider:
+              type: string
+              example: "AWS"
+            fallback_providers:
+              type: array
+              items:
+                type: string
+              example: ["Azure", "GCP"]
+            deployment_regions:
+              type: array
+              items:
+                type: string
+              example: ["us-east-1", "eu-west-1", "asia-pacific-1"]
+            estimated_cost_monthly:
+              type: number
+              format: float
+              example: 2847.50
+        execution_timeline:
+          type: object
+          properties:
+            total_duration_minutes:
+              type: integer
+              example: 45
+            phases:
+              type: array
+              items:
+                type: object
+                properties:
+                  phase:
+                    type: string
+                    example: "autonomous_architecture"
+                  duration_minutes:
+                    type: integer
+                    example: 12
+                  status:
+                    type: string
+                    enum: [completed, in_progress, pending]
+        innovation_score:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 10.0
+          example: 9.6
+        legendary_agents_used:
+          type: array
+          items:
+            type: string
+          example: ["autonomous_architect", "proactive_quality", "evolutionary_prompts", "last_mile_cloud"]
+        self_improvement_suggestions:
+          type: array
+          items:
+            type: string
+          example: ["Increase evolutionary prompt diversity", "Enhance cloud cost optimization", "Expand quality policy coverage"]
+        future_evolution_path:
+          type: object
+          properties:
+            next_capabilities:
+              type: array
+              items:
+                type: string
+              example: ["quantum computing integration", "autonomous feature development", "cross-dimensional scaling"]
+            evolution_timeline_days:
+              type: integer
+              example: 30
+
+    AutonomousArchitectRequest:
+      type: object
+      required:
+        - project_goals
+      properties:
+        project_goals:
+          type: array
+          items:
+            type: string
+          example: ["scalable microservices", "real-time processing", "AI-powered analytics"]
+          description: High-level project goals and requirements
+        constraints:
+          type: array
+          items:
+            type: string
+          example: ["budget under $5000/month", "latency under 100ms", "99.9% availability"]
+          description: Technical and business constraints
+        learning_objectives:
+          type: array
+          items:
+            type: string
+          example: ["optimize for performance", "learn user behavior patterns", "improve cost efficiency"]
+          description: Areas where the architecture should learn and improve
+        evolutionary_parameters:
+          type: object
+          properties:
+            adaptation_rate:
+              type: number
+              format: float
+              minimum: 0.1
+              maximum: 1.0
+              example: 0.7
+            innovation_tolerance:
+              type: number
+              format: float
+              minimum: 0.0
+              maximum: 1.0
+              example: 0.8
+
+    AutonomousArchitectResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        architecture_id:
+          type: string
+          example: "arch_revolutionary_001"
+        dynamic_dag:
+          type: object
+          properties:
+            nodes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "service_user_management"
+                  type:
+                    type: string
+                    example: "microservice"
+                  dependencies:
+                    type: array
+                    items:
+                      type: string
+                  optimization_score:
+                    type: number
+                    format: float
+                    example: 0.92
+            optimization_metrics:
+              type: object
+              properties:
+                performance_efficiency:
+                  type: number
+                  format: float
+                  example: 0.94
+                cost_optimization:
+                  type: number
+                  format: float
+                  example: 0.87
+                maintainability:
+                  type: number
+                  format: float
+                  example: 0.91
+        evolutionary_features:
+          type: array
+          items:
+            type: string
+          example: ["adaptive load balancing", "autonomous scaling", "predictive resource allocation"]
+        learning_plan:
+          type: object
+          properties:
+            metrics_to_track:
+              type: array
+              items:
+                type: string
+              example: ["response_time", "throughput", "error_rate", "user_satisfaction"]
+            improvement_cycle_days:
+              type: integer
+              example: 7
+        implementation_roadmap:
+          type: array
+          items:
+            type: object
+            properties:
+              phase:
+                type: string
+                example: "core_services"
+              estimated_duration_days:
+                type: integer
+                example: 14
+              deliverables:
+                type: array
+                items:
+                  type: string
+
+    ProactiveQualityRequest:
+      type: object
+      required:
+        - project_context
+      properties:
+        project_context:
+          type: object
+          properties:
+            project_type:
+              type: string
+              example: "web_application"
+            technology_stack:
+              type: array
+              items:
+                type: string
+              example: ["React", "Node.js", "PostgreSQL", "Docker"]
+            team_size:
+              type: integer
+              example: 8
+        quality_objectives:
+          type: array
+          items:
+            type: string
+          example: ["security_excellence", "performance_optimization", "maintainability_focus"]
+        policy_preferences:
+          type: object
+          properties:
+            enforcement_strictness:
+              type: string
+              enum: [lenient, balanced, strict, revolutionary]
+              default: revolutionary
+            automation_level:
+              type: string
+              enum: [manual, semi_automated, fully_automated]
+              default: fully_automated
+        predictive_analysis:
+          type: object
+          properties:
+            historical_data_available:
+              type: boolean
+              example: true
+            risk_tolerance:
+              type: string
+              enum: [low, medium, high]
+              example: low
+
+    ProactiveQualityResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        policy_framework_id:
+          type: string
+          example: "policy_revolutionary_001"
+        quality_policies:
+          type: array
+          items:
+            type: object
+            properties:
+              policy_id:
+                type: string
+                example: "security_scan_policy"
+              name:
+                type: string
+                example: "Continuous Security Scanning"
+              description:
+                type: string
+                example: "Automatically scan code for security vulnerabilities"
+              enforcement_level:
+                type: string
+                enum: [warning, error, blocking]
+              automation_enabled:
+                type: boolean
+                example: true
+              predictive_indicators:
+                type: array
+                items:
+                  type: string
+                example: ["code_complexity_increase", "dependency_vulnerabilities", "unusual_data_patterns"]
+        predictive_insights:
+          type: object
+          properties:
+            potential_issues:
+              type: array
+              items:
+                type: object
+                properties:
+                  issue_type:
+                    type: string
+                    example: "performance_degradation"
+                  probability:
+                    type: number
+                    format: float
+                    example: 0.73
+                  predicted_timeline_days:
+                    type: integer
+                    example: 12
+                  prevention_actions:
+                    type: array
+                    items:
+                      type: string
+                    example: ["optimize_database_queries", "implement_caching_layer"]
+        continuous_improvement:
+          type: object
+          properties:
+            learning_enabled:
+              type: boolean
+              example: true
+            improvement_cycle_hours:
+              type: integer
+              example: 24
+            success_metrics:
+              type: object
+              properties:
+                issue_prevention_rate:
+                  type: number
+                  format: float
+                  example: 0.89
+                quality_score_improvement:
+                  type: number
+                  format: float
+                  example: 0.15
+
+    EvolutionaryPromptRequest:
+      type: object
+      required:
+        - base_prompt
+        - optimization_goals
+      properties:
+        base_prompt:
+          type: string
+          description: Initial prompt to optimize and evolve
+          example: "Generate a React component for user authentication"
+        optimization_goals:
+          type: array
+          items:
+            type: string
+          example: ["accuracy", "creativity", "efficiency", "specificity"]
+          description: Goals for prompt optimization
+        evolution_parameters:
+          type: object
+          properties:
+            population_size:
+              type: integer
+              minimum: 10
+              maximum: 100
+              example: 50
+            mutation_rate:
+              type: number
+              format: float
+              minimum: 0.01
+              maximum: 0.5
+              example: 0.1
+            crossover_rate:
+              type: number
+              format: float
+              minimum: 0.1
+              maximum: 0.9
+              example: 0.7
+            generations:
+              type: integer
+              minimum: 5
+              maximum: 100
+              example: 20
+        domain_context:
+          type: string
+          example: "web_development"
+          description: Domain context for optimization
+        performance_feedback:
+          type: array
+          items:
+            type: object
+            properties:
+              prompt_variant:
+                type: string
+              performance_score:
+                type: number
+                format: float
+              execution_time_ms:
+                type: integer
+          description: Historical performance feedback for learning
+
+    EvolutionaryPromptResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        optimization_id:
+          type: string
+          example: "evo_prompt_001"
+        evolved_prompts:
+          type: array
+          items:
+            type: object
+            properties:
+              generation:
+                type: integer
+                example: 15
+              prompt:
+                type: string
+                example: "Generate a comprehensive React authentication component with TypeScript, security best practices, and accessibility features"
+              fitness_score:
+                type: number
+                format: float
+                example: 0.94
+              genetic_markers:
+                type: object
+                properties:
+                  creativity_factor:
+                    type: number
+                    format: float
+                    example: 0.87
+                  specificity_factor:
+                    type: number
+                    format: float
+                    example: 0.92
+                  efficiency_factor:
+                    type: number
+                    format: float
+                    example: 0.85
+        evolution_statistics:
+          type: object
+          properties:
+            total_generations:
+              type: integer
+              example: 20
+            improvement_factor:
+              type: number
+              format: float
+              example: 2.34
+            convergence_generation:
+              type: integer
+              example: 16
+            diversity_score:
+              type: number
+              format: float
+              example: 0.73
+        best_performing_prompt:
+          type: object
+          properties:
+            prompt:
+              type: string
+            performance_metrics:
+              type: object
+              properties:
+                accuracy:
+                  type: number
+                  format: float
+                  example: 0.96
+                creativity:
+                  type: number
+                  format: float
+                  example: 0.89
+                efficiency:
+                  type: number
+                  format: float
+                  example: 0.91
+        future_evolution_potential:
+          type: object
+          properties:
+            mutation_suggestions:
+              type: array
+              items:
+                type: string
+              example: ["increase technical specificity", "add error handling context", "enhance accessibility requirements"]
+            crossover_opportunities:
+              type: array
+              items:
+                type: string
+              example: ["combine with deployment prompts", "merge with testing specifications"]
+
+    LastMileCloudRequest:
+      type: object
+      required:
+        - application_package
+        - deployment_requirements
+      properties:
+        application_package:
+          type: object
+          properties:
+            source_type:
+              type: string
+              enum: [docker_image, source_code, artifact_bundle]
+              example: docker_image
+            location:
+              type: string
+              example: "my-registry/my-app:v1.0.0"
+            build_requirements:
+              type: object
+              properties:
+                runtime:
+                  type: string
+                  example: "node:18"
+                dependencies:
+                  type: array
+                  items:
+                    type: string
+                  example: ["redis", "postgresql"]
+        deployment_requirements:
+          type: object
+          properties:
+            performance_targets:
+              type: object
+              properties:
+                min_replicas:
+                  type: integer
+                  example: 2
+                max_replicas:
+                  type: integer
+                  example: 100
+                cpu_requests:
+                  type: string
+                  example: "100m"
+                memory_requests:
+                  type: string
+                  example: "256Mi"
+                target_response_time_ms:
+                  type: integer
+                  example: 200
+            availability_requirements:
+              type: object
+              properties:
+                uptime_percentage:
+                  type: number
+                  format: float
+                  example: 99.9
+                disaster_recovery:
+                  type: boolean
+                  example: true
+            compliance_requirements:
+              type: array
+              items:
+                type: string
+              example: ["GDPR", "SOC2", "HIPAA"]
+        cloud_preferences:
+          type: object
+          properties:
+            preferred_providers:
+              type: array
+              items:
+                type: string
+              example: ["AWS", "Azure"]
+            cost_optimization:
+              type: string
+              enum: [minimum_cost, balanced, performance_optimized]
+              example: balanced
+            geographic_requirements:
+              type: array
+              items:
+                type: string
+              example: ["us-east", "eu-west", "asia-pacific"]
+        autonomous_features:
+          type: object
+          properties:
+            auto_scaling:
+              type: boolean
+              example: true
+            auto_healing:
+              type: boolean
+              example: true
+            cost_optimization:
+              type: boolean
+              example: true
+            security_monitoring:
+              type: boolean
+              example: true
+
+    LastMileCloudResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        deployment_id:
+          type: string
+          example: "deploy_revolutionary_001"
+        cloud_orchestration:
+          type: object
+          properties:
+            primary_deployment:
+              type: object
+              properties:
+                provider:
+                  type: string
+                  example: "AWS"
+                region:
+                  type: string
+                  example: "us-east-1"
+                cluster_id:
+                  type: string
+                  example: "eks-prod-cluster-001"
+                endpoint:
+                  type: string
+                  example: "https://api.my-app.aws.example.com"
+            failover_deployments:
+              type: array
+              items:
+                type: object
+                properties:
+                  provider:
+                    type: string
+                    example: "Azure"
+                  region:
+                    type: string
+                    example: "eastus"
+                  endpoint:
+                    type: string
+                    example: "https://api.my-app.azure.example.com"
+        autonomous_verification:
+          type: object
+          properties:
+            health_checks:
+              type: array
+              items:
+                type: object
+                properties:
+                  check_type:
+                    type: string
+                    example: "endpoint_availability"
+                  status:
+                    type: string
+                    enum: [passed, failed, warning]
+                  response_time_ms:
+                    type: integer
+                    example: 89
+                  details:
+                    type: string
+            performance_validation:
+              type: object
+              properties:
+                load_test_results:
+                  type: object
+                  properties:
+                    requests_per_second:
+                      type: integer
+                      example: 5000
+                    average_response_time_ms:
+                      type: integer
+                      example: 95
+                    error_rate_percentage:
+                      type: number
+                      format: float
+                      example: 0.02
+            security_validation:
+              type: object
+              properties:
+                vulnerability_scan_passed:
+                  type: boolean
+                  example: true
+                ssl_certificate_valid:
+                  type: boolean
+                  example: true
+                firewall_rules_applied:
+                  type: boolean
+                  example: true
+        cost_optimization:
+          type: object
+          properties:
+            estimated_monthly_cost:
+              type: number
+              format: float
+              example: 1247.50
+            cost_optimization_recommendations:
+              type: array
+              items:
+                type: string
+              example: ["Use spot instances for non-critical workloads", "Enable auto-shutdown for development environments"]
+            savings_achieved_percentage:
+              type: number
+              format: float
+              example: 23.5
+        monitoring_setup:
+          type: object
+          properties:
+            observability_dashboard:
+              type: string
+              example: "https://grafana.monitoring.example.com/dashboard/my-app"
+            alerting_enabled:
+              type: boolean
+              example: true
+            log_aggregation:
+              type: string
+              example: "centralized_elk_stack"
+        autonomous_features_status:
+          type: object
+          properties:
+            auto_scaling:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  example: true
+                current_replicas:
+                  type: integer
+                  example: 5
+                scaling_events_last_24h:
+                  type: integer
+                  example: 12
+            auto_healing:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  example: true
+                healing_events_last_24h:
+                  type: integer
+                  example: 2
+            continuous_optimization:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  example: true
+                optimization_cycle_hours:
+                  type: integer
+                  example: 6
+
+    # === CORE TOOL SCHEMAS ===
+    
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "revolutionary_healthy"
+        service:
+          type: string
+          example: "multi-agent-orchestrator-legendary"
+        version:
+          type: string
+          example: "3.0.0-LEGENDARY"
+        revolutionary_features:
+          type: object
+          properties:
+            legendary_agents_active:
+              type: integer
+              example: 4
+            autonomous_capabilities:
+              type: boolean
+              example: true
+            evolutionary_intelligence:
+              type: boolean
+              example: true
+            multi_cloud_orchestration:
+              type: boolean
+              example: true
+        system_intelligence:
+          type: object
+          properties:
+            ai_sophistication_level:
+              type: string
+              example: "revolutionary"
+            self_improvement_active:
+              type: boolean
+              example: true
+            predictive_capabilities:
+              type: boolean
+              example: true
+        authentication:
+          type: string
+          example: "Descope OAuth 2.1 + PKCE + Non-Human Identity"
+        analytics:
+          type: string
+          example: "Cequence AI Gateway + Legendary Metrics"
+        mcp_protocol:
+          type: string
+          example: "2024-11-05 + Legendary Extensions"
+
+    OrchestateTaskRequest:
+      type: object
+      required:
+        - task_description
+        - agent_preferences
+      properties:
+        task_description:
+          type: string
+          example: "Build a real-time chat application with AI moderation"
+        agent_preferences:
+          type: array
+          items:
+            type: string
+          example: ["frontend", "backend", "devops"]
+        complexity_level:
+          type: string
+          enum: [simple, medium, complex, legendary]
+          default: complex
+        include_legendary:
+          type: boolean
+          default: true
+          description: Whether to include legendary agents in orchestration
+        quality_requirements:
+          type: object
+          properties:
+            security_level:
+              type: string
+              enum: [basic, high, revolutionary]
+              default: high
+            performance_targets:
+              type: object
+              properties:
+                response_time_ms:
+                  type: integer
+                  example: 100
+
+    OrchestateTaskResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        orchestration_id:
+          type: string
+          example: "orch_legendary_001"
+        agents_involved:
+          type: array
+          items:
+            type: string
+          example: ["frontend", "backend", "devops", "autonomous_architect", "proactive_quality"]
+        execution_plan:
+          type: array
+          items:
+            type: object
+            properties:
+              step:
+                type: integer
+              agent:
+                type: string
+              task:
+                type: string
+              estimated_duration_minutes:
+                type: integer
+        revolutionary_enhancements:
+          type: array
+          items:
+            type: string
+          example: ["autonomous architecture optimization", "predictive quality assurance", "evolutionary prompt enhancement"]
+
+    # === STANDARD MCP PROTOCOL SCHEMAS ===
+    
+    MCPInitializeRequest:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          type: string
+          example: "1"
+        method:
+          type: string
+          example: "initialize"
+        params:
+          type: object
+          properties:
+            protocolVersion:
+              type: string
+              example: "2024-11-05"
+            capabilities:
+              type: object
+              properties:
+                experimental:
+                  type: object
+                  properties:
+                    legendary_agents:
+                      type: boolean
+                      example: true
+            clientInfo:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Claude Desktop"
+                version:
+                  type: string
+                  example: "1.0.0"
+
+    MCPInitializeResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          type: string
+          example: "1"
+        result:
+          type: object
+          properties:
+            protocolVersion:
+              type: string
+              example: "2024-11-05"
+            capabilities:
+              type: object
+              properties:
+                experimental:
+                  type: object
+                  properties:
+                    legendary_agents:
+                      type: boolean
+                      example: true
+                tools:
+                  type: object
+                  properties:
+                    listChanged:
+                      type: boolean
+                      example: true
+                    legendary_enabled:
+                      type: boolean
+                      example: true
+            serverInfo:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "multi-agent-orchestrator-legendary"
+                version:
+                  type: string
+                  example: "3.0.0-LEGENDARY"
+                description:
+                  type: string
+                  example: "Revolutionary MCP server with 4 legendary AI agents and autonomous capabilities"
+
+    MCPListRequest:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          type: string
+          example: "2"
+        method:
+          type: string
+          example: "tools/list"
+
+    MCPToolsListResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          type: string
+          example: "2"
+        result:
+          type: object
+          properties:
+            tools:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "legendary_generate_application"
+                  description:
+                    type: string
+                    example: "Revolutionary application generation using all 4 legendary agents"
+                  category:
+                    type: string
+                    example: "legendary"
+                  inputSchema:
+                    type: object
+
+    MCPToolCallRequest:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          type: string
+          example: "3"
+        method:
+          type: string
+          example: "tools/call"
+        params:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "legendary_generate_application"
+            arguments:
+              type: object
+
+    MCPToolCallResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          type: string
+          example: "3"
+        result:
+          type: object
+          properties:
+            content:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "text"
+                  text:
+                    type: string
+
+    # === ADDITIONAL CORE SCHEMAS ===
+    
+    PingRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Revolutionary ping test"
+        include_legendary_status:
+          type: boolean
+          default: true
+
+    PingResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "revolutionary_pong"
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+          example: "Revolutionary ping test"
+        legendary_status:
+          type: object
+          properties:
+            agents_active:
+              type: integer
+              example: 4
+            capabilities_enabled:
+              type: array
+              items:
+                type: string
+              example: ["autonomous_architecture", "proactive_quality", "evolutionary_prompts", "cloud_orchestration"]
+        server_info:
+          type: object
+          properties:
+            python_version:
+              type: string
+              example: "3.11.5"
+            platform:
+              type: string
+              example: "Linux-5.4.0-x86_64"
+            revolutionary_features:
+              type: boolean
+              example: true
+
+    SystemStatusRequest:
+      type: object
+      properties:
+        include_legendary:
+          type: boolean
+          default: true
+        include_metrics:
+          type: boolean
+          default: true
+
+    SystemStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "revolutionary_healthy"
+        timestamp:
+          type: string
+          format: date-time
+        server:
+          type: string
+          example: "healthy"
+        orchestrator:
+          type: object
+          properties:
+            status:
+              type: string
+              example: "active"
+            agents_available:
+              type: array
+              items:
+                type: string
+              example: ["frontend", "backend", "devops", "reviewer"]
+        legendary_agents:
+          type: object
+          properties:
+            autonomous_architect:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "ready"
+                active_architectures:
+                  type: integer
+                  example: 3
+            proactive_quality:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "monitoring"
+                policies_active:
+                  type: integer
+                  example: 15
+            evolutionary_prompts:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "evolving"
+                generations_completed:
+                  type: integer
+                  example: 127
+            last_mile_cloud:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "orchestrating"
+                active_deployments:
+                  type: integer
+                  example: 8
+        revolutionary_capabilities:
+          type: boolean
+          example: true
+        authentication:
+          type: string
+          example: "enabled"
+        analytics:
+          type: string
+          example: "enabled"
+        healing_enabled:
+          type: boolean
+          example: true
+
+    CapabilitiesResponse:
+      type: object
+      properties:
+        core_capabilities:
+          type: array
+          items:
+            type: string
+          example: ["multi_agent_orchestration", "autonomous_healing", "code_generation"]
+        legendary_capabilities:
+          type: array
+          items:
+            type: string
+          example: ["autonomous_architecture", "proactive_quality", "evolutionary_prompts", "cloud_orchestration"]
+        ai_sophistication:
+          type: string
+          example: "revolutionary"
+        self_improvement:
+          type: boolean
+          example: true
+        total_tools:
+          type: integer
+          example: 12
+        legendary_tools:
+          type: integer
+          example: 5
+
+    GenerateArchitectureRequest:
+      type: object
+      required:
+        - requirements
+      properties:
+        requirements:
+          type: string
+          example: "Scalable e-commerce platform with microservices"
+        complexity:
+          type: string
+          enum: [simple, medium, complex, enterprise]
+          default: medium
+        preferences:
+          type: object
+          properties:
+            cloud_provider:
+              type: string
+              example: "AWS"
+            architecture_style:
+              type: string
+              example: "microservices"
+
+    GenerateArchitectureResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        architecture:
+          type: object
+          properties:
+            components:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  type:
+                    type: string
+                  description:
+                    type: string
+            data_flow:
+              type: object
+            deployment_strategy:
+              type: object
+
+    AutoFixCodeRequest:
+      type: object
+      required:
+        - code
+        - error_message
+      properties:
+        code:
+          type: string
+          example: "def calculate_total(items):\\n    return sum(item.price for item in items)"
+        error_message:
+          type: string
+          example: "AttributeError: 'dict' object has no attribute 'price'"
+        context:
+          type: string
+          example: "E-commerce cart calculation"
+
+    AutoFixCodeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        fixed_code:
+          type: string
+          example: "def calculate_total(items):\\n    return sum(item['price'] for item in items)"
+        explanation:
+          type: string
+          example: "Changed item.price to item['price'] to handle dict objects"
+        confidence:
+          type: number
+          format: float
+          example: 0.95
+        changes_made:
+          type: array
+          items:
+            type: string
+          example: ["Changed attribute access to dictionary key access"]
+
+tags:
+  - name: 🌟 Legendary Tools
+    description: Revolutionary AI agents with autonomous and evolutionary capabilities
+  - name: Core Agent Tools
+    description: Multi-agent orchestration and core capabilities
+  - name: MCP Protocol
+    description: Model Context Protocol implementation with legendary extensions
+  - name: MCP Tools
+    description: Tool management and execution with legendary support
+  - name: Infrastructure
+    description: System monitoring and infrastructure management
+  - name: Health & Status
+    description: Health monitoring and status reporting
+  - name: Analytics & Monitoring
+    description: Advanced analytics with Cequence AI Gateway integration

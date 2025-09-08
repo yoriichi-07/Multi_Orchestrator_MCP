@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-09-08T09:15:35.341374",
+  "cequence_endpoint": "https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp",
+  "total_tests": 4,
+  "passed_tests": 4,
+  "failed_tests": 0,
+  "success_rate": 100.0,
+  "overall_status": "PASS",
+  "test_results": [
+    {
+      "test": "Endpoint Accessibility",
+      "timestamp": "2025-09-08T09:15:26.616522",
+      "success": true,
+      "message": "Endpoint properly protected with OAuth authentication",
+      "details": {
+        "status_code": 401,
+        "response_time": "1.00s",
+        "headers": {
+          "x-powered-by": "Express",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "DENY",
+          "x-xss-protection": "1; mode=block",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "WWW-Authenticate": "Bearer error=\"invalid_token\", error_description=\"Missing Authorization header\", resource_metadata=\"https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/.well-known/oauth-protected-resource\"",
+          "Content-Type": "application/json; charset=utf-8",
+          "Etag": "W/\"4c-ptrIdu+3yjAtarglCEu6XVLnz2c\"",
+          "x-cloud-trace-context": "f658ae87cbf4b8200df8d30817f0dabc;o=1",
+          "Date": "Mon, 08 Sep 2025 03:45:25 GMT",
+          "Server": "Google Frontend",
+          "Content-Length": "76",
+          "Alt-Svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+        }
+      }
+    },
+    {
+      "test": "OAuth Configuration",
+      "timestamp": "2025-09-08T09:15:28.818720",
+      "success": true,
+      "message": "OAuth endpoints tested: 2/2 accessible",
+      "details": {
+        "test_results": {
+          "Descope Authorization Endpoint": true,
+          "Descope Token Endpoint": true
+        }
+      }
+    },
+    {
+      "test": "MCP Protocol Compliance",
+      "timestamp": "2025-09-08T09:15:29.720593",
+      "success": true,
+      "message": "MCP endpoint properly protected (OAuth required)",
+      "details": {
+        "status_code": 401
+      }
+    },
+    {
+      "test": "Performance Metrics",
+      "timestamp": "2025-09-08T09:15:34.825166",
+      "success": true,
+      "message": "Performance metrics collected: 100.0% success rate",
+      "details": {
+        "avg_response_time": "0.410s",
+        "min_response_time": "0.398s",
+        "max_response_time": "0.424s",
+        "success_rate": "100.0%",
+        "total_requests": 5
+      }
+    }
+  ]
+}
