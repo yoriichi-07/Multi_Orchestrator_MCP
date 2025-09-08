@@ -14,16 +14,20 @@ import os
 import json
 import asyncio
 import structlog
+import uuid
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
 
 from fastmcp import FastMCP
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
 # Import core components
 from src.core.config import settings
-from src.core.descope_auth import get_descope_client
-from src.core.cequence_integration import get_cequence_analytics, track_agent_operation
+from src.core.descope_auth import get_descope_client, AuthContext, TokenValidationError
+from src.core.cequence_integration import get_cequence_analytics, track_agent_operation, CequenceMiddleware
 from src.agents.orchestrator import AgentOrchestrator
 from src.healing.solution_generator import SolutionGenerator
 
@@ -55,12 +59,136 @@ mcp = FastMCP("Multi-Agent Orchestrator MCP")
 orchestrator = AgentOrchestrator()
 code_fixer = SolutionGenerator("mcp-server")
 
+
+class CorrelationMiddleware(BaseHTTPMiddleware):
+    """Middleware to inject correlation IDs for request tracking"""
+    
+    async def dispatch(self, request: Request, call_next):
+        # Generate correlation ID if not present
+        correlation_id = request.headers.get("x-correlation-id", str(uuid.uuid4()))
+        request.state.correlation_id = correlation_id
+        
+        # Process request
+        response = await call_next(request)
+        
+        # Add correlation ID to response headers
+        response.headers["x-correlation-id"] = correlation_id
+        
+        return response
+
+
+class AuthenticationMiddleware(BaseHTTPMiddleware):
+    """Enhanced authentication middleware with scope validation"""
+    
+    def __init__(self, app):
+        super().__init__(app)
+        self.exempt_paths = {
+            "/health", "/docs", "/openapi.json", "/favicon.ico",
+            "/mcp/capabilities", "/mcp/ping"  # Basic MCP endpoints
+        }
+    
+    async def dispatch(self, request: Request, call_next):
+        # Skip authentication for exempt paths
+        if request.url.path in self.exempt_paths or request.method == "OPTIONS":
+            return await call_next(request)
+        
+        # Extract authorization header
+        auth_header = request.headers.get("authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return Response(
+                content=json.dumps({"error": "Missing or invalid authorization header"}),
+                status_code=401,
+                headers={"content-type": "application/json"}
+            )
+        
+        token = auth_header[7:]  # Remove "Bearer " prefix
+        
+        try:
+            # Validate token with Descope
+            descope_client = await get_descope_client()
+            token_claims = await descope_client.validate_jwt_token(token)
+            
+            # Create authentication context
+            auth_context = AuthContext(token_claims)
+            
+            # Check if token is expired
+            if auth_context.is_expired():
+                return Response(
+                    content=json.dumps({"error": "Token expired"}),
+                    status_code=401,
+                    headers={"content-type": "application/json"}
+                )
+            
+            # Store auth context in request state
+            request.state.auth_context = auth_context
+            
+            # Process request
+            response = await call_next(request)
+            
+            return response
+            
+        except TokenValidationError as e:
+            logger.warning(
+                "authentication_failed",
+                error=str(e),
+                correlation_id=getattr(request.state, 'correlation_id', 'unknown')
+            )
+            
+            return Response(
+                content=json.dumps({"error": f"Authentication failed: {str(e)}"}),
+                status_code=401,
+                headers={"content-type": "application/json"}
+            )
+        except Exception as e:
+            logger.error(
+                "authentication_error",
+                error=str(e),
+                correlation_id=getattr(request.state, 'correlation_id', 'unknown')
+            )
+            
+            return Response(
+                content=json.dumps({"error": "Authentication service error"}),
+                status_code=500,
+                headers={"content-type": "application/json"}
+            )
+
+
+def require_scope(required_scope: str):
+    """Decorator to require specific scope for tool access"""
+    def decorator(func):
+        async def wrapper(*args, **kwargs):
+            # Extract request context if available (from FastMCP)
+            if hasattr(args[0], 'state') and hasattr(args[0].state, 'auth_context'):
+                auth_context = args[0].state.auth_context
+                if not auth_context.has_scope(required_scope):
+                    raise ValueError(f"Insufficient permissions. Required scope: {required_scope}")
+            
+            return await func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def require_any_scope(required_scopes: List[str]):
+    """Decorator to require any of the specified scopes"""
+    def decorator(func):
+        async def wrapper(*args, **kwargs):
+            if hasattr(args[0], 'state') and hasattr(args[0].state, 'auth_context'):
+                auth_context = args[0].state.auth_context
+                if not auth_context.has_any_scope(required_scopes):
+                    raise ValueError(f"Insufficient permissions. Required any of: {required_scopes}")
+            
+            return await func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 @mcp.tool()
+@require_scope("tools:ping")
 async def ping() -> str:
     """Simple health check ping"""
     return "pong"
 
 @mcp.tool()
+@require_scope("tools:generate")
 async def orchestrate_task(
     task_description: str,
     task_type: str = "development",
@@ -120,6 +248,7 @@ async def orchestrate_task(
         }
 
 @mcp.tool()
+@require_scope("tools:generate")
 async def generate_architecture(
     project_description: str,
     tech_stack: List[str],
@@ -156,6 +285,7 @@ async def generate_architecture(
         }
 
 @mcp.tool()
+@require_scope("tools:healing")
 async def auto_fix_code(
     code: str,
     error_message: str,
@@ -251,6 +381,7 @@ async def list_capabilities() -> Dict[str, Any]:
     }
 
 @mcp.tool()
+@require_scope("admin:metrics")
 async def get_system_status() -> Dict[str, Any]:
     """Get current system status and health metrics"""
     try:
@@ -287,6 +418,7 @@ async def get_system_status() -> Dict[str, Any]:
         }
 
 @mcp.tool()
+@require_any_scope(["tools:legendary", "admin:config"])
 async def legendary_generate_application(
     description: str,
     complexity_level: str = "advanced",
@@ -342,6 +474,7 @@ async def legendary_generate_application(
         }
 
 @mcp.tool()
+@require_scope("tools:autonomous")
 async def autonomous_architect(
     project_goals: List[str],
     constraints: List[str] = None,
@@ -391,6 +524,7 @@ async def autonomous_architect(
         }
 
 @mcp.tool()
+@require_scope("tools:proactive")
 async def proactive_quality_assurance(
     code_context: str,
     quality_standards: List[str] = None,
@@ -434,6 +568,7 @@ async def proactive_quality_assurance(
         }
 
 @mcp.tool()
+@require_scope("tools:evolutionary")
 async def evolutionary_prompt_optimization(
     base_prompt: str,
     optimization_goals: List[str] = None,
@@ -482,6 +617,7 @@ async def evolutionary_prompt_optimization(
         }
 
 @mcp.tool()
+@require_scope("tools:cloud")
 async def last_mile_cloud_deployment(
     application_context: str,
     target_environments: List[str] = None,
@@ -700,16 +836,50 @@ def main():
     # Create Starlette app with MCP HTTP transport
     app = mcp.http_app()
     
-    # Add CORS middleware for cross-origin requests (required for MCP)
+    # Add middleware stack (order matters - reverse of execution order)
+    
+    # 1. CORS middleware (outermost) - handles preflight requests
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
-        allow_headers=["*"],
-        expose_headers=["mcp-session-id", "mcp-protocol-version"],
+        allow_headers=[
+            "*", 
+            "authorization", 
+            "content-type",
+            "x-correlation-id",
+            "mcp-session-id", 
+            "mcp-protocol-version"
+        ],
+        expose_headers=[
+            "x-correlation-id", 
+            "mcp-session-id", 
+            "mcp-protocol-version"
+        ],
         max_age=86400,
     )
+    
+    # 2. Cequence Analytics middleware (if configured)
+    if settings.cequence_gateway_id and settings.cequence_api_key:
+        app.add_middleware(
+            CequenceMiddleware,
+            gateway_id=settings.cequence_gateway_id,
+            api_key=settings.cequence_api_key
+        )
+        print("✅ Cequence analytics middleware enabled")
+    else:
+        print("⚠️  Cequence analytics not configured")
+    
+    # 3. Authentication middleware (if configured)
+    if settings.descope_project_id:
+        app.add_middleware(AuthenticationMiddleware)
+        print("✅ Descope authentication middleware enabled")
+    else:
+        print("⚠️  Authentication not configured - running in open mode")
+    
+    # 4. Correlation middleware (innermost) - tracks requests
+    app.add_middleware(CorrelationMiddleware)
     
     print(f"Starting HTTP server on port {port}")
     

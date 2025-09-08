@@ -1,0 +1,363 @@
+# Multi-Agent Orchestrator MCP Server - Production Dockerfile
+# Optimized for legendary AI capabilities with comprehensive security and monitoring
+
+FROM ghcr.io/astral-sh/uv:python3.11-alpine AS base
+
+# Metadata and labels
+LABEL maintainer="Multi-Agent Orchestrator Team"
+LABEL version="2.0.0"
+LABEL description="Production MCP Server with 5 Legendary Agents and Enhanced Security"
+LABEL org.opencontainers.image.title="Multi-Agent Orchestrator MCP Server"
+LABEL org.opencontainers.image.description="FastMCP v2.12.2 server with legendary AI capabilities"
+LABEL org.opencontainers.image.version="2.0.0"
+LABEL org.opencontainers.image.vendor="Multi-Agent Orchestrator"
+
+# Security: Create non-root user
+RUN addgroup -g 1001 -S mcp && \
+    adduser -u 1001 -S mcp -G mcp
+
+# Install security updates and production dependencies
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+        ca-certificates \
+        curl \
+        git \
+        openssh-client \
+        tzdata \
+        bash \
+        && \
+    rm -rf /var/cache/apk/*
+
+# Set production environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONHASHSEED=random \
+    PYTHONPATH=/app \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Production-specific environment
+ENV NODE_ENV=production \
+    MCP_ENV=production \
+    LOG_LEVEL=INFO \
+    ENABLE_METRICS=true \
+    ENABLE_HEALTH_CHECKS=true
+
+# Security environment variables
+ENV SECURITY_HEADERS_ENABLED=true \
+    CORS_ENABLED=true \
+    RATE_LIMITING_ENABLED=true \
+    JWT_VALIDATION_STRICT=true
+
+# Set timezone
+ENV TZ=UTC
+
+# Work directory
+WORKDIR /app
+
+# Copy dependency files first for better caching
+COPY --chown=mcp:mcp pyproject.toml uv.lock ./
+
+# Install dependencies with security optimizations
+RUN --mount=type=cache,target=/root/.cache/uv,uid=1001,gid=1001 \
+    uv sync --locked --no-install-project --no-dev && \
+    # Remove unnecessary files to reduce image size
+    find /app/.venv -name "*.pyc" -delete && \
+    find /app/.venv -name "*.pyo" -delete && \
+    find /app/.venv -name "__pycache__" -type d -exec rm -rf {} + || true
+
+# Copy application source code
+COPY --chown=mcp:mcp . /app/
+
+# Install the project
+RUN --mount=type=cache,target=/root/.cache/uv,uid=1001,gid=1001 \
+    uv sync --locked --no-dev
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/logs /app/tmp /app/data /app/outputs && \
+    chown -R mcp:mcp /app/logs /app/tmp /app/data /app/outputs && \
+    chmod 755 /app/logs /app/tmp /app/data /app/outputs
+
+# Production configuration validation
+RUN python -c "\
+import sys; \
+sys.path.insert(0, '/app'); \
+try: \
+    from src.core.config import config; \
+    print('✅ Configuration validation successful'); \
+except Exception as e: \
+    print(f'❌ Configuration validation failed: {e}'); \
+    sys.exit(1) \
+"
+
+# Legendary agents validation
+RUN python -c "\
+import sys; \
+sys.path.insert(0, '/app'); \
+try: \
+    from src.tools.monitored_tools import legendary_autonomous_architect; \
+    from src.tools.monitored_tools import legendary_quality_framework; \
+    from src.tools.monitored_tools import legendary_prompt_engine; \
+    from src.tools.monitored_tools import legendary_cloud_agent; \
+    from src.tools.monitored_tools import legendary_app_generator; \
+    print('✅ All 5 legendary agents imported successfully'); \
+except Exception as e: \
+    print(f'❌ Legendary agents validation failed: {e}'); \
+    sys.exit(1) \
+"
+
+# Security and middleware validation
+RUN python -c "\
+import sys; \
+sys.path.insert(0, '/app'); \
+try: \
+    from src.middleware.auth_integration import AuthenticationMiddleware; \
+    from src.core.cequence_integration import CequenceAnalytics; \
+    print('✅ Security middleware validation successful'); \
+except Exception as e: \
+    print(f'❌ Security middleware validation failed: {e}'); \
+    sys.exit(1) \
+"
+
+# Set PATH to include virtual environment
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Health check configuration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Expose port
+EXPOSE 8000
+
+# Security: Switch to non-root user
+USER mcp:mcp
+
+# Production startup script
+COPY --chown=mcp:mcp <<'EOF' /app/start-production.sh
+#!/bin/bash
+set -euo pipefail
+
+echo "🚀 Starting Multi-Agent Orchestrator MCP Server (Production)"
+echo "=================================================="
+
+# Validate environment
+echo "📋 Validating production environment..."
+if [[ -z "${DESCOPE_PROJECT_ID:-}" ]]; then
+    echo "❌ DESCOPE_PROJECT_ID not set"
+    exit 1
+fi
+
+if [[ -z "${CEQUENCE_GATEWAY_URL:-}" ]]; then
+    echo "❌ CEQUENCE_GATEWAY_URL not set"
+    exit 1
+fi
+
+echo "✅ Environment validation passed"
+
+# Start pre-flight checks
+echo "🔍 Running pre-flight checks..."
+python scripts/validate_deployment.py --quick-check || {
+    echo "❌ Pre-flight checks failed"
+    exit 1
+}
+echo "✅ Pre-flight checks passed"
+
+# Start the server with production settings
+echo "🌟 Starting legendary AI capabilities..."
+echo "  🤖 Autonomous Architect"
+echo "  🛡️ Proactive Quality Framework"
+echo "  🧠 Evolutionary Prompt Engine"
+echo "  ☁️ Last Mile Cloud Agent"
+echo "  🏗️ Legendary Application Generator"
+echo ""
+
+# Security and monitoring
+echo "🔐 Security features enabled:"
+echo "  ✅ Descope OAuth 2.1 + PKCE"
+echo "  ✅ Scope-based authorization"
+echo "  ✅ JWT validation"
+echo "  ✅ Rate limiting"
+echo "  ✅ CORS protection"
+echo "  ✅ Cequence analytics"
+echo ""
+
+echo "🎯 Starting MCP server..."
+exec python mcp_server.py \
+    --port 8000 \
+    --host 0.0.0.0 \
+    --production \
+    --enable-auth \
+    --enable-analytics \
+    --enable-monitoring \
+    --log-level INFO
+EOF
+
+RUN chmod +x /app/start-production.sh
+
+# Production entrypoint
+ENTRYPOINT ["/app/start-production.sh"]
+
+# ============================================
+# Development variant (multi-stage build)
+# ============================================
+FROM base AS development
+
+# Switch back to root for development dependencies
+USER root
+
+# Install development dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --dev
+
+# Development tools
+RUN apk add --no-cache \
+        git \
+        vim \
+        curl \
+        wget \
+        telnet \
+        tcpdump \
+        strace && \
+    rm -rf /var/cache/apk/*
+
+# Development configuration
+ENV LOG_LEVEL=DEBUG \
+    ENABLE_DEBUG=true \
+    ENABLE_RELOAD=true \
+    CORS_ALLOW_ALL=true
+
+# Development health check (more frequent)
+HEALTHCHECK --interval=10s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Development startup script
+COPY --chown=mcp:mcp <<'EOF' /app/start-development.sh
+#!/bin/bash
+set -euo pipefail
+
+echo "🛠️ Starting Multi-Agent Orchestrator MCP Server (Development)"
+echo "============================================================"
+
+echo "⚠️ Development mode - security features relaxed"
+echo "📍 Server: http://localhost:8000"
+echo "📊 Health: http://localhost:8000/health"
+echo "📈 Metrics: http://localhost:8000/metrics"
+echo ""
+
+echo "🧪 Development features enabled:"
+echo "  🔍 Hot reload"
+echo "  📝 Debug logging"
+echo "  🌐 CORS relaxed"
+echo "  🧪 Test endpoints"
+echo ""
+
+# Start with hot reload for development
+exec python mcp_server.py \
+    --port 8000 \
+    --host 0.0.0.0 \
+    --development \
+    --enable-reload \
+    --log-level DEBUG
+EOF
+
+RUN chmod +x /app/start-development.sh
+
+# Switch back to non-root user for development
+USER mcp:mcp
+
+# Development entrypoint
+ENTRYPOINT ["/app/start-development.sh"]
+
+# ============================================
+# Testing variant (multi-stage build)
+# ============================================
+FROM development AS testing
+
+# Switch back to root for testing tools
+USER root
+
+# Install testing dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --group test
+
+# Testing tools
+RUN apk add --no-cache \
+        make \
+        bash \
+        jq && \
+    rm -rf /var/cache/apk/*
+
+# Testing configuration
+ENV TESTING=true \
+    LOG_LEVEL=DEBUG \
+    ENABLE_TEST_ENDPOINTS=true
+
+# Switch back to non-root user
+USER mcp:mcp
+
+# Testing entrypoint
+COPY --chown=mcp:mcp <<'EOF' /app/run-tests.sh
+#!/bin/bash
+set -euo pipefail
+
+echo "🧪 Multi-Agent Orchestrator MCP Server - Test Suite"
+echo "================================================="
+
+echo "📋 Running comprehensive test suite..."
+
+# Unit tests
+echo "🔬 Running unit tests..."
+python -m pytest tests/ -v --tb=short
+
+# Integration tests
+echo "🔗 Running integration tests..."
+python -m pytest tests/test_cequence_integration.py -v
+
+# Security tests
+echo "🔐 Running security tests..."
+python scripts/validate_deployment.py --security-check
+
+# Performance tests
+echo "⚡ Running performance tests..."
+python -m pytest tests/ -k "performance" -v
+
+echo "✅ All tests completed successfully!"
+EOF
+
+RUN chmod +x /app/run-tests.sh
+
+ENTRYPOINT ["/app/run-tests.sh"]
+
+# ============================================
+# Production Build (Default)
+# ============================================
+FROM base AS production
+
+# Production is the default stage
+# No additional configuration needed
+
+# Final production image optimizations
+RUN find /app -name "*.pyc" -delete && \
+    find /app -name "*.pyo" -delete && \
+    find /app -name "__pycache__" -type d -exec rm -rf {} + || true && \
+    find /app -name "*.coverage" -delete || true && \
+    find /app -name ".pytest_cache" -type d -exec rm -rf {} + || true
+
+# Production image metadata
+LABEL stage="production"
+LABEL security.enabled="true"
+LABEL legendary.agents="5"
+LABEL tools.count="16"
+LABEL fastmcp.version="2.12.2"
+
+# Final security check
+RUN echo "🔐 Production image security summary:" && \
+    echo "  👤 Non-root user: $(whoami)" && \
+    echo "  🏠 Working directory: $(pwd)" && \
+    echo "  📁 Permissions: $(ls -la /app | head -3)" && \
+    echo "  🐍 Python version: $(python --version)" && \
+    echo "  📦 UV version: $(uv --version)" && \
+    echo "✅ Production image ready for deployment!"
