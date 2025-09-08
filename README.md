@@ -42,9 +42,21 @@ First, add the Multi-Agent Orchestrator MCP server to your client configuration.
 }
 ```
 
-**Smithery deployment** (recommended for production):
+**Cequence AI Gateway deployment** (recommended for production):
 
-Access our live deployment at: `https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp`
+Access our enterprise deployment with OAuth 2.0 protection: `https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp`
+
+```json
+{
+  "mcpServers": {
+    "multi-orchestrator": {
+      "url": "https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp"
+    }
+  }
+}
+```
+
+**Direct Smithery deployment** (for development/testing):
 
 ```json
 {
@@ -258,6 +270,53 @@ pytest tests/test_cequence_integration.py -v # Analytics integration
 pytest tests/ --cov=src --cov-report=html
 ```
 
+## Team
+
+**Team Name**: Multi-Agent Orchestrator  
+**Members**: 
+- yoriichi-07 - Lead Developer & System Architecture
+- Multi-Agent Orchestrator Team - AI Agent Coordination Specialists
+
+## Demo Video
+
+🎥 **Watch our 5-minute demo**: *[Demo video coming soon - currently being recorded]*
+
+*The demo showcases our Multi-Agent Orchestrator MCP server in action, demonstrating autonomous software development, self-healing capabilities, and seamless integration with Cequence AI Gateway and Descope authentication.*
+
+## What We'd Do With More Time
+
+Given additional development time, we would focus on the following enhancements:
+
+### 🤖 **Enhanced Agent Intelligence**
+- **Machine Learning Optimization**: Implement reinforcement learning to improve agent coordination and decision-making over time
+- **Context-Aware Agents**: Develop agents that learn from previous projects and adapt their strategies based on historical success patterns
+- **Multi-Modal Agents**: Expand agents to handle design assets, documentation, and multimedia content beyond just code
+
+### 🌐 **Expanded Platform Support**
+- **Additional Programming Languages**: Support for Go, Rust, Java, C#, and other modern development stacks
+- **Cloud Platform Integration**: Native support for AWS, Azure, GCP with automated resource provisioning and optimization
+- **Mobile Development**: Specialized agents for iOS, Android, and cross-platform mobile app development
+
+### 📊 **Advanced Analytics & Insights**
+- **Predictive Development Metrics**: AI-powered predictions of development time, potential issues, and resource requirements
+- **Quality Prediction Models**: Advanced static analysis to predict code maintainability and technical debt
+- **Performance Optimization**: Automated performance profiling and optimization recommendations
+
+### 🔧 **Developer Experience Enhancements**
+- **Visual Development Interface**: Web-based GUI for non-technical users to interact with the agent system
+- **Custom Agent Marketplace**: Community-driven platform for sharing and discovering specialized development agents
+- **Integration Ecosystem**: Deeper integrations with popular development tools like Jira, Slack, GitHub Actions
+
+### 🚀 **Enterprise Features**
+- **Multi-Tenant Architecture**: Support for multiple organizations with isolated environments and billing
+- **Advanced Compliance**: SOC2, HIPAA, and other enterprise compliance standards
+- **Custom Training**: Ability to train agents on organization-specific coding standards and practices
+
+### 🔬 **Research & Innovation**
+- **Autonomous Testing Strategies**: Agents that generate comprehensive test suites including edge cases and performance tests
+- **Self-Improving Architecture**: System that continuously refines its own codebase and deployment strategies
+- **Cross-Project Learning**: Knowledge sharing between different projects to accelerate development patterns
+
 ### Competition Entry
 
 This MCP server was developed for the **Model Context Protocol Competition** and demonstrates:
@@ -268,7 +327,7 @@ This MCP server was developed for the **Model Context Protocol Competition** and
 - **Complete MCP Protocol Compliance**: Tools, resources, and prompts with full schema validation
 - **Innovation**: First-of-its-kind multi-agent orchestration for autonomous software development
 
-**Live Demo**: [Smithery Deployment](https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp)
+**Live Demo**: [Cequence Production](https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp) | [Smithery Backend](https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp)
 **Repository**: [GitHub](https://github.com/yoriichi-07/Multi_Orchestrator_MCP)
 
 ### License
