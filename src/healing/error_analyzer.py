@@ -5,7 +5,7 @@ import asyncio
 import json
 import re
 from typing import Dict, Any, List, Optional, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 import structlog
 
 from src.core.llm_manager import LLMManager
@@ -98,7 +98,7 @@ class ErrorAnalyzer:
         """
         Perform comprehensive error analysis with root cause identification
         """
-        analysis_start = datetime.utcnow()
+        analysis_start = datetime.now(timezone.utc)
         
         try:
             # 1. Quick pattern matching for known errors
@@ -135,10 +135,10 @@ class ErrorAnalyzer:
                 impact_assessment=impact_assessment
             )
             
-            analysis_duration = (datetime.utcnow() - analysis_start).total_seconds()
+            analysis_duration = (datetime.now(timezone.utc) - analysis_start).total_seconds()
             
             comprehensive_analysis = {
-                "analysis_id": f"analysis_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+                "analysis_id": f"analysis_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
                 "error_classification": {
                     "primary_type": llm_analysis.get("primary_type", "unknown"),
                     "secondary_types": llm_analysis.get("secondary_types", []),
@@ -152,7 +152,7 @@ class ErrorAnalyzer:
                 "analysis_metadata": {
                     "duration_seconds": analysis_duration,
                     "correlation_id": self.correlation_id,
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.now(timezone.utc).isoformat()
                 }
             }
             

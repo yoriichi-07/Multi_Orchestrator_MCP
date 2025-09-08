@@ -4,7 +4,7 @@ MCP tools with Cequence analytics integration
 import time
 import asyncio
 from typing import Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, Request
 import structlog
 
@@ -436,21 +436,21 @@ async def dashboard_data(
                 "user": "software_foundry_demo",
                 "status": "success",
                 "duration_ms": 2341,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             },
             {
                 "operation": "self_healing",
                 "user": "test_client_001", 
                 "status": "success",
                 "duration_ms": 3102,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             },
             {
                 "operation": "code_review",
                 "user": "integration_test",
                 "status": "success", 
                 "duration_ms": 1543,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         ],
         "performance_metrics": {
@@ -461,5 +461,5 @@ async def dashboard_data(
             "errors_today": 23
         },
         "correlation_id": correlation_id,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }

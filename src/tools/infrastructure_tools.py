@@ -6,7 +6,7 @@ import uuid
 import time
 import platform
 import psutil
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 
 from src.core.tool_registry import mcp_tool, AnalyticsTracker
@@ -32,7 +32,7 @@ async def ping_tool(auth_context: AuthContext, request=None) -> Dict[str, Any]:
     try:
         result = {
             "status": "pong",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "server_info": {
                 "python_version": platform.python_version(),
                 "platform": platform.platform(),
