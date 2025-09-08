@@ -1,5 +1,5 @@
-# Multi-Agent Orchestrator MCP Server - Competition Ready
-# Smithery Platform + FastAPI + All Integrations
+# Multi-Agent Orchestrator MCP Server - Revolutionary Competition Ready
+# Smithery Platform + FastAPI + All Integrations + Legendary Upgrades
 
 # Smithery MCP Framework
 fastmcp>=0.1.0
@@ -34,3 +34,20 @@ openai==1.104.2
 
 # Storage
 redis==6.4.0
+
+# Legendary Agent Dependencies
+networkx==3.3        # For DAG operations in Autonomous Architect
+asyncio-throttle==1.0.2  # For rate limiting in quality checks
+jsonschema==4.21.1   # For policy validation
+jinja2==3.1.4        # For dynamic template generation
+plotly==5.18.0       # For performance visualization
+matplotlib==3.8.3    # For quality metrics charts
+pandas==2.2.0        # For data analysis in evolutionary engine
+numpy==1.26.4        # For mathematical operations
+scikit-learn==1.4.1  # For evolutionary algorithms
+psutil==5.9.8        # For system monitoring
+docker==7.0.0        # For container operations in cloud agent
+kubernetes==29.0.0   # For k8s deployments
+boto3==1.34.42       # For AWS operations
+azure-identity==1.15.0  # For Azure operations
+google-cloud-compute==1.17.0  # For GCP operations

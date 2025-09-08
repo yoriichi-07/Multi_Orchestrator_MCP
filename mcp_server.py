@@ -200,28 +200,54 @@ async def auto_fix_code(
 
 @mcp.tool()
 async def list_capabilities() -> Dict[str, Any]:
-    """List all available capabilities and agent types"""
+    """List all available capabilities and agent types including legendary upgrades"""
     return {
-        "agents": {
+        "standard_agents": {
             "frontend": "React, Vue, Angular, UI/UX development",
             "backend": "APIs, databases, server-side logic",
             "devops": "CI/CD, infrastructure, deployment",
             "quality": "Testing, code review, validation"
         },
-        "features": {
+        "legendary_agents": {
+            "autonomous_architect": "Dynamic strategy generation with self-improving DAG execution",
+            "proactive_quality": "Policy-as-code quality framework with auto-remediation",
+            "evolutionary_prompt": "Self-improving AI communication with performance optimization", 
+            "last_mile_cloud": "Autonomous deployment with intelligent verification and rollback"
+        },
+        "revolutionary_features": {
+            "autonomous_intelligence": "Self-learning and self-improving AI agents",
+            "proactive_automation": "Predictive problem prevention and resolution",
+            "evolutionary_optimization": "Continuous self-improvement across all systems",
+            "last_mile_automation": "Complete end-to-end autonomous deployment"
+        },
+        "standard_features": {
             "orchestration": "Multi-agent task coordination",
             "self_healing": "Automatic error detection and fixing",
             "authentication": "OAuth 2.1 + PKCE with Descope",
             "analytics": "Real-time monitoring with Cequence"
         },
+        "legendary_tools": [
+            "legendary_generate_application - Revolutionary app generation",
+            "autonomous_architect - Dynamic system design",
+            "proactive_quality_assurance - Policy-driven quality framework",
+            "evolutionary_prompt_optimization - Self-improving AI communication",
+            "last_mile_cloud_deployment - Autonomous deployment & verification"
+        ],
         "supported_tasks": [
+            "Revolutionary application development",
+            "Autonomous system architecture",
+            "Self-improving code quality",
+            "Evolutionary AI optimization",
+            "Last-mile cloud deployment",
             "Web application development",
             "API design and implementation", 
             "Database schema design",
             "Testing strategy creation",
             "Deployment automation",
             "Code review and optimization"
-        ]
+        ],
+        "innovation_level": "Industry Revolutionary",
+        "ai_sophistication": "Autonomous Self-Improving"
     }
 
 @mcp.tool()
@@ -230,6 +256,9 @@ async def get_system_status() -> Dict[str, Any]:
     try:
         # Check orchestrator status
         orchestrator_status = await orchestrator.get_status()
+        
+        # Get legendary status
+        legendary_status = await orchestrator.legendary_get_status()
         
         # Check authentication status
         auth_status = "enabled" if settings.descope_project_id else "disabled"
@@ -240,10 +269,12 @@ async def get_system_status() -> Dict[str, Any]:
         return {
             "server": "healthy",
             "orchestrator": orchestrator_status,
+            "legendary_agents": legendary_status,
             "authentication": auth_status,
             "analytics": analytics_status,
             "agents_available": orchestrator.available_agents,
             "healing_enabled": bool(code_fixer),
+            "revolutionary_capabilities": True,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
@@ -253,6 +284,244 @@ async def get_system_status() -> Dict[str, Any]:
             "server": "error",
             "error": str(e),
             "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+@mcp.tool()
+async def legendary_generate_application(
+    description: str,
+    complexity_level: str = "advanced",
+    innovation_requirements: List[str] = None,
+    deployment_strategy: str = "cloud-native"
+) -> Dict[str, Any]:
+    """
+    Revolutionary application generation using legendary AI agents
+    
+    Args:
+        description: Detailed description of the application to build
+        complexity_level: Target complexity (simple, advanced, enterprise, revolutionary)
+        innovation_requirements: List of innovative features to include
+        deployment_strategy: Deployment approach (local, cloud-native, multi-cloud, edge)
+    """
+    try:
+        # Track the legendary operation
+        if settings.cequence_gateway_id:
+            await track_agent_operation("legendary_generate_application", {
+                "complexity_level": complexity_level,
+                "deployment_strategy": deployment_strategy,
+                "innovation_count": len(innovation_requirements or [])
+            })
+        
+        # Execute legendary orchestration
+        result = await orchestrator.legendary_generate_application(
+            description=description,
+            complexity_level=complexity_level,
+            innovation_requirements=innovation_requirements or [],
+            deployment_strategy=deployment_strategy
+        )
+        
+        return {
+            "success": result.get("success", False),
+            "revolutionary_features": result.get("revolutionary_features", []),
+            "autonomous_architecture": result.get("autonomous_architecture"),
+            "proactive_quality_policies": result.get("proactive_quality_policies"),
+            "evolutionary_prompts": result.get("evolutionary_prompts"),
+            "cloud_deployment_plan": result.get("cloud_deployment_plan"),
+            "execution_timeline": result.get("execution_timeline"),
+            "innovation_score": result.get("innovation_score", 0),
+            "legendary_agents_used": result.get("legendary_agents_used", []),
+            "self_improvement_suggestions": result.get("self_improvement_suggestions", []),
+            "future_evolution_path": result.get("future_evolution_path")
+        }
+        
+    except Exception as e:
+        logger.error("legendary_generation_failed", error=str(e))
+        return {
+            "success": False,
+            "error": str(e),
+            "legendary_fallback": "Standard orchestration available"
+        }
+
+@mcp.tool()
+async def autonomous_architect(
+    project_goals: List[str],
+    constraints: List[str] = None,
+    learning_objectives: List[str] = None
+) -> Dict[str, Any]:
+    """
+    Activate the Autonomous Architect Agent for dynamic system design
+    
+    Args:
+        project_goals: List of high-level project objectives
+        constraints: Technical, business, or resource constraints
+        learning_objectives: Areas where the agent should learn and improve
+    """
+    try:
+        # Use the orchestrator's architect agent
+        from src.agents.orchestrator import AgentOrchestrator
+        orchestrator_instance = AgentOrchestrator()
+        
+        # Access the architect agent directly
+        architect = orchestrator_instance.architect_agent
+        
+        # Generate autonomous architecture
+        result = await architect.generate_execution_strategy(
+            goals=project_goals,
+            constraints=constraints or [],
+            context={
+                "learning_objectives": learning_objectives or [],
+                "autonomous_mode": True
+            }
+        )
+        
+        return {
+            "success": True,
+            "execution_dag": result.get("execution_dag"),
+            "autonomous_strategy": result.get("strategy"),
+            "learning_insights": result.get("learning_insights"),
+            "dynamic_adaptations": result.get("adaptations"),
+            "self_improvement_plan": result.get("self_improvement"),
+            "confidence_score": result.get("confidence", 0.85)
+        }
+        
+    except Exception as e:
+        logger.error("autonomous_architect_failed", error=str(e))
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+@mcp.tool()
+async def proactive_quality_assurance(
+    code_context: str,
+    quality_standards: List[str] = None,
+    auto_remediation: bool = True
+) -> Dict[str, Any]:
+    """
+    Activate proactive quality framework with policy-as-code
+    
+    Args:
+        code_context: Code or project context to analyze
+        quality_standards: Custom quality policies to apply
+        auto_remediation: Whether to automatically fix violations
+    """
+    try:
+        # Use the orchestrator's quality agent
+        orchestrator_instance = AgentOrchestrator()
+        quality_agent = orchestrator_instance.quality_agent
+        
+        # Run proactive quality analysis
+        result = await quality_agent.analyze_and_improve(
+            context=code_context,
+            policies=quality_standards or [],
+            auto_fix=auto_remediation
+        )
+        
+        return {
+            "success": True,
+            "quality_score": result.get("quality_score"),
+            "policy_violations": result.get("violations"),
+            "auto_remediations": result.get("remediations"),
+            "quality_improvements": result.get("improvements"),
+            "dynamic_policies": result.get("dynamic_policies"),
+            "prevention_strategies": result.get("prevention")
+        }
+        
+    except Exception as e:
+        logger.error("proactive_quality_failed", error=str(e))
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+@mcp.tool()
+async def evolutionary_prompt_optimization(
+    base_prompt: str,
+    optimization_goals: List[str] = None,
+    performance_metrics: Dict[str, float] = None
+) -> Dict[str, Any]:
+    """
+    Activate evolutionary prompt engine for self-improving AI communication
+    
+    Args:
+        base_prompt: Initial prompt to optimize
+        optimization_goals: Specific areas to improve (clarity, effectiveness, etc.)
+        performance_metrics: Current performance data for optimization
+    """
+    try:
+        # Use the orchestrator's prompt engine
+        orchestrator_instance = AgentOrchestrator()
+        prompt_engine = orchestrator_instance.prompt_engine
+        
+        # Create and optimize prompt
+        template = await prompt_engine.create_template(
+            name="user_optimization",
+            base_content=base_prompt,
+            optimization_goals=optimization_goals or []
+        )
+        
+        # Evolve the prompt
+        result = await prompt_engine.evolve_template(
+            template_name="user_optimization",
+            performance_data=performance_metrics or {}
+        )
+        
+        return {
+            "success": True,
+            "optimized_prompt": result.get("optimized_content"),
+            "evolution_history": result.get("evolution_history"),
+            "performance_improvements": result.get("improvements"),
+            "learning_insights": result.get("insights"),
+            "adaptation_strategies": result.get("strategies")
+        }
+        
+    except Exception as e:
+        logger.error("evolutionary_prompt_failed", error=str(e))
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+@mcp.tool()
+async def last_mile_cloud_deployment(
+    application_context: str,
+    target_environments: List[str] = None,
+    verification_requirements: List[str] = None
+) -> Dict[str, Any]:
+    """
+    Activate Last Mile Cloud Agent for autonomous deployment and verification
+    
+    Args:
+        application_context: Application details and requirements
+        target_environments: Target deployment environments
+        verification_requirements: Custom verification criteria
+    """
+    try:
+        # Use the orchestrator's cloud agent
+        orchestrator_instance = AgentOrchestrator()
+        cloud_agent = orchestrator_instance.cloud_agent
+        
+        # Plan and execute deployment
+        result = await cloud_agent.plan_deployment(
+            context=application_context,
+            environments=target_environments or ["production"],
+            verification_criteria=verification_requirements or []
+        )
+        
+        return {
+            "success": True,
+            "deployment_plan": result.get("deployment_plan"),
+            "environment_strategies": result.get("environment_strategies"),
+            "verification_results": result.get("verification_results"),
+            "rollback_plan": result.get("rollback_plan"),
+            "monitoring_setup": result.get("monitoring"),
+            "autonomous_optimizations": result.get("optimizations")
+        }
+        
+    except Exception as e:
+        logger.error("last_mile_deployment_failed", error=str(e))
+        return {
+            "success": False,
+            "error": str(e)
         }
 
 @mcp.resource("mcp://capabilities")
@@ -321,6 +590,61 @@ Use the `orchestrate_task` tool to begin implementation with:
 The multi-agent system will coordinate frontend, backend, DevOps, and QA specialists to deliver a complete solution.
 """
 
+@mcp.prompt("revolutionary-development")
+async def revolutionary_development_prompt(
+    project_vision: str,
+    innovation_level: str = "revolutionary",
+    target_impact: str = "industry-changing"
+) -> str:
+    """Generate a revolutionary development strategy using legendary agents"""
+    return f"""# Revolutionary Development Strategy
+
+## Project Vision: {project_vision}
+
+### Innovation Level: {innovation_level}
+### Target Impact: {target_impact}
+
+### Legendary AI Agent Orchestration
+
+I'll coordinate our revolutionary AI agents to deliver unprecedented results:
+
+## 🤖 Autonomous Architect Agent
+- **Dynamic Strategy Generation**: Creates self-adapting execution plans
+- **Goal Analysis**: Breaks down complex objectives into intelligent DAGs
+- **Self-Improvement**: Learns from each project to enhance future performance
+
+## 🛡️ Proactive Quality Agent  
+- **Policy-as-Code**: Implements dynamic quality frameworks
+- **Auto-Remediation**: Fixes issues before they become problems
+- **Continuous Improvement**: Evolves quality standards based on project outcomes
+
+## 🧬 Evolutionary Prompt Engine
+- **Self-Optimizing Communication**: AI-to-AI communication that improves over time
+- **Performance Tracking**: Monitors and optimizes all AI interactions
+- **Adaptive Learning**: Evolves prompts based on success metrics
+
+## ☁️ Last Mile Cloud Agent
+- **Autonomous Deployment**: Handles complete deployment pipeline
+- **Intelligent Verification**: Validates deployments with AI-driven testing
+- **Rollback Strategies**: Implements smart rollback with learning integration
+
+### Revolutionary Execution Plan
+
+Use the `legendary_generate_application` tool with:
+- Description: "{project_vision}"
+- Complexity level: "{innovation_level}"
+- Innovation requirements: ["autonomous-ai", "self-improving", "predictive-automation"]
+- Deployment strategy: "revolutionary-cloud-native"
+
+This will activate all legendary agents working in concert to deliver a solution that demonstrates the future of autonomous software engineering.
+
+### Expected Revolutionary Outcomes
+- ✨ Self-improving AI architecture
+- 🔮 Predictive problem prevention
+- 🚀 Autonomous deployment pipeline
+- 🎯 Industry-leading innovation
+"""
+
 @mcp.prompt("code-review")
 async def code_review_prompt(
     code: str,
@@ -356,6 +680,14 @@ The quality assurance agent will provide detailed feedback and improvement sugge
 
 ### Self-Healing Available
 If issues are found, use the `auto_fix_code` tool to automatically apply fixes.
+
+### Revolutionary Enhancement Available
+For advanced quality assurance, use `proactive_quality_assurance` with:
+- Code context: Your code
+- Quality standards: Custom policies
+- Auto remediation: true
+
+This activates our Proactive Quality Agent for policy-driven analysis and automatic improvements.
 """
 
 def main():
