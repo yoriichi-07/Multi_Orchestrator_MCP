@@ -1,0 +1,60 @@
+{
+  "oauth_configuration": {
+    "provider": "descope",
+    "flow_type": "authorization_code_pkce",
+    "authorization_url": "https://api.descope.com/oauth2/v1/authorize",
+    "token_url": "https://api.descope.com/oauth2/v1/token",
+    "userinfo_url": "https://api.descope.com/oauth2/v1/userinfo",
+    "jwks_url": "https://api.descope.com/__ProjectID__/.well-known/jwks.json",
+    "logout_url": "https://api.descope.com/oauth2/v1/logout",
+    "revocation_url": "https://api.descope.com/oauth2/v1/revoke",
+    
+    "client_configuration": {
+      "client_id": "{{DESCOPE_PROJECT_ID}}",
+      "client_secret": "{{DESCOPE_ACCESS_KEY}}",
+      "redirect_uri": "{{CEQUENCE_GATEWAY_CALLBACK_URL}}",
+      "scope": "openid profile email tools:advanced tools:autonomous tools:evolutionary tools:proactive tools:cloud tools:ping tools:generate tools:healing admin:metrics admin:analytics",
+      "response_type": "code",
+      "code_challenge_method": "S256"
+    },
+    
+    "cequence_gateway_integration": {
+      "gateway_url": "{{CEQUENCE_GATEWAY_URL}}",
+      "api_key": "{{CEQUENCE_API_KEY}}",
+      "mcp_server_endpoint": "https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp",
+      "proxy_authentication": true,
+      "token_validation": "descope_jwt",
+      "scope_enforcement": true
+    },
+    
+    "security_settings": {
+      "pkce_required": true,
+      "state_parameter": true,
+      "token_lifetime": 3600,
+      "refresh_token_enabled": true,
+      "session_timeout": 86400
+    }
+  },
+  
+  "troubleshooting": {
+    "common_issues": {
+      "oauth_callback_failure": {
+        "description": "Failed to finish connecting to outbound OAuth application",
+        "causes": [
+          "Incorrect redirect URI configuration",
+          "Mismatch between OpenAPI spec and server implementation",
+          "Invalid OAuth client credentials",
+          "PKCE challenge/verifier mismatch",
+          "Scope permission issues"
+        ],
+        "solutions": [
+          "Verify redirect URI matches Cequence Gateway configuration",
+          "Ensure OpenAPI spec matches MCP server implementation",
+          "Check Descope project ID and access key",
+          "Validate PKCE flow implementation",
+          "Confirm required scopes are granted"
+        ]
+      }
+    }
+  }
+}
