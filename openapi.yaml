@@ -51,19 +51,18 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp
-    description: Production server via Cequence AI Gateway with enhanced analytics
   - url: https://api.cequence.ai/gateway/{gateway_id}/mcp
-    description: Direct Cequence Gateway endpoint with comprehensive observability
+    description: **Primary Production Endpoint.** All clients should connect here.
     variables:
       gateway_id:
         default: your_gateway_id
         description: Your Cequence Gateway ID
+  - url: https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp
+    description: **Origin Server.** The backend service that Cequence connects to.
   - url: http://localhost:8080
     description: Local development server with Cequence integration
 
 security:
-  - CequenceGateway: []
   - BearerAuth: []
 
 paths:
@@ -93,7 +92,6 @@ paths:
         with comprehensive observability through Cequence AI Gateway integration.
       tags: [Advanced Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -146,7 +144,6 @@ paths:
         - Compliance monitoring and automated reporting
       tags: [Advanced Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -211,7 +208,6 @@ paths:
         - Performance impact analysis
       tags: [Advanced Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -248,7 +244,6 @@ paths:
         - Success rate optimization insights
       tags: [Advanced Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -285,7 +280,6 @@ paths:
         - Automated rollback and recovery tracking
       tags: [Advanced Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -317,7 +311,6 @@ paths:
         - Performance benchmarking and analytics
       tags: [Standard Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -347,7 +340,6 @@ paths:
         - Task completion predictive analysis
       tags: [Standard Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -377,7 +369,6 @@ paths:
         - Security compliance validation
       tags: [Standard Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -407,7 +398,6 @@ paths:
         - Quality improvement metrics
       tags: [Standard Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -437,7 +427,6 @@ paths:
         - Innovation scoring and trending
       tags: [Standard Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -474,7 +463,6 @@ paths:
         - Performance trending and optimization insights
       tags: [Standard Tools]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       requestBody:
         required: true
@@ -505,6 +493,8 @@ paths:
         - Performance monitoring initialization
         - Security context establishment
       tags: [MCP Protocol]
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -532,6 +522,8 @@ paths:
         - Capability scoring and optimization insights
         - Usage patterns and recommendations
       tags: [MCP Protocol]
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -559,6 +551,8 @@ paths:
         - Analytics data collection and insights
         - Optimization recommendations
       tags: [MCP Protocol]
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -586,6 +580,8 @@ paths:
         - Security compliance validation
         - Usage recommendations
       tags: [MCP Protocol]
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -634,6 +630,8 @@ paths:
         - Security validation and compliance
         - Optimization recommendations
       tags: [MCP Protocol]
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -701,7 +699,6 @@ paths:
         - Cost optimization and resource utilization
       tags: [Analytics & Monitoring]
       security:
-        - CequenceGateway: []
         - BearerAuth: []
       responses:
         '200':
@@ -713,19 +710,6 @@ paths:
 
 components:
   securitySchemes:
-    CequenceGateway:
-      type: apiKey
-      in: header
-      name: X-Cequence-Gateway-Key
-      description: |
-        Cequence AI Gateway authentication for enterprise observability and security monitoring.
-        
-        Enhanced Capabilities:
-        - Real-time analytics and performance monitoring
-        - Security threat detection and prevention
-        - Cost optimization and resource management
-        - Compliance monitoring and automated reporting
-        
     BearerAuth:
       type: http
       scheme: bearer
