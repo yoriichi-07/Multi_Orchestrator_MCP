@@ -4,7 +4,7 @@ build:
   dockerBuildPath: "."
 startCommand:
   type: "http"
-  port: 8000
+  port: 8080
   healthCheck:
     path: "/health"
     intervalSeconds: 30
@@ -34,7 +34,7 @@ configSchema:
     descope_project_id:
       type: "string"
       description: "Descope project ID for Access Key authentication"
-      example: "P31WC6A6Vybbt7N5NhnH4dZLQgXY"
+      example: "P32RbAyKnfcvEJYS69SfSEk6GPKk"
     descope_management_key:
       type: "string"
       description: "Descope management key for administrative operations"
@@ -119,7 +119,7 @@ configSchema:
 
 exampleConfig:
   # Authentication (Required)
-  descope_project_id: "P31WC6A6Vybbt7N5NhnH4dZLQgXY"
+  descope_project_id: "P32RbAyKnfcvEJYS69SfSEk6GPKk"
   descope_management_key: "your-descope-management-key"
   
   # Analytics (Recommended for enterprise)

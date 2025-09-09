@@ -45,6 +45,10 @@ ENV NODE_ENV=production \
     MCP_ENV=production \
     LOG_LEVEL=INFO \
     ENABLE_METRICS=true \
+    ENABLE_HEALTH_CHECKS=true \
+    PORT=8080
+    LOG_LEVEL=INFO \
+    ENABLE_METRICS=true \
     ENABLE_HEALTH_CHECKS=true
 
 # Security environment variables
@@ -87,10 +91,10 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 # Health check configuration
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:8080/health || exit 1
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8080
 
 # Security: Switch to non-root user
 USER mcp:mcp
@@ -135,7 +139,7 @@ echo "  ✅ CORS protection"
 echo "  ✅ Cequence analytics"
 echo ""
 
-echo "🎯 Starting MCP server..."
+echo "🎯 Starting MCP server on port ${PORT:-8080}..."
 exec python mcp_server.py
 EOF
 

@@ -69,9 +69,10 @@ security:
 paths:
   # === ADVANCED AGENT TOOLS - ENTERPRISE CAPABILITIES (5 TOOLS) ===
   
-  /mcp/advanced/generate_application:
+  /tools/advanced/generate_application:
     post:
-      summary: "[ADVANCED 1/5] Application Generator"
+      summary: "Advanced Application Generator"
+      operationId: "generate_application"
       description: |
         Comprehensive application generation using multi-agent orchestration with Cequence analytics integration.
         
@@ -124,9 +125,10 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimited'
 
-  /mcp/advanced/autonomous_architect:
+  /tools/advanced/autonomous_architect:
     post:
-      summary: "[ADVANCED 2/5] Autonomous Architect Agent"
+      summary: "Autonomous Architect"
+      operationId: "autonomous_architect"
       description: |
         Advanced autonomous architecture generation with comprehensive observability and analytics.
         
@@ -175,9 +177,10 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimited'
 
-  /mcp/advanced/proactive_quality_assurance:
+  /tools/advanced/proactive_quality_assurance:
     post:
-      summary: "[ADVANCED 3/5] Proactive Quality Framework"
+      summary: "Proactive Quality Framework"
+      operationId: "proactive_quality_assurance"
       description: |
         Advanced predictive quality assurance with comprehensive analytics and enterprise monitoring.
         
@@ -224,9 +227,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProactiveQualityResponse'
 
-  /mcp/advanced/evolutionary_prompt_optimization:
+  /tools/advanced/evolutionary_prompt_optimization:
     post:
-      summary: "[ADVANCED 4/5] Evolutionary Prompt Engine"
+      summary: "Evolutionary Prompt Engine"
+      operationId: "evolutionary_prompt_optimization"
       description: |
         Advanced prompt optimization with comprehensive performance analytics and intelligent adaptation.
         
@@ -260,9 +264,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EvolutionaryPromptResponse'
 
-  /mcp/advanced/last_mile_cloud_deployment:
+  /tools/advanced/last_mile_cloud_deployment:
     post:
-      summary: "[ADVANCED 5/5] Last Mile Cloud Agent"
+      summary: "Last Mile Cloud Agent"
+      operationId: "last_mile_cloud_deployment"
       description: |
         Advanced autonomous multi-cloud orchestration with comprehensive observability and cost analytics.
         
@@ -298,9 +303,10 @@ paths:
 
   # === STANDARD TOOLS - ENHANCED WITH CEQUENCE ANALYTICS (11 TOOLS) ===
   
-  /mcp/tools/ping:
+  /tools/ping:
     post:
-      summary: "[STANDARD 1/11] Enhanced Connectivity Test"
+      summary: "Ping"
+      operationId: "ping"
       description: |
         Enhanced ping with scope validation, performance metrics, and Cequence analytics
         
@@ -327,9 +333,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PingResponse'
 
-  /mcp/tools/orchestrate_task:
+  /tools/orchestrate_task:
     post:
-      summary: "[STANDARD 2/11] Multi-Agent Task Orchestration"
+      summary: "Orchestrate Task"
+      operationId: "orchestrate_task"
       description: |
         Advanced multi-agent coordination with Cequence analytics integration
         
@@ -356,9 +363,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrchestateTaskResponse'
 
-  /mcp/tools/generate_architecture:
+  /tools/generate_architecture:
     post:
-      summary: "[STANDARD 3/11] AI-Powered Architecture Generation"
+      summary: "Generate Architecture"
+      operationId: "generate_architecture"
       description: |
         Intelligent system architecture generation with performance analytics
         
@@ -385,9 +393,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenerateArchitectureResponse'
 
-  /mcp/tools/auto_fix_code:
+  /tools/auto_fix_code:
     post:
-      summary: "[STANDARD 4/11] Autonomous Code Healing"
+      summary: "Auto Fix Code"
+      operationId: "auto_fix_code"
       description: |
         Self-healing code capabilities with comprehensive fix analytics
         
@@ -414,9 +423,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AutoFixCodeResponse'
 
-  /mcp/tools/list_capabilities:
+  /tools/list_capabilities:
     post:
-      summary: "[STANDARD 5/11] Comprehensive Capability Inventory"
+      summary: "List Capabilities"
+      operationId: "list_capabilities"
       description: |
         Complete system capabilities with analytics and performance metrics
         
@@ -450,9 +460,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CapabilitiesResponse'
 
-  /mcp/tools/system_status:
+  /tools/system_status:
     post:
-      summary: "[STANDARD 6/11] Comprehensive System Monitoring"
+      summary: "System Status"
+      operationId: "system_status"
       description: |
         Detailed system status with enterprise-grade monitoring via Cequence
         
@@ -483,7 +494,8 @@ paths:
   
   /mcp/initialize:
     post:
-      summary: "[STANDARD 7/11] MCP Protocol Initialization"
+      summary: "MCP Initialize"
+      operationId: "mcp_initialize"
       description: |
         Enhanced MCP initialization with Cequence analytics capabilities
         
@@ -509,7 +521,8 @@ paths:
 
   /mcp/tools/list:
     post:
-      summary: "[STANDARD 8/11] MCP Tool Discovery"
+      summary: "MCP List Tools"
+      operationId: "mcp_list_tools"
       description: |
         Comprehensive tool listing with analytics and capability insights
         
@@ -535,7 +548,8 @@ paths:
 
   /mcp/tools/call:
     post:
-      summary: "[STANDARD 9/11] MCP Tool Execution"
+      summary: "MCP Call Tool"
+      operationId: "mcp_call_tool"
       description: |
         Universal tool execution with comprehensive analytics tracking
         
@@ -561,7 +575,8 @@ paths:
 
   /mcp/resources/list:
     post:
-      summary: "[STANDARD 10/11] MCP Resource Discovery"
+      summary: "MCP List Resources"
+      operationId: "mcp_list_resources"
       description: |
         Resource discovery with analytics and performance insights
         
@@ -608,7 +623,8 @@ paths:
 
   /mcp/resources/read:
     post:
-      summary: "[STANDARD 11/11] MCP Resource Access"
+      summary: "MCP Read Resource"
+      operationId: "mcp_read_resource"
       description: |
         Resource access with analytics and performance optimization
         
@@ -651,7 +667,8 @@ paths:
   
   /health:
     get:
-      summary: System Health with Cequence Analytics
+      summary: "Health Check"
+      operationId: "health_check"
       description: |
         Enhanced health check with comprehensive system analytics via Cequence
         
@@ -672,7 +689,8 @@ paths:
 
   /dashboard/analytics:
     get:
-      summary: Cequence Analytics Dashboard
+      summary: "Analytics Dashboard"
+      operationId: "analytics_dashboard"
       description: |
         Real-time analytics dashboard powered by Cequence AI Gateway
         

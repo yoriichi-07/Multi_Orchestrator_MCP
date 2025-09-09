@@ -104,9 +104,40 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         token = auth_header[7:]  # Remove "Bearer " prefix
         
         try:
-            # Validate token with Descope
+            # Get Descope client
             descope_client = await get_descope_client()
-            token_claims = await descope_client.validate_jwt_token(token)
+            
+            # First, try to validate as JWT token (for already exchanged tokens)
+            token_claims = None
+            try:
+                token_claims = await descope_client.validate_jwt_token(token)
+                logger.info("jwt_validation_success", correlation_id=getattr(request.state, 'correlation_id', 'unknown'))
+            except TokenValidationError:
+                # If JWT validation fails, try to exchange as Access Key
+                logger.info("attempting_access_key_exchange", correlation_id=getattr(request.state, 'correlation_id', 'unknown'))
+                
+                try:
+                    # Exchange Access Key for JWT token
+                    token_response = await descope_client.create_machine_token(token)
+                    jwt_token = token_response.get("access_token")
+                    
+                    if not jwt_token:
+                        raise TokenValidationError("Failed to exchange access key - no token returned")
+                    
+                    # Now validate the exchanged JWT token
+                    token_claims = await descope_client.validate_jwt_token(jwt_token)
+                    logger.info("access_key_exchange_success", 
+                              key_id=token_response.get("key_id"),
+                              correlation_id=getattr(request.state, 'correlation_id', 'unknown'))
+                    
+                except Exception as exchange_error:
+                    logger.error("access_key_exchange_failed", 
+                               error=str(exchange_error),
+                               correlation_id=getattr(request.state, 'correlation_id', 'unknown'))
+                    raise TokenValidationError(f"Failed to exchange access key: {str(exchange_error)}")
+            
+            if not token_claims:
+                raise TokenValidationError("No valid token claims obtained")
             
             # Create authentication context
             auth_context = AuthContext(token_claims)
@@ -833,6 +864,26 @@ def main():
     # Create Starlette app with MCP HTTP transport
     app = mcp.http_app()
     
+    # Add health endpoint for Smithery
+    from starlette.responses import JSONResponse
+    from starlette.routing import Route
+    
+    async def health_check(request):
+        """Health check endpoint for Smithery"""
+        return JSONResponse({
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "version": "3.0.0",
+            "server": "Multi-Agent Orchestrator MCP",
+            "port": port,
+            "authentication": "enabled" if settings.descope_project_id else "disabled",
+            "demo_mode": settings.descope_demo_mode
+        })
+    
+    # Add the health route to the app
+    health_route = Route("/health", health_check, methods=["GET"])
+    app.routes.append(health_route)
+    
     # Add middleware stack (order matters - reverse of execution order)
     
     # 1. CORS middleware (outermost) - handles preflight requests
@@ -887,4 +938,5 @@ def main():
 # Initialize the server
 if __name__ == "__main__":
     logger.info("mcp_server_starting", version="2.0.0", mode="http")
+    main()  # Call the main function
     main()
