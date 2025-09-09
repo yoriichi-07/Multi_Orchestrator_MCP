@@ -80,128 +80,90 @@ class CorrelationMiddleware(BaseHTTPMiddleware):
 
 class AuthenticationMiddleware(BaseHTTPMiddleware):
     """
-    🔒 SECURE Access Key authentication and authorization middleware
-    
-    Correctly validates tokens and enforces scopes on a per-tool basis.
-    Fixes critical security vulnerabilities identified in security audit.
+    ✅ FINAL VERSION: A robust middleware that correctly handles the entire
+    MCP session lifecycle, including initialization and per-tool scope enforcement.
     """
-    
     def __init__(self, app):
         super().__init__(app)
-        # Map of tool paths to the required Descope permission (scope)
-        # 🔑 CRITICAL MAPPING FOR SCOPE VALIDATION
-        self.protected_tools = {
-            "ping": "tools:ping",
-            "orchestrate_task": "tools:generate",
-            "generate_architecture": "tools:generate",
-            "auto_fix_code": "tools:healing",
-            "get_system_status": "admin:metrics",
-            "advanced_generate_application": "tools:advanced",
-            "autonomous_architect": "tools:autonomous",
-            "proactive_quality_assurance": "tools:proactive",
-            "evolutionary_prompt_optimization": "tools:evolutionary",
-            "last_mile_cloud_deployment": "tools:cloud",
-            "list_capabilities": "tools:basic",  # Basic capability listing
-            "debug_server_config": None  # Debug tool deliberately has no scope requirement (bypasses auth)
+        # This map is the single source of truth for tool permissions.
+        self.tool_to_scope_map = {
+            "ping": "tools:basic", # Assuming you have a 'tools:ping' or 'tools:basic' scope
+            "orchestrate_task": "tools:orchestrate",
+            "generate_architecture": "tools:architecture",
+            "auto_fix_code": "tools:fix",
+            "list_capabilities": "tools:capabilities",
+            "get_system_status": "tools:status",
+            "advanced_generate_application": "advanced:app_generator",
+            "autonomous_architect": "advanced:autonomous_architect",
+            "proactive_quality_assurance": "advanced:quality_framework",
+            "evolutionary_prompt_optimization": "advanced:prompt_engine",
+            "last_mile_cloud_deployment": "advanced:cloud_agent",
+            "debug_server_config": None # This tool is public
         }
 
     async def dispatch(self, request: Request, call_next):
+        from starlette.responses import JSONResponse
+        
         path = request.url.path
 
-        # 🚫 SECURE: Only specific public paths allowed, no broad exemptions
-        public_paths = {
-            "/health", "/docs", "/openapi.json", "/favicon.ico",
-            # MCP-specific paths for client discovery ONLY
-            "/mcp/", "/mcp", "/mcp/tools/list", "/mcp/initialize"
-        }
-        
+        # Define paths that are always public and require NO authentication
+        public_paths = {"/health", "/docs", "/openapi.json"}
         if path in public_paths or request.method == "OPTIONS":
-            return await call_next(request)  # Skip auth for public paths
-
-        # Extract authorization header
-        auth_header = request.headers.get("authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            return Response(
-                content=json.dumps({"error": "Missing or invalid authorization header"}),
-                status_code=401,
-                headers={"content-type": "application/json"}
-            )
-        
-        token = auth_header[7:]  # Remove "Bearer " prefix
-        
-        try:
-            descope_client = await get_descope_client()
-            
-            # 🔧 CORRECT, SIMPLIFIED VALIDATION: Use validate_jwt_token for all token types
-            # Descope Access Keys are already JWTs - no need for complex exchange logic
-            validated_token = await descope_client.validate_session(token)
-            
-            # Store the validated token claims in the request state
-            request.state.auth_context = AuthContext(validated_token)
-            
-            # 🛡️ SCOPE VALIDATION LOGIC
-            # Get the tool name from the MCP request body
-            if path == "/mcp/tools/call":
-                try:
-                    body = await request.body()
-                    if body:  # Only parse if body exists
-                        mcp_payload = json.loads(body)
-                        tool_name = mcp_payload.get("params", {}).get("name", "")
-                        
-                        # Check if the called tool requires a specific scope
-                        required_scope = self.protected_tools.get(tool_name)
-                        if required_scope:
-                            # Get the scopes from the validated token
-                            token_scopes = validated_token.get("permissions", [])
-                            if isinstance(token_scopes, str):
-                                token_scopes = token_scopes.split()
-                            
-                            if required_scope not in token_scopes:
-                                error_msg = f"Insufficient permissions. Tool '{tool_name}' requires scope: {required_scope}. Available scopes: {token_scopes}"
-                                return Response(
-                                    content=json.dumps({"error": error_msg}),
-                                    status_code=403,
-                                    headers={"content-type": "application/json"}
-                                )
-                                
-                        logger.info(
-                            "tool_authorized",
-                            tool=tool_name,
-                            required_scope=required_scope,
-                            user_scopes=validated_token.get("permissions", []),
-                            correlation_id=getattr(request.state, 'correlation_id', 'unknown')
-                        )
-                except (json.JSONDecodeError, AttributeError) as e:
-                    logger.warning(
-                        "scope_validation_skipped",
-                        reason=str(e),
-                        correlation_id=getattr(request.state, 'correlation_id', 'unknown')
-                    )
-
             return await call_next(request)
 
-        except TokenValidationError as e:
-            logger.warning(
-                "authentication_failed",
-                error=str(e),
-                correlation_id=getattr(request.state, 'correlation_id', 'unknown')
-            )
-            return Response(
-                content=json.dumps({"error": "Authentication failed: invalid_token"}),
-                status_code=401,
-                headers={"content-type": "application/json"}
-            )
+        # All other paths, including all /mcp/* endpoints, require a valid token.
+        auth_header = request.headers.get("authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return JSONResponse({"error": "Authorization header is missing or invalid"}, status_code=401)
+        
+        token = auth_header[7:]
+
+        try:
+            # Step 1: AUTHENTICATE the token for ALL secure requests.
+            descope_client = await get_descope_client()
+            validated_token = await descope_client.validate_session(session_token=token)
+            request.state.auth_context = validated_token # Attach validated data to the request
+
+            # Step 2: AUTHORIZE based on scope, ONLY for tool calls.
+            if path == "/mcp/tools/call":
+                body = await request.body()
+                # Use a try-except block in case the body is empty or not valid JSON
+                try:
+                    mcp_payload = json.loads(body)
+                    tool_name = mcp_payload.get("params", {}).get("name")
+                    required_scope = self.tool_to_scope_map.get(tool_name)
+                    
+                    if required_scope: # Check scope only if the tool is in our protected map
+                        token_scopes = validated_token.get("scope", "").split()
+                        if required_scope not in token_scopes:
+                            error_msg = f"Insufficient permissions. Tool '{tool_name}' requires scope: '{required_scope}'"
+                            logger.warning("authorization_failed", required=required_scope, provided=token_scopes)
+                            return JSONResponse({"error": error_msg}, status_code=403)
+
+                    # Restore the body so the application can read it again
+                    async def receive(): 
+                        return {"type": "http.request", "body": body}
+                    request._receive = receive
+
+                except json.JSONDecodeError:
+                    return JSONResponse({"error": "Invalid JSON in request body for tool call"}, status_code=400)
+
+            # If authentication and authorization pass, proceed to the actual tool.
+            return await call_next(request)
+
         except Exception as e:
-            logger.error(
-                "authentication_error",
-                error=str(e),
-                correlation_id=getattr(request.state, 'correlation_id', 'unknown')
-            )
-            return Response(
-                content=json.dumps({"error": "Authentication service error"}),
-                status_code=500,
-                headers={"content-type": "application/json"}
-            )
+            logger.warning("authentication_failed", error=str(e))
+            # Return the specific "invalid_token" error message the client expects.
+            error_payload = {
+                "error": {
+                    "type": "auth",
+                    "category": "auth",
+                    "message": "invalid_token",
+                    "statusCode": 401,
+                    "details": f"Token validation failed: {str(e)}"
+                }
+            }
+            return JSONResponse(error_payload, status_code=401)
 
 
 def require_scope(required_scope: str):
@@ -230,13 +192,13 @@ def require_any_scope(required_scopes: List[str]):
     return decorator
 
 @mcp.tool()
-@require_scope("tools:ping")
+@require_scope("tools:basic")
 async def ping() -> str:
     """Simple health check ping"""
     return "pong"
 
 @mcp.tool()
-@require_scope("tools:generate")
+@require_scope("tools:orchestrate")
 async def orchestrate_task(
     task_description: str,
     task_type: str = "development",
@@ -296,7 +258,7 @@ async def orchestrate_task(
         }
 
 @mcp.tool()
-@require_scope("tools:generate")
+@require_scope("tools:architecture")
 async def generate_architecture(
     project_description: str,
     tech_stack: List[str],
@@ -333,7 +295,7 @@ async def generate_architecture(
         }
 
 @mcp.tool()
-@require_scope("tools:healing")
+@require_scope("tools:fix")
 async def auto_fix_code(
     code: str,
     error_message: str,
@@ -377,7 +339,7 @@ async def auto_fix_code(
         }
 
 @mcp.tool()
-@require_scope("tools:basic")
+@require_scope("tools:capabilities")
 async def list_capabilities() -> Dict[str, Any]:
     """List all available capabilities and agent types including advanced upgrades"""
     return {
@@ -430,7 +392,7 @@ async def list_capabilities() -> Dict[str, Any]:
     }
 
 @mcp.tool()
-@require_scope("admin:metrics")
+@require_scope("tools:status")
 async def get_system_status() -> Dict[str, Any]:
     """Get current system status and health metrics"""
     try:
@@ -467,7 +429,7 @@ async def get_system_status() -> Dict[str, Any]:
         }
 
 @mcp.tool()
-@require_scope("tools:advanced")
+@require_scope("advanced:app_generator")
 async def advanced_generate_application(
     description: str,
     complexity_level: str = "advanced",
@@ -523,7 +485,7 @@ async def advanced_generate_application(
         }
 
 @mcp.tool()
-@require_scope("tools:autonomous")
+@require_scope("advanced:autonomous_architect")
 async def autonomous_architect(
     project_goals: List[str],
     constraints: List[str] = None,
@@ -573,7 +535,7 @@ async def autonomous_architect(
         }
 
 @mcp.tool()
-@require_scope("tools:proactive")
+@require_scope("advanced:quality_framework")
 async def proactive_quality_assurance(
     code_context: str,
     quality_standards: List[str] = None,
@@ -617,7 +579,7 @@ async def proactive_quality_assurance(
         }
 
 @mcp.tool()
-@require_scope("tools:evolutionary")
+@require_scope("advanced:prompt_engine")
 async def evolutionary_prompt_optimization(
     base_prompt: str,
     optimization_goals: List[str] = None,
@@ -666,7 +628,7 @@ async def evolutionary_prompt_optimization(
         }
 
 @mcp.tool()
-@require_scope("tools:cloud")
+@require_scope("advanced:cloud_agent")
 async def last_mile_cloud_deployment(
     application_context: str,
     target_environments: List[str] = None,
