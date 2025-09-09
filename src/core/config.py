@@ -26,9 +26,38 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False, description="Debug mode")
     
     # Enhanced Descope Authentication
-    descope_project_id: str = Field(default="test_project", description="Descope project ID for Access Key authentication")
+    descope_project_id: str = Field(default="", description="Descope project ID for Access Key authentication")
     descope_management_key: Optional[str] = Field(None, description="Descope management key for Access Key operations")
     descope_demo_mode: bool = Field(default=True, description="Enable demo mode for authentication (for development/testing)")
+    
+    @field_validator('descope_demo_mode', mode='before')
+    @classmethod
+    def validate_demo_mode(cls, v, values=None):
+        """
+        Intelligent demo mode validation:
+        - If no project_id is provided, force demo mode
+        - If project_id starts with 'demo' or 'test', use demo mode
+        - If real credentials are provided, allow production mode but with graceful fallback
+        """
+        # Get the current values context
+        project_id = values.get('descope_project_id', '') if values else ''
+        management_key = values.get('descope_management_key') if values else None
+        
+        # Force demo mode if no credentials are provided
+        if not project_id or project_id in ['', 'test_project']:
+            return True
+            
+        # Use demo mode for test/demo project IDs
+        if project_id.lower().startswith(('demo', 'test', 'dev')):
+            return True
+            
+        # For real credentials, respect the setting but with logging
+        # This allows production mode but with graceful fallback in the authentication middleware
+        if v is None:
+            # Default to False for production when real credentials are provided
+            return management_key is None
+            
+        return v
     
     # JWT Configuration
     jwt_algorithm: str = Field(default="RS256", description="JWT algorithm for token validation")

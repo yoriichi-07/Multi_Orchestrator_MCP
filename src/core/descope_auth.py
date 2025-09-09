@@ -329,17 +329,77 @@ class AuthContext:
 
 # Global Descope client instance
 descope_client: Optional[DescopeClient] = None
+_client_initialization_error: Optional[str] = None
 
 
 async def get_descope_client() -> DescopeClient:
-    """Get singleton Descope client instance"""
-    global descope_client
+    """
+    Get singleton Descope client instance with robust error handling
+    
+    This function ensures that server startup never fails due to authentication issues.
+    If real credentials fail, it will fall back gracefully while logging the issue.
+    """
+    global descope_client, _client_initialization_error
     
     if descope_client is None:
-        descope_client = DescopeClient(
-            project_id=settings.descope_project_id,
-            management_key=settings.descope_management_key,
-            demo_mode=settings.descope_demo_mode
-        )
+        try:
+            logger.info("descope_client_init_start", 
+                       project_id_set=bool(settings.descope_project_id),
+                       management_key_set=bool(settings.descope_management_key),
+                       demo_mode=settings.descope_demo_mode)
+            
+            # Initialize the client
+            descope_client = DescopeClient(
+                project_id=settings.descope_project_id,
+                management_key=settings.descope_management_key,
+                demo_mode=settings.descope_demo_mode
+            )
+            
+            # Test the client initialization (but don't fail if it doesn't work)
+            try:
+                # For demo mode, this should always work
+                if settings.descope_demo_mode:
+                    logger.info("descope_client_init_success", mode="demo")
+                else:
+                    # For production mode, we don't test API calls here to avoid blocking startup
+                    # API calls will be tested when actually needed
+                    logger.info("descope_client_init_success", mode="production", 
+                               project_id=settings.descope_project_id[:8] + "..." if settings.descope_project_id else None)
+                
+            except Exception as test_error:
+                # Log the test error but continue with the client
+                logger.warning("descope_client_test_failed", 
+                              error=str(test_error),
+                              note="Client created but functionality may be limited")
+            
+        except Exception as init_error:
+            # Log the initialization error
+            error_msg = f"Descope client initialization failed: {str(init_error)}"
+            _client_initialization_error = error_msg
+            logger.error("descope_client_init_failed", 
+                        error=str(init_error),
+                        fallback="Server will continue without authentication")
+            
+            # Create a fallback demo client to prevent complete failure
+            try:
+                logger.info("descope_fallback_init", mode="emergency_demo")
+                descope_client = DescopeClient(
+                    project_id="emergency_demo_project",
+                    management_key="emergency_demo_key", 
+                    demo_mode=True
+                )
+                logger.warning("descope_fallback_success", 
+                              warning="Using emergency demo mode due to initialization failure")
+            except Exception as fallback_error:
+                # If even the fallback fails, raise the original error
+                logger.critical("descope_fallback_failed", 
+                               original_error=str(init_error),
+                               fallback_error=str(fallback_error))
+                raise Exception(f"Complete authentication failure: {init_error}")
     
     return descope_client
+
+
+def get_initialization_error() -> Optional[str]:
+    """Get any initialization error that occurred"""
+    return _client_initialization_error

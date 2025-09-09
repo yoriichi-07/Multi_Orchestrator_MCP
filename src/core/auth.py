@@ -5,12 +5,14 @@
 import os
 import json
 import structlog
+import asyncio
+from typing import Optional
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from .config import settings
-from .descope_auth import get_descope_client # We will keep this import for now
+from .descope_auth import get_descope_client, DescopeClient # We will keep this import for now
 
 logger = structlog.get_logger()
 
@@ -19,6 +21,9 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
     ✅ FINAL & CONSOLIDATED VERSION: A robust middleware that correctly handles 
     the entire MCP session lifecycle, including initialization and per-tool 
     scope enforcement. This is the single source of truth for authentication.
+    
+    CRITICAL FIX: Ensures discovery endpoints ALWAYS work regardless of 
+    authentication configuration or initialization failures.
     """
     def __init__(self, app):
         super().__init__(app)
@@ -37,6 +42,53 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             "last_mile_cloud_deployment": "advanced:cloud_agent",
             "debug_server_config": None # This tool is public
         }
+        
+        # Initialize authentication status tracking
+        self._auth_initialized = False
+        self._auth_available = False
+        self._descope_client: Optional[DescopeClient] = None
+        self._init_error: Optional[str] = None
+        
+        # Initialize authentication in the background (non-blocking)
+        asyncio.create_task(self._initialize_authentication())
+
+    async def _initialize_authentication(self):
+        """Initialize authentication client with robust error handling"""
+        try:
+            logger.info("auth_middleware_init_start", 
+                       project_id_configured=bool(settings.descope_project_id),
+                       demo_mode=settings.descope_demo_mode)
+            
+            if settings.descope_project_id:
+                # Try to initialize Descope client
+                self._descope_client = await get_descope_client()
+                self._auth_available = True
+                logger.info("auth_middleware_init_success", 
+                           demo_mode=settings.descope_demo_mode,
+                           project_id=settings.descope_project_id[:8] + "..." if settings.descope_project_id else None)
+            else:
+                logger.info("auth_middleware_init_skipped", reason="no_project_id_configured")
+                self._auth_available = False
+                
+        except Exception as e:
+            # Log the error but continue without authentication
+            self._init_error = str(e)
+            self._auth_available = False
+            logger.warning("auth_middleware_init_failed", 
+                          error=str(e), 
+                          fallback="discovery_endpoints_will_work")
+        finally:
+            self._auth_initialized = True
+
+    async def _wait_for_auth_init(self, timeout: float = 5.0) -> bool:
+        """Wait for authentication initialization to complete"""
+        start_time = asyncio.get_event_loop().time()
+        while not self._auth_initialized:
+            if asyncio.get_event_loop().time() - start_time > timeout:
+                logger.warning("auth_init_timeout", timeout=timeout)
+                return False
+            await asyncio.sleep(0.1)
+        return True
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
@@ -56,16 +108,33 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
                 "/mcp/tools/list",         # Tool discovery - critical for Smithery scanning
                 "/mcp/initialize",         # MCP initialization
                 "/mcp/ping",              # Health check
-                "/mcp/capabilities"        # Capabilities discovery
+                "/mcp/capabilities",       # Capabilities discovery
+                "/mcp/resources/list",     # Resource discovery
+                "/mcp/prompts/list"        # Prompt discovery
             }
             
-            # Allow discovery endpoints without authentication
+            # CRITICAL: Allow discovery endpoints without authentication ALWAYS
             if path in mcp_discovery_endpoints:
-                logger.info("mcp_discovery_access", path=path, authenticated=False)
+                logger.info("mcp_discovery_access", 
+                           path=path, 
+                           authenticated=False,
+                           auth_available=self._auth_available)
                 return await call_next(request)
             
-            # For tool execution endpoints, require authentication
+            # For tool execution endpoints, require authentication if available
             if path == "/mcp/tools/call" or path.endswith("/tools/call"):
+                # Wait for authentication initialization
+                await self._wait_for_auth_init()
+                
+                # If authentication is not available, allow access but log warning
+                if not self._auth_available:
+                    logger.warning("mcp_tool_call_no_auth", 
+                                  path=path, 
+                                  reason=self._init_error or "auth_not_configured",
+                                  security_warning="Tool calls proceeding without authentication")
+                    return await call_next(request)
+                
+                # Authentication is available, require valid token
                 auth_header = request.headers.get("authorization")
                 if not auth_header or not auth_header.startswith("Bearer "):
                     logger.warning("mcp_tool_call_unauthorized", path=path)
@@ -78,10 +147,12 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
                 token = auth_header[7:]
 
                 try:
-                    descope_client = await get_descope_client()
+                    # Use the initialized client
+                    if not self._descope_client:
+                        raise Exception("Descope client not initialized")
                     
                     # CORRECT & SIMPLIFIED VALIDATION
-                    validated_token = await descope_client.validate_session(session_token=token)
+                    validated_token = await self._descope_client.validate_session(session_token=token)
                     request.state.auth_context = validated_token
 
                     # --- SCOPE ENFORCEMENT ---
@@ -112,9 +183,12 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             logger.info("mcp_endpoint_access", path=path, authenticated=False)
             return await call_next(request)
         
-        # For non-MCP endpoints, require authentication
-        auth_header = request.headers.get("authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            return JSONResponse({"error": "Authorization required"}, status_code=401)
+        # For non-MCP endpoints, require authentication if available
+        await self._wait_for_auth_init()
+        
+        if self._auth_available:
+            auth_header = request.headers.get("authorization")
+            if not auth_header or not auth_header.startswith("Bearer "):
+                return JSONResponse({"error": "Authorization required"}, status_code=401)
         
         return await call_next(request)

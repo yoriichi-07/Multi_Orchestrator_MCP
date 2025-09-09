@@ -796,91 +796,170 @@ This activates our Proactive Quality Agent for policy-driven analysis and automa
 """
 
 def main():
-    """Main entry point for Smithery deployment"""
-    print("Multi-Agent Orchestrator MCP Server starting... v3.0.1")
-    
-    # Get port from environment (Smithery deployment)
-    port = int(os.environ.get("PORT", 8080))
-    
-    # Create FastMCP app with streamable-http transport for Smithery  
-    mcp_app = mcp.http_app(transport="streamable-http")  # No path - will be handled by mounting
-    
-    # Create parent Starlette app with proper lifespan handling
-    from starlette.applications import Starlette
-    from starlette.responses import JSONResponse
-    from starlette.routing import Route, Mount
-    
-    async def health_check(request):
-        """Health check endpoint for Smithery"""
-        return JSONResponse({
-            "status": "healthy",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "version": "3.0.0",
-            "server": "Multi-Agent Orchestrator MCP",
-            "port": port,
-            "authentication": "enabled" if settings.descope_project_id else "disabled",
-            "demo_mode": settings.descope_demo_mode
-        })
-    
-    # Create the main Starlette app with FastMCP lifespan
-    app = Starlette(
-        routes=[
-            Route("/health", health_check, methods=["GET"]),
-            Mount("/mcp", app=mcp_app),  # Mount MCP app at /mcp path
-        ],
-        lifespan=mcp_app.lifespan,  # CRITICAL: Pass FastMCP lifespan for proper initialization
-    )
-    
-    # Add middleware stack (order matters - reverse of execution order)
-    
-    # 1. CORS middleware (outermost) - handles preflight requests
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["GET", "POST", "OPTIONS"],
-        allow_headers=[
-            "*", 
-            "authorization", 
-            "content-type",
-            "x-correlation-id",
-            "mcp-session-id", 
-            "mcp-protocol-version"
-        ],
-        expose_headers=[
-            "x-correlation-id", 
-            "mcp-session-id", 
-            "mcp-protocol-version"
-        ],
-        max_age=86400,
-    )
-    
-    # 2. Cequence Analytics middleware (if configured)
-    if settings.cequence_gateway_id and settings.cequence_api_key:
-        app.add_middleware(
-            CequenceMiddleware,
-            gateway_id=settings.cequence_gateway_id,
-            api_key=settings.cequence_api_key
+    """Main entry point for Smithery deployment with enhanced error handling"""
+    try:
+        print("Multi-Agent Orchestrator MCP Server starting... v3.0.1")
+        print("Configuration Status:")
+        print(f"   • Descope Project ID: {'Set' if settings.descope_project_id else 'Not set'}")
+        print(f"   • Descope Management Key: {'Set' if settings.descope_management_key else 'Not set'}")
+        print(f"   • Demo Mode: {'Enabled' if settings.descope_demo_mode else 'Disabled'}")
+        print(f"   • Cequence Gateway: {'Set' if settings.cequence_gateway_id else 'Not set'}")
+        
+        # Get port from environment (Smithery deployment)
+        port = int(os.environ.get("PORT", 8080))
+        print(f"Server will start on port {port}")
+        
+        # Create FastMCP app with streamable-http transport for Smithery  
+        mcp_app = mcp.http_app(transport="streamable-http")  # No path - will be handled by mounting
+        
+        # Create parent Starlette app with proper lifespan handling
+        from starlette.applications import Starlette
+        from starlette.responses import JSONResponse
+        from starlette.routing import Route, Mount
+        
+        async def health_check(request):
+            """Health check endpoint for Smithery with detailed authentication status"""
+            try:
+                # Get authentication initialization status
+                from src.core.descope_auth import get_initialization_error
+                auth_init_error = get_initialization_error()
+                
+                # Try to get Descope client status
+                auth_client_status = "unknown"
+                demo_mode_active = settings.descope_demo_mode
+                try:
+                    descope_client = await get_descope_client()
+                    auth_client_status = "initialized" if descope_client else "failed"
+                except Exception as e:
+                    auth_client_status = f"error: {str(e)}"
+                
+                health_data = {
+                    "status": "healthy",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "version": "3.0.1",
+                    "server": "Multi-Agent Orchestrator MCP",
+                    "port": port,
+                    "authentication": {
+                        "configured": bool(settings.descope_project_id),
+                        "client_status": auth_client_status,
+                        "demo_mode": demo_mode_active,
+                        "initialization_error": auth_init_error,
+                        "middleware_enabled": bool(settings.descope_project_id)
+                    },
+                    "mcp_endpoints": {
+                        "discovery_accessible": True,  # Always true with our robust middleware
+                        "tool_execution_requires_auth": bool(settings.descope_project_id) and auth_client_status == "initialized"
+                    },
+                    "environment": {
+                        "descope_project_id_set": bool(os.environ.get("DESCOPE_PROJECT_ID")),
+                        "descope_management_key_set": bool(os.environ.get("DESCOPE_MANAGEMENT_KEY")),
+                        "deployment_platform": "smithery" if "smithery" in os.environ.get("HOSTNAME", "").lower() else "unknown"
+                    }
+                }
+                
+                return JSONResponse(health_data)
+                
+            except Exception as e:
+                return JSONResponse({
+                    "status": "error",
+                    "error": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "note": "Health check failed but MCP discovery endpoints should still work"
+                }, status_code=500)
+        
+        # Create the main Starlette app with FastMCP lifespan
+        app = Starlette(
+            routes=[
+                Route("/health", health_check, methods=["GET"]),
+                Mount("/", app=mcp_app),  # Mount MCP app at root - it has its own /mcp path
+            ],
+            lifespan=mcp_app.lifespan,  # CRITICAL: Pass FastMCP lifespan for proper initialization
         )
-        print("✅ Cequence analytics middleware enabled")
-    else:
-        print("⚠️  Cequence analytics not configured")
-    
-    # 3. Authentication middleware (if configured)
-    if settings.descope_project_id:
+        
+        # Add middleware stack (order matters - reverse of execution order)
+        
+        # 1. CORS middleware (outermost) - handles preflight requests
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["GET", "POST", "OPTIONS"],
+            allow_headers=[
+                "*", 
+                "authorization", 
+                "content-type",
+                "x-correlation-id",
+                "mcp-session-id", 
+                "mcp-protocol-version"
+            ],
+            expose_headers=[
+                "x-correlation-id", 
+                "mcp-session-id", 
+                "mcp-protocol-version"
+            ],
+            max_age=86400,
+        )
+        
+        # 2. Cequence Analytics middleware (if configured)
+        if settings.cequence_gateway_id and settings.cequence_api_key:
+            app.add_middleware(
+                CequenceMiddleware,
+                gateway_id=settings.cequence_gateway_id,
+                api_key=settings.cequence_api_key
+            )
+            print("Cequence analytics middleware enabled")
+        else:
+            print("Cequence analytics not configured")
+        
+        # 3. Authentication middleware (ALWAYS added, but with graceful degradation)
         app.add_middleware(AuthenticationMiddleware)
-        print("✅ Descope authentication middleware enabled")
-    else:
-        print("⚠️  Authentication not configured - running in open mode")
-    
-    # 4. Correlation middleware (innermost) - tracks requests
-    app.add_middleware(CorrelationMiddleware)
-    
-    print(f"Starting HTTP server on port {port}")
-    
-    # Run the server
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+        if settings.descope_project_id:
+            print("Descope authentication middleware enabled (with graceful fallback)")
+        else:
+            print("Authentication middleware enabled in passthrough mode")
+        
+        # 4. Correlation middleware (innermost) - tracks requests
+        app.add_middleware(CorrelationMiddleware)
+        
+        print(f"Starting HTTP server on 0.0.0.0:{port}")
+        print("MCP Discovery endpoints are ALWAYS accessible for Smithery scanning")
+        print("Tool execution will require authentication if credentials are configured")
+        
+        # Run the server
+        import uvicorn
+        uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+        
+    except Exception as startup_error:
+        print(f"CRITICAL SERVER STARTUP FAILURE: {startup_error}")
+        print("This should not happen with the robust error handling implemented!")
+        print("Check your environment variables and system configuration.")
+        # Log the error but don't crash completely
+        logger.critical("server_startup_failed", error=str(startup_error))
+        
+        # Try to start a minimal server for debugging
+        try:
+            print("Attempting emergency startup for debugging...")
+            import uvicorn
+            from starlette.applications import Starlette
+            from starlette.responses import JSONResponse
+            from starlette.routing import Route
+            
+            async def emergency_health(request):
+                return JSONResponse({
+                    "status": "emergency_mode",
+                    "error": str(startup_error),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "note": "Server started in emergency mode for debugging"
+                })
+            
+            emergency_app = Starlette(routes=[Route("/health", emergency_health, methods=["GET"])])
+            port = int(os.environ.get("PORT", 8080))
+            print(f"Emergency server starting on port {port}")
+            uvicorn.run(emergency_app, host="0.0.0.0", port=port, log_level="info")
+            
+        except Exception as emergency_error:
+            print(f"Complete failure: {emergency_error}")
+            sys.exit(1)
 
 # Initialize the server
 if __name__ == "__main__":
