@@ -5,10 +5,13 @@ build:
 startCommand:
   type: "http"
   port: 8080
-  healthCheck:
-    path: "/health"
-    intervalSeconds: 30
-    timeoutSeconds: 10
+  command: ["python", "mcp_server.py"]
+healthCheck:
+  path: "/health"
+  intervalSeconds: 30
+  timeoutSeconds: 10
+environment:
+  PORT: "8080"
 name: "Multi-Agent Orchestrator MCP Server"
 description: |
   Enterprise Multi-Agent Orchestrator MCP Server with Advanced AI Capabilities

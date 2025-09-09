@@ -97,7 +97,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Expose port
 EXPOSE 8080
 
-# Production startup script
+# Production startup script creation and cleanup (before USER switch)
 RUN echo '#!/bin/bash\n\
 set -euo pipefail\n\
 echo "🚀 Starting Multi-Agent Orchestrator MCP Server (Production)"\n\
@@ -108,34 +108,28 @@ if [[ -z "${DESCOPE_PROJECT_ID:-}" ]]; then\n\
 fi\n\
 echo "✅ Environment validation passed"\n\
 echo "🤖 Starting advanced AI capabilities..."\n\
-echo "  🏗️ Autonomous Architect"\n\
-echo "  🛡️ Proactive Quality Framework"\n\
-echo "  🧠 Evolutionary Prompt Engine"\n\
-echo "  ☁️ Last Mile Cloud Agent"\n\
-echo "  🎯 Advanced Application Generator"\n\
-echo "🔐 Security features enabled:"\n\
-echo "  ✅ Descope Access Key authentication"\n\
-echo "  ✅ Scope-based authorization"\n\
-echo "  ✅ JWT validation"\n\
-echo "  ✅ Rate limiting"\n\
-echo "  ✅ CORS protection"\n\
+echo " Security features enabled"\n\
 echo "🎯 Starting MCP server on port ${PORT:-8080}..."\n\
 exec python mcp_server.py' > /app/start-production.sh && \
     chmod +x /app/start-production.sh && \
     chown mcp:mcp /app/start-production.sh
 
-# Security: Switch to non-root user
-USER mcp:mcp
-
-# Production entrypoint
-ENTRYPOINT ["/app/start-production.sh"]
-
-# Final production image optimizations
+# Final production image optimizations (before USER switch)
 RUN find /app -name "*.pyc" -delete && \
     find /app -name "*.pyo" -delete && \
     find /app -name "__pycache__" -type d -exec rm -rf {} + || true && \
     find /app -name "*.coverage" -delete || true && \
     find /app -name ".pytest_cache" -type d -exec rm -rf {} + || true
+
+# Security: Switch to non-root user
+USER mcp:mcp
+
+# Verify startup script after user switch
+RUN ls -la /app/start-production.sh && \
+    test -x /app/start-production.sh
+
+# Production entrypoint
+ENTRYPOINT ["/app/start-production.sh"]
 
 # Production image metadata
 LABEL stage="production"

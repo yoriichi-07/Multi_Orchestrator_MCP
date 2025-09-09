@@ -33,16 +33,21 @@ logs/
 .coverage
 .pytest_cache/
 htmlcov/
+tests/
 
-# Documentation
+# Documentation (except essential)
 docs/
-README.md
+archive/
 
 # Development files
-.env.example
+.env*
+!.env.production.template
 docker-compose.yml
 Makefile
 
 # Outputs
 outputs/
 tmp/
+
+# Node modules (if any)
+node_modules
