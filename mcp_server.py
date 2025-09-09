@@ -107,14 +107,31 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         path = request.url.path
 
         # Define paths that are always public and require NO authentication
-        public_paths = {"/health", "/docs", "/openapi.json"}
+        public_paths = {"/health", "/docs", "/openapi.json", "/mcp"}
         if path in public_paths or request.method == "OPTIONS":
             return await call_next(request)
 
-        # All other paths, including all /mcp/* endpoints, require a valid token.
+        # All other paths require a valid token, but handle /mcp differently
         auth_header = request.headers.get("authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
-            return JSONResponse({"error": "Authorization header is missing or invalid"}, status_code=401)
+            # For /mcp endpoint, allow initialization without auth but require auth for tool calls
+            if path.startswith("/mcp"):
+                # Check if this is a tool call vs initialization
+                try:
+                    body = await request.body()
+                    if body:
+                        mcp_payload = json.loads(body)
+                        method = mcp_payload.get("method")
+                        # Allow initialization methods without auth
+                        if method in ["initialize", "notifications/initialized", "ping"]:
+                            # Restore the body so the application can read it again
+                            async def receive(): 
+                                return {"type": "http.request", "body": body}
+                            request._receive = receive
+                            return await call_next(request)
+                except (json.JSONDecodeError, Exception):
+                    pass
+            return JSONResponse({"error": "Missing or invalid authorization header"}, status_code=401)
         
         token = auth_header[7:]
 
@@ -919,11 +936,11 @@ def main():
     """Main entry point for Smithery deployment"""
     print("Multi-Agent Orchestrator MCP Server starting...")
     
-    # Get port from environment (Smithery sets PORT=8081)
+    # Get port from environment (Smithery deployment)
     port = int(os.environ.get("PORT", 8080))
     
-    # Create Starlette app with MCP HTTP transport (newer FastMCP version)
-    app = mcp.http_app()
+    # Create Starlette app with MCP HTTP transport (streamable-http for Smithery)
+    app = mcp.http_app(path="/mcp", transport="streamable-http")
     
     # Add health endpoint for Smithery
     from starlette.responses import JSONResponse
