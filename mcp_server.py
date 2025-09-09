@@ -934,7 +934,7 @@ This activates our Proactive Quality Agent for policy-driven analysis and automa
 
 def main():
     """Main entry point for Smithery deployment"""
-    print("Multi-Agent Orchestrator MCP Server starting...")
+    print("Multi-Agent Orchestrator MCP Server starting... v3.0.1")
     
     # Get port from environment (Smithery deployment)
     port = int(os.environ.get("PORT", 8080))
