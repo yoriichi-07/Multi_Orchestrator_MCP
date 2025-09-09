@@ -64,7 +64,6 @@ servers:
 
 security:
   - CequenceGateway: []
-  - DescopeOAuth: []
 
 paths:
   # === ADVANCED AGENT TOOLS - ENTERPRISE CAPABILITIES (5 TOOLS) ===
@@ -307,7 +306,6 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
-        - DescopeOAuth: [tools:ping]
       requestBody:
         required: true
         content:
@@ -336,7 +334,6 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
-        - DescopeOAuth: [tools:generate]
       requestBody:
         required: true
         content:
@@ -675,7 +672,6 @@ paths:
       tags: [Analytics & Monitoring]
       security:
         - CequenceGateway: []
-        - DescopeOAuth: []
       responses:
         '200':
           description: Analytics dashboard with comprehensive insights
