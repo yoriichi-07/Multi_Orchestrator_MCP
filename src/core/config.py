@@ -1,9 +1,9 @@
 """
-Configuration management for the MCP server
+Configuration management for the MCP server with Access Key authentication
 """
-from typing import Optional, List
+from typing import Optional, List, Union
 from pydantic_settings import BaseSettings
-from pydantic import Field, ConfigDict
+from pydantic import Field, ConfigDict, field_validator
 
 
 class Settings(BaseSettings):
@@ -12,7 +12,12 @@ class Settings(BaseSettings):
     model_config = ConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        case_sensitive=False
+        env_parse_none_str="",
+        env_ignore_empty=True,
+        case_sensitive=False,
+        use_enum_values=True,
+        env_nested_delimiter="__",
+        extra="ignore"  # Ignore extra fields not defined in the model
     )
     
     # Server configuration
@@ -21,16 +26,65 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False, description="Debug mode")
     
     # Enhanced Descope Authentication
-    descope_project_id: str = Field(default="test_project", description="Descope project ID")
-    descope_management_key: Optional[str] = Field(None, description="Descope management key for dynamic client registration")
-    descope_client_id: Optional[str] = Field(None, description="Descope client ID for machine-to-machine authentication")
-    descope_client_secret: Optional[str] = Field(None, description="Descope client secret for machine-to-machine authentication")
+    descope_project_id: str = Field(default="test_project", description="Descope project ID for Access Key authentication")
+    descope_management_key: Optional[str] = Field(None, description="Descope management key for Access Key operations")
     descope_demo_mode: bool = Field(default=True, description="Enable demo mode for authentication (for development/testing)")
     
     # JWT Configuration
     jwt_algorithm: str = Field(default="RS256", description="JWT algorithm for token validation")
     jwt_verify_expiration: bool = Field(default=True, description="Verify JWT token expiration")
-    jwt_require_claims: List[str] = Field(default=["exp", "iat", "sub", "aud"], description="Required JWT claims")
+    jwt_verify_signature: bool = Field(default=True, description="Verify JWT signature")
+    jwt_verify_audience: bool = Field(default=True, description="Verify JWT audience")
+    jwt_verify_issuer: bool = Field(default=True, description="Verify JWT issuer")
+    jwt_require_claims: str = Field(default="exp,iat,sub,aud", description="Required JWT claims (comma-separated)")
+    
+    # Enhanced Descope Configuration
+    descope_issuer: Optional[str] = Field(None, description="Descope issuer URL")
+    descope_audience: Optional[str] = Field(None, description="Descope audience")
+    
+    # Security Configuration
+    security_rate_limit_enabled: bool = Field(default=True, description="Enable rate limiting")
+    security_rate_limit_requests: int = Field(default=100, description="Rate limit requests per window")
+    security_rate_limit_window: int = Field(default=60, description="Rate limit window in seconds")
+    security_cors_enabled: bool = Field(default=True, description="Enable CORS")
+    security_cors_origins: Optional[str] = Field(None, description="CORS allowed origins")
+    
+    # Scope Configuration
+    descope_legendary_scopes: str = Field(
+        default="legendary:autonomous_architect,legendary:quality_framework,legendary:prompt_engine,legendary:cloud_agent,legendary:app_generator",
+        description="Descope legendary scopes (comma-separated)"
+    )
+    descope_standard_scopes: str = Field(
+        default="tools:basic,tools:ping,tools:generate,tools:review,tools:fix,tools:deploy,tools:infrastructure,tools:quality",
+        description="Descope standard scopes (comma-separated)"
+    )
+    descope_admin_scopes: str = Field(
+        default="admin:analytics,admin:config,admin:logs,full_access",
+        description="Descope admin scopes (comma-separated)"
+    )
+    
+    # Role Configuration
+    descope_default_role: str = Field(default="standard_user", description="Default user role")
+    descope_legendary_roles: Optional[str] = Field(None, description="Legendary user roles")
+    descope_developer_roles: Optional[str] = Field(None, description="Developer roles")
+    descope_admin_roles: Optional[str] = Field(None, description="Admin roles")
+    
+    # Helper methods for parsing comma-separated values
+    def get_jwt_require_claims(self) -> List[str]:
+        """Get JWT required claims as list"""
+        return [claim.strip() for claim in self.jwt_require_claims.split(',') if claim.strip()]
+    
+    def get_descope_legendary_scopes(self) -> List[str]:
+        """Get legendary scopes as list"""
+        return [scope.strip() for scope in self.descope_legendary_scopes.split(',') if scope.strip()]
+    
+    def get_descope_standard_scopes(self) -> List[str]:
+        """Get standard scopes as list"""
+        return [scope.strip() for scope in self.descope_standard_scopes.split(',') if scope.strip()]
+    
+    def get_descope_admin_scopes(self) -> List[str]:
+        """Get admin scopes as list"""
+        return [scope.strip() for scope in self.descope_admin_scopes.split(',') if scope.strip()]
     
     # Security Settings
     token_cache_ttl: int = Field(default=3600, description="Token cache TTL in seconds")

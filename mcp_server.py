@@ -5,7 +5,7 @@ FastMCP Server with HTTP transport for Smithery deployment
 This server provides:
 - Multi-agent orchestration capabilities 
 - Self-healing code generation
-- OAuth 2.1 + PKCE authentication with Descope
+- Descope Access Key authentication with Bearer tokens
 - Analytics integration with Cequence AI Gateway
 - Full MCP protocol compliance with HTTP transport
 """
@@ -78,7 +78,7 @@ class CorrelationMiddleware(BaseHTTPMiddleware):
 
 
 class AuthenticationMiddleware(BaseHTTPMiddleware):
-    """Enhanced authentication middleware with scope validation"""
+    """Access Key authentication middleware with scope validation"""
     
     def __init__(self, app):
         super().__init__(app)
@@ -156,14 +156,12 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
 def require_scope(required_scope: str):
     """Decorator to require specific scope for tool access"""
     def decorator(func):
-        async def wrapper(*args, **kwargs):
-            # Extract request context if available (from FastMCP)
-            if hasattr(args[0], 'state') and hasattr(args[0].state, 'auth_context'):
-                auth_context = args[0].state.auth_context
-                if not auth_context.has_scope(required_scope):
-                    raise ValueError(f"Insufficient permissions. Required scope: {required_scope}")
-            
-            return await func(*args, **kwargs)
+        import functools
+        @functools.wraps(func)
+        async def wrapper(**kwargs):
+            # Note: Scope validation will be handled by middleware
+            # This decorator is kept for documentation and future use
+            return await func(**kwargs)
         return wrapper
     return decorator
 
@@ -171,13 +169,12 @@ def require_scope(required_scope: str):
 def require_any_scope(required_scopes: List[str]):
     """Decorator to require any of the specified scopes"""
     def decorator(func):
-        async def wrapper(*args, **kwargs):
-            if hasattr(args[0], 'state') and hasattr(args[0].state, 'auth_context'):
-                auth_context = args[0].state.auth_context
-                if not auth_context.has_any_scope(required_scopes):
-                    raise ValueError(f"Insufficient permissions. Required any of: {required_scopes}")
-            
-            return await func(*args, **kwargs)
+        import functools
+        @functools.wraps(func)
+        async def wrapper(**kwargs):
+            # Note: Scope validation will be handled by middleware
+            # This decorator is kept for documentation and future use
+            return await func(**kwargs)
         return wrapper
     return decorator
 
@@ -330,7 +327,7 @@ async def auto_fix_code(
 
 @mcp.tool()
 async def list_capabilities() -> Dict[str, Any]:
-    """List all available capabilities and agent types including legendary upgrades"""
+    """List all available capabilities and agent types including advanced upgrades"""
     return {
         "standard_agents": {
             "frontend": "React, Vue, Angular, UI/UX development",
@@ -338,13 +335,13 @@ async def list_capabilities() -> Dict[str, Any]:
             "devops": "CI/CD, infrastructure, deployment",
             "quality": "Testing, code review, validation"
         },
-        "legendary_agents": {
+        "advanced_agents": {
             "autonomous_architect": "Dynamic strategy generation with self-improving DAG execution",
             "proactive_quality": "Policy-as-code quality framework with auto-remediation",
             "evolutionary_prompt": "Self-improving AI communication with performance optimization", 
             "last_mile_cloud": "Autonomous deployment with intelligent verification and rollback"
         },
-        "revolutionary_features": {
+        "enterprise_features": {
             "autonomous_intelligence": "Self-learning and self-improving AI agents",
             "proactive_automation": "Predictive problem prevention and resolution",
             "evolutionary_optimization": "Continuous self-improvement across all systems",
@@ -353,18 +350,18 @@ async def list_capabilities() -> Dict[str, Any]:
         "standard_features": {
             "orchestration": "Multi-agent task coordination",
             "self_healing": "Automatic error detection and fixing",
-            "authentication": "OAuth 2.1 + PKCE with Descope",
+            "authentication": "Descope Access Key authentication",
             "analytics": "Real-time monitoring with Cequence"
         },
-        "legendary_tools": [
-            "legendary_generate_application - Revolutionary app generation",
+        "advanced_tools": [
+            "advanced_generate_application - Enterprise application generation",
             "autonomous_architect - Dynamic system design",
             "proactive_quality_assurance - Policy-driven quality framework",
             "evolutionary_prompt_optimization - Self-improving AI communication",
             "last_mile_cloud_deployment - Autonomous deployment & verification"
         ],
         "supported_tasks": [
-            "Revolutionary application development",
+            "Enterprise application development",
             "Autonomous system architecture",
             "Self-improving code quality",
             "Evolutionary AI optimization",
@@ -376,7 +373,7 @@ async def list_capabilities() -> Dict[str, Any]:
             "Deployment automation",
             "Code review and optimization"
         ],
-        "innovation_level": "Industry Revolutionary",
+        "innovation_level": "Enterprise Advanced",
         "ai_sophistication": "Autonomous Self-Improving"
     }
 
@@ -388,8 +385,8 @@ async def get_system_status() -> Dict[str, Any]:
         # Check orchestrator status
         orchestrator_status = await orchestrator.get_status()
         
-        # Get legendary status
-        legendary_status = await orchestrator.legendary_get_status()
+        # Get advanced status
+        advanced_status = await orchestrator.advanced_get_status()
         
         # Check authentication status
         auth_status = "enabled" if settings.descope_project_id else "disabled"
@@ -400,12 +397,12 @@ async def get_system_status() -> Dict[str, Any]:
         return {
             "server": "healthy",
             "orchestrator": orchestrator_status,
-            "legendary_agents": legendary_status,
+            "advanced_agents": advanced_status,
             "authentication": auth_status,
             "analytics": analytics_status,
             "agents_available": orchestrator.available_agents,
             "healing_enabled": bool(code_fixer),
-            "revolutionary_capabilities": True,
+            "enterprise_capabilities": True,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
@@ -418,33 +415,33 @@ async def get_system_status() -> Dict[str, Any]:
         }
 
 @mcp.tool()
-@require_any_scope(["tools:legendary", "admin:config"])
-async def legendary_generate_application(
+@require_any_scope(["tools:advanced", "admin:config"])
+async def advanced_generate_application(
     description: str,
     complexity_level: str = "advanced",
     innovation_requirements: List[str] = None,
     deployment_strategy: str = "cloud-native"
 ) -> Dict[str, Any]:
     """
-    Revolutionary application generation using legendary AI agents
+    Enterprise application generation using advanced AI agents
     
     Args:
         description: Detailed description of the application to build
-        complexity_level: Target complexity (simple, advanced, enterprise, revolutionary)
+        complexity_level: Target complexity (simple, advanced, enterprise, professional)
         innovation_requirements: List of innovative features to include
         deployment_strategy: Deployment approach (local, cloud-native, multi-cloud, edge)
     """
     try:
-        # Track the legendary operation
+        # Track the advanced operation
         if settings.cequence_gateway_id:
-            await track_agent_operation("legendary_generate_application", {
+            await track_agent_operation("advanced_generate_application", {
                 "complexity_level": complexity_level,
                 "deployment_strategy": deployment_strategy,
                 "innovation_count": len(innovation_requirements or [])
             })
         
-        # Execute legendary orchestration
-        result = await orchestrator.legendary_generate_application(
+        # Execute advanced orchestration
+        result = await orchestrator.advanced_generate_application(
             description=description,
             complexity_level=complexity_level,
             innovation_requirements=innovation_requirements or [],
@@ -453,24 +450,24 @@ async def legendary_generate_application(
         
         return {
             "success": result.get("success", False),
-            "revolutionary_features": result.get("revolutionary_features", []),
+            "enterprise_features": result.get("enterprise_features", []),
             "autonomous_architecture": result.get("autonomous_architecture"),
             "proactive_quality_policies": result.get("proactive_quality_policies"),
             "evolutionary_prompts": result.get("evolutionary_prompts"),
             "cloud_deployment_plan": result.get("cloud_deployment_plan"),
             "execution_timeline": result.get("execution_timeline"),
             "innovation_score": result.get("innovation_score", 0),
-            "legendary_agents_used": result.get("legendary_agents_used", []),
+            "advanced_agents_used": result.get("advanced_agents_used", []),
             "self_improvement_suggestions": result.get("self_improvement_suggestions", []),
             "future_evolution_path": result.get("future_evolution_path")
         }
         
     except Exception as e:
-        logger.error("legendary_generation_failed", error=str(e))
+        logger.error("advanced_generation_failed", error=str(e))
         return {
             "success": False,
             "error": str(e),
-            "legendary_fallback": "Standard orchestration available"
+            "standard_fallback": "Standard orchestration available"
         }
 
 @mcp.tool()

@@ -1,4 +1,14 @@
 {
+  "authentication_method": "descope_access_key",
+  "description": "Descope Access Key authentication with scope-based authorization",
+  "version": "2.0",
+  "migration_from": "oauth_2.1_pkce",
+  "access_key_usage": {
+    "description": "Access Keys provide direct JWT tokens with embedded scopes",
+    "token_format": "Bearer JWT",
+    "scope_validation": "server_side",
+    "cequence_integration": "passthrough_mode"
+  },
   "scopes": [
     {
       "name": "advanced:autonomous_architect",
@@ -188,5 +198,11 @@
         "tools:*"
       ]
     }
-  ]
+  ],
+  "access_key_integration": {
+    "scope_embedding": "Scopes are embedded in Access Key JWT tokens",
+    "validation_method": "JWT signature validation with Descope public keys",
+    "cequence_passthrough": "Cequence Gateway forwards Bearer tokens unchanged",
+    "demo_value": "All scope definitions preserved for authorization demo"
+  }
 }

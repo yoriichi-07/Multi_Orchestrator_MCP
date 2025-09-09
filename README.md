@@ -2,7 +2,7 @@
 
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-brightgreen)](https://modelcontextprotocol.io)
 [![Smithery Ready](https://img.shields.io/badge/Smithery-Ready-blue)](https://smithery.ai)
-[![OAuth 2.1](https://img.shields.io/badge/OAuth-2.1%20%2B%20PKCE-green)](https://oauth.net/2.1/)
+[![Access Key Auth](https://img.shields.io/badge/Auth-Access%20Key-green)](https://docs.descope.com/)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)](https://python.org)
 [![Revolutionary AI](https://img.shields.io/badge/AI-Revolutionary-red)](https://github.com)
 
@@ -19,7 +19,7 @@ A Model Context Protocol (MCP) server that provides **revolutionary autonomous s
 #### 🎯 Core Capabilities
 - **Multi-agent coordination**. Orchestrates Frontend, Backend, DevOps, and QA agents for complete application development.
 - **Self-healing code generation**. Automatically detects and fixes issues during development with intelligent error recovery.
-- **Enterprise authentication**. OAuth 2.1 + PKCE with Descope integration supporting Non-Human Identity for secure API access.
+- **Enterprise authentication**. Descope Access Key authentication with Bearer tokens supporting Non-Human Identity for secure API access.
 - **Real-time analytics**. Comprehensive monitoring and insights through Cequence AI Gateway integration.
 - **Production-ready deployment**. Built on FastMCP framework with seamless Smithery platform deployment.
 
@@ -162,9 +162,9 @@ Follow Windsurf MCP [documentation](https://docs.windsurf.com/windsurf/cascade/m
 The Multi-Agent Orchestrator MCP server supports configuration through environment variables:
 
 ```bash
-# Authentication (Descope OAuth 2.1 + PKCE)
+# Authentication (Descope Access Key)
 DESCOPE_PROJECT_ID=your_project_id
-DESCOPE_CLIENT_SECRET=your_client_secret
+DESCOPE_ACCESS_KEY=your_access_key
 DESCOPE_MANAGEMENT_KEY=your_management_key
 
 # Analytics (Cequence AI Gateway)
@@ -273,12 +273,12 @@ docker run -p 8000:8000 --env-file .env multi-orchestrator-mcp
 
 ### Authentication Setup
 
-This server implements OAuth 2.1 + PKCE authentication using Descope:
+This server implements Access Key authentication using Descope:
 
 #### Required Environment Variables
 ```bash
 DESCOPE_PROJECT_ID=your_project_id
-DESCOPE_CLIENT_SECRET=your_client_secret
+DESCOPE_ACCESS_KEY=your_access_key
 DESCOPE_MANAGEMENT_KEY=your_management_key
 ```
 
@@ -371,7 +371,7 @@ Given additional development time, we would focus on the following enhancements:
 This MCP server was developed for the **Model Context Protocol Competition** and demonstrates:
 
 - **Required Integration**: Cequence AI Gateway for analytics and monitoring
-- **OAuth 2.1 + PKCE Authentication**: Implemented via Descope for enterprise security
+- **Descope Access Key Authentication**: Implemented via Descope for enterprise security
 - **Smithery Platform Deployment**: Production-ready cloud hosting
 - **Complete MCP Protocol Compliance**: Tools, resources, and prompts with full schema validation
 - **Innovation**: First-of-its-kind multi-agent orchestration for autonomous software development

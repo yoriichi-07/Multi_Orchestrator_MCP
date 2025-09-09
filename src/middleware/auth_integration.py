@@ -21,8 +21,8 @@ Features:
 Usage:
     from src.middleware.auth_integration import require_scope, require_any_scope, AuthenticationMiddleware
     
-    @require_scope("tools:legendary")
-    async def legendary_tool():
+    @require_scope("tools:advanced")
+    async def advanced_tool():
         pass
         
     @require_any_scope(["tools:ping", "admin:metrics"])
@@ -56,7 +56,7 @@ class SecurityLevel(Enum):
     PUBLIC = "public"
     AUTHENTICATED = "authenticated" 
     RESTRICTED = "restricted"
-    LEGENDARY = "legendary"
+    ADVANCED = "advanced"
     ADMIN = "admin"
 
 
@@ -90,7 +90,7 @@ class ScopeDefinition:
     scope: str
     description: str
     security_level: SecurityLevel
-    legendary_feature: bool = False
+    advanced_feature: bool = False
     admin_required: bool = False
     rate_limit_per_minute: int = 60
     
@@ -99,40 +99,40 @@ class ScopeRegistry:
     """Registry of all available scopes and their definitions"""
     
     SCOPES = {
-        # Legendary Tool Scopes
-        "tools:legendary": ScopeDefinition(
-            scope="tools:legendary",
-            description="Access to legendary application generator",
-            security_level=SecurityLevel.LEGENDARY,
-            legendary_feature=True,
+        # Advanced Tool Scopes
+        "tools:advanced": ScopeDefinition(
+            scope="tools:advanced",
+            description="Access to advanced application generator",
+            security_level=SecurityLevel.ADVANCED,
+            advanced_feature=True,
             rate_limit_per_minute=10
         ),
         "tools:autonomous": ScopeDefinition(
             scope="tools:autonomous", 
             description="Access to autonomous architect agent",
-            security_level=SecurityLevel.LEGENDARY,
-            legendary_feature=True,
+            security_level=SecurityLevel.ADVANCED,
+            advanced_feature=True,
             rate_limit_per_minute=15
         ),
         "tools:proactive": ScopeDefinition(
             scope="tools:proactive",
             description="Access to proactive quality framework",
-            security_level=SecurityLevel.LEGENDARY,
-            legendary_feature=True,
+            security_level=SecurityLevel.ADVANCED,
+            advanced_feature=True,
             rate_limit_per_minute=20
         ),
         "tools:evolutionary": ScopeDefinition(
             scope="tools:evolutionary",
             description="Access to evolutionary prompt engine",
-            security_level=SecurityLevel.LEGENDARY,
-            legendary_feature=True,
+            security_level=SecurityLevel.ADVANCED,
+            advanced_feature=True,
             rate_limit_per_minute=25
         ),
         "tools:cloud": ScopeDefinition(
             scope="tools:cloud",
             description="Access to last mile cloud agent",
-            security_level=SecurityLevel.LEGENDARY,
-            legendary_feature=True,
+            security_level=SecurityLevel.ADVANCED,
+            advanced_feature=True,
             rate_limit_per_minute=5
         ),
         

@@ -4,32 +4,138 @@ build:
   dockerBuildPath: "."
 startCommand:
   type: "http"
+  port: 8000
+  healthCheck:
+    path: "/health"
+    intervalSeconds: 30
+    timeoutSeconds: 10
+name: "Multi-Agent Orchestrator MCP Server"
+description: |
+  Enterprise Multi-Agent Orchestrator MCP Server with Advanced AI Capabilities
+  
+  Provides 16 comprehensive tools (11 standard + 5 advanced) for autonomous software development:
+  - Advanced Application Generator with multi-agent orchestration
+  - Autonomous Architecture Agent with dynamic system design
+  - Proactive Quality Framework with policy-driven testing
+  - Evolutionary Prompt Engine with self-optimization
+  - Last Mile Cloud Agent with multi-cloud deployment
+  
+  Features:
+  - Descope Access Key authentication with scope enforcement
+  - Cequence AI Gateway integration for enterprise observability
+  - Real-time analytics and performance monitoring
+  - Multi-cloud deployment across AWS, Azure, and GCP
+  - Comprehensive security monitoring and compliance tracking
+
 configSchema:
   type: "object"
   properties:
+    # Authentication Configuration
     descope_project_id:
       type: "string"
-      description: "Descope project ID for authentication"
-    descope_client_secret:
-      type: "string"
-      description: "Descope client secret for OAuth"
+      description: "Descope project ID for Access Key authentication"
+      example: "P31WC6A6Vybbt7N5NhnH4dZLQgXY"
     descope_management_key:
       type: "string"
-      description: "Descope management key for admin operations"
+      description: "Descope management key for administrative operations"
+      sensitive: true
+    
+    # Analytics and Monitoring
     cequence_gateway_id:
       type: "string"
-      description: "Cequence AI Gateway ID for analytics"
+      description: "Cequence AI Gateway ID for enterprise analytics and observability"
     cequence_api_key:
       type: "string"
-      description: "Cequence API key for analytics"
+      description: "Cequence API key for analytics integration"
+      sensitive: true
+    cequence_gateway_url:
+      type: "string"
+      description: "Cequence AI Gateway base URL"
+      default: "https://api.cequence.ai/gateway"
+    
+    # AI Model Configuration
     openai_api_key:
       type: "string"
-      description: "OpenAI API key for AI operations"
+      description: "OpenAI API key for GPT models in advanced agents"
+      sensitive: true
     anthropic_api_key:
       type: "string"
-      description: "Anthropic API key for Claude"
-  required: ["descope_project_id", "descope_client_secret", "descope_management_key"]
+      description: "Anthropic API key for Claude models"
+      sensitive: true
+    
+    # Advanced Agent Configuration
+    enable_advanced_agents:
+      type: "boolean"
+      description: "Enable advanced AI agents (Application Generator, Autonomous Architect, etc.)"
+      default: true
+    enable_autonomous_architecture:
+      type: "boolean"
+      description: "Enable autonomous architecture generation capabilities"
+      default: true
+    enable_proactive_quality:
+      type: "boolean"
+      description: "Enable proactive quality assurance framework"
+      default: true
+    
+    # Security and Compliance
+    jwt_secret_key:
+      type: "string"
+      description: "JWT secret key for token validation"
+      sensitive: true
+      generate: "random:32"
+    cors_origins:
+      type: "string"
+      description: "Allowed CORS origins (comma-separated)"
+      default: "*"
+    rate_limit_requests:
+      type: "integer"
+      description: "Rate limit per minute per client"
+      default: 100
+    
+    # Performance Configuration
+    max_concurrent_requests:
+      type: "integer"
+      description: "Maximum concurrent requests to handle"
+      default: 50
+    request_timeout_seconds:
+      type: "integer"
+      description: "Request timeout in seconds"
+      default: 300
+    
+    # Logging and Debugging
+    log_level:
+      type: "string"
+      description: "Logging level"
+      enum: ["DEBUG", "INFO", "WARNING", "ERROR"]
+      default: "INFO"
+    enable_detailed_logging:
+      type: "boolean"
+      description: "Enable detailed operation logging"
+      default: false
+
+  required: 
+    - "descope_project_id"
+    - "descope_management_key"
+
 exampleConfig:
-  descope_project_id: "your-descope-project-id"
-  descope_client_secret: "your-descope-client-secret"
+  # Authentication (Required)
+  descope_project_id: "P31WC6A6Vybbt7N5NhnH4dZLQgXY"
   descope_management_key: "your-descope-management-key"
+  
+  # Analytics (Recommended for enterprise)
+  cequence_gateway_id: "your-cequence-gateway-id"
+  cequence_api_key: "your-cequence-api-key"
+  cequence_gateway_url: "https://api.cequence.ai/gateway"
+  
+  # AI Models (Required for advanced features)
+  openai_api_key: "sk-your-openai-key"
+  anthropic_api_key: "sk-ant-your-anthropic-key"
+  
+  # Security
+  cors_origins: "https://yourdomain.com,https://app.yourdomain.com"
+  rate_limit_requests: 100
+  
+  # Performance
+  max_concurrent_requests: 50
+  request_timeout_seconds: 300
+  log_level: "INFO"

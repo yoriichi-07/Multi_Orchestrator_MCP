@@ -29,7 +29,7 @@ info:
     11. MCP Read Resource - Resource access and retrieval
 
     SECURITY & ANALYTICS FEATURES:
-    - Descope OAuth 2.1 + PKCE authentication with Non-Human Identity support
+    - Descope Access Key authentication with Bearer tokens for machine-to-machine integration
     - Cequence AI Gateway integration for real-time security monitoring and analytics
     - Granular scope enforcement for all tools and operations
     - Comprehensive audit logging for enterprise compliance requirements
@@ -64,6 +64,7 @@ servers:
 
 security:
   - CequenceGateway: []
+  - BearerAuth: []
 
 paths:
   # === ADVANCED AGENT TOOLS - ENTERPRISE CAPABILITIES (5 TOOLS) ===
@@ -92,6 +93,7 @@ paths:
       tags: [Advanced Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -143,6 +145,7 @@ paths:
       tags: [Advanced Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -206,6 +209,7 @@ paths:
       tags: [Advanced Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -241,6 +245,7 @@ paths:
       tags: [Advanced Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -276,6 +281,7 @@ paths:
       tags: [Advanced Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -306,6 +312,7 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -334,6 +341,7 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -362,6 +370,7 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -390,6 +399,7 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -418,6 +428,7 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -453,6 +464,7 @@ paths:
       tags: [Standard Tools]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -672,6 +684,7 @@ paths:
       tags: [Analytics & Monitoring]
       security:
         - CequenceGateway: []
+        - BearerAuth: []
       responses:
         '200':
           description: Analytics dashboard with comprehensive insights
@@ -695,43 +708,46 @@ components:
         - Cost optimization and resource management
         - Compliance monitoring and automated reporting
         
-    DescopeOAuth:
-      type: oauth2
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
       description: |
-        Descope OAuth 2.1 + PKCE authentication for enterprise MCP server access.
+        Descope Access Key authentication with Bearer tokens for enterprise MCP server access.
         
-        This OAuth flow integrates with Cequence AI Gateway for comprehensive authentication
-        and authorization management with advanced scope enforcement.
-      flows:
-        authorizationCode:
-          authorizationUrl: https://api.descope.com/oauth2/v1/authorize
-          tokenUrl: https://api.descope.com/oauth2/v1/token
-          refreshUrl: https://api.descope.com/oauth2/v1/token
-          scopes:
-            # Advanced Agent Tools Scopes
-            tools:advanced: "Access to all 5 advanced AI agent tools"
-            tools:autonomous: "Autonomous architect capabilities"  
-            tools:evolutionary: "Evolutionary prompt optimization"
-            tools:proactive: "Proactive quality assurance"
-            tools:cloud: "Last mile cloud deployment"
-            
-            # Standard Tools Scopes
-            tools:ping: "Basic connectivity testing"
-            tools:generate: "Generation and orchestration tools" 
-            tools:healing: "Autonomous code healing"
-            tools:infrastructure: "Infrastructure management tools"
-            tools:quality: "Quality assurance tools"
-            
-            # Administrative Scopes
-            admin:metrics: "System monitoring and analytics"
-            admin:analytics: "Advanced analytics access"
-            admin:config: "Configuration management"
-            admin:full: "Full administrative access"
-            
-            # Standard OIDC Scopes
-            openid: "OpenID Connect authentication"
-            profile: "User profile information"
-            email: "User email address"
+        This authentication method uses Descope Access Keys (JWT tokens) that integrate seamlessly 
+        with Cequence AI Gateway in passthrough mode for comprehensive observability and security 
+        monitoring while maintaining granular scope-based authorization.
+        
+        **Supported Scopes (for demo and documentation purposes):**
+        
+        **Advanced Agent Tools Scopes:**
+        - `tools:advanced` - Access to all 5 advanced AI agent tools
+        - `tools:autonomous` - Autonomous architect capabilities
+        - `tools:evolutionary` - Evolutionary prompt optimization
+        - `tools:proactive` - Proactive quality assurance
+        - `tools:cloud` - Last mile cloud deployment
+        
+        **Standard Tools Scopes:**
+        - `tools:ping` - Basic connectivity testing
+        - `tools:generate` - Generation and orchestration tools
+        - `tools:healing` - Autonomous code healing
+        - `tools:infrastructure` - Infrastructure management tools
+        - `tools:quality` - Quality assurance tools
+        
+        **Administrative Scopes:**
+        - `admin:metrics` - System monitoring and analytics
+        - `admin:analytics` - Advanced analytics access
+        - `admin:config` - Configuration management
+        - `admin:full` - Full administrative access
+        
+        **Integration with Cequence AI Gateway:**
+        - Real-time analytics and performance monitoring
+        - Security threat detection and prevention
+        - Cost optimization and resource management
+        - Compliance monitoring and automated reporting
+        
+        **Note:** Scope lists are for documentation/demo purposes; they are not declared as OpenAPI OAuth scopes.
 
   responses:
     Unauthorized:

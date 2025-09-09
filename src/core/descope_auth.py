@@ -1,16 +1,13 @@
 """
 Enhanced Descope authentication integration for MCP server
-Implements OAuth 2.1 + PKCE with Non-Human Identity support
+Implements Access Key authentication with JWT validation
 """
-import asyncio
 import json
 import time
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta, timezone
 import httpx
 import jwt
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
 import structlog
 
 from src.core.config import settings
@@ -20,12 +17,10 @@ logger = structlog.get_logger()
 
 
 class DescopeConfig:
-    """Descope configuration constants"""
+    """Descope configuration constants for Access Key authentication"""
     BASE_URL = "https://api.descope.com"
     JWKS_URL = f"{BASE_URL}/v1/keys"
     ACCESS_KEY_EXCHANGE_URL = f"{BASE_URL}/v1/auth/accesskey/exchange"  # Access Key Exchange endpoint
-    USERINFO_URL = f"{BASE_URL}/oauth2/v1/userinfo"  # Correct OIDC endpoint
-    DCR_URL = f"{BASE_URL}/v1/oauth2/register"  # Dynamic Client Registration
 
 
 class TokenValidationError(Exception):
@@ -39,7 +34,7 @@ class ScopeValidationError(Exception):
 
 
 class DescopeClient:
-    """Enhanced Descope client with full OAuth 2.1 support"""
+    """Descope client for Access Key authentication and JWT validation"""
     
     def __init__(
         self, 
@@ -208,57 +203,6 @@ class DescopeClient:
             )
             raise TokenValidationError(f"Failed to exchange access key: {str(e)}")
     
-    async def register_dynamic_client(
-        self, 
-        client_name: str, 
-        redirect_uris: List[str],
-        scopes: List[str]
-    ) -> Dict[str, Any]:
-        """Dynamic Client Registration for MCP clients"""
-        if not self.management_key:
-            raise ValueError("Management key required for dynamic client registration")
-        
-        try:
-            payload = {
-                "client_name": client_name,
-                "redirect_uris": redirect_uris,
-                "grant_types": ["authorization_code", "refresh_token"],
-                "response_types": ["code"],
-                "token_endpoint_auth_method": "client_secret_post",
-                "scope": " ".join(scopes)
-            }
-            
-            headers = {
-                "Authorization": f"Bearer {self.management_key}",
-                "Content-Type": "application/json"
-            }
-            
-            response = await self.http_client.post(
-                DescopeConfig.DCR_URL,
-                json=payload,
-                headers=headers
-            )
-            response.raise_for_status()
-            
-            client_data = await response.json()
-            
-            logger.info(
-                "dynamic_client_registered",
-                client_id=client_data.get("client_id"),
-                client_name=client_name,
-                scopes=scopes
-            )
-            
-            return client_data
-            
-        except httpx.HTTPError as e:
-            logger.error(
-                "dynamic_client_registration_failed",
-                client_name=client_name,
-                error=str(e)
-            )
-            raise TokenValidationError(f"Dynamic client registration failed: {str(e)}")
-
 
 class AuthContext:
     """Enhanced authentication context with detailed claims"""
