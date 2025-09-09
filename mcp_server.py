@@ -102,7 +102,7 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             "evolutionary_prompt_optimization": "tools:evolutionary",
             "last_mile_cloud_deployment": "tools:cloud",
             "list_capabilities": "tools:basic",  # Basic capability listing
-            # Debug tool deliberately has no scope requirement (bypasses auth)
+            "debug_server_config": None  # Debug tool deliberately has no scope requirement (bypasses auth)
         }
 
     async def dispatch(self, request: Request, call_next):
@@ -377,6 +377,7 @@ async def auto_fix_code(
         }
 
 @mcp.tool()
+@require_scope("tools:basic")
 async def list_capabilities() -> Dict[str, Any]:
     """List all available capabilities and agent types including advanced upgrades"""
     return {
@@ -466,7 +467,7 @@ async def get_system_status() -> Dict[str, Any]:
         }
 
 @mcp.tool()
-@require_any_scope(["tools:advanced", "admin:config"])
+@require_scope("tools:advanced")
 async def advanced_generate_application(
     description: str,
     complexity_level: str = "advanced",
