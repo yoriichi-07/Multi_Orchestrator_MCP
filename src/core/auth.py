@@ -46,13 +46,34 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         if path in public_paths or request.method == "OPTIONS":
             return await call_next(request)
 
-        # Handle MCP endpoints - both /mcp and /mcp/* should be accessible
+        # Handle MCP endpoints with proper discovery vs execution separation
         if path == "/mcp" or path.startswith("/mcp/"):
-            # For tool calls specifically, we need authentication
+            # MCP Discovery endpoints that should be accessible without authentication
+            # These are used by clients like Smithery to discover server capabilities
+            mcp_discovery_endpoints = {
+                "/mcp",                    # Base MCP endpoint
+                "/mcp/",                   # Base MCP endpoint with trailing slash
+                "/mcp/tools/list",         # Tool discovery - critical for Smithery scanning
+                "/mcp/initialize",         # MCP initialization
+                "/mcp/ping",              # Health check
+                "/mcp/capabilities"        # Capabilities discovery
+            }
+            
+            # Allow discovery endpoints without authentication
+            if path in mcp_discovery_endpoints:
+                logger.info("mcp_discovery_access", path=path, authenticated=False)
+                return await call_next(request)
+            
+            # For tool execution endpoints, require authentication
             if path == "/mcp/tools/call" or path.endswith("/tools/call"):
                 auth_header = request.headers.get("authorization")
                 if not auth_header or not auth_header.startswith("Bearer "):
-                    return JSONResponse({"error": "Authorization header is missing or invalid for tool call"}, status_code=401)
+                    logger.warning("mcp_tool_call_unauthorized", path=path)
+                    return JSONResponse({
+                        "error": "Authorization header is missing or invalid for tool call",
+                        "code": "missing_authorization",
+                        "message": "MCP tool execution requires Bearer token authentication"
+                    }, status_code=401)
                 
                 token = auth_header[7:]
 
@@ -75,17 +96,20 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
                             token_scopes = token_scopes.split()
                         if required_scope not in token_scopes:
                             error_msg = f"Insufficient permissions. Tool '{tool_name}' requires scope: '{required_scope}'"
-                            logger.warning("authorization_failed", required=required_scope, provided=token_scopes)
+                            logger.warning("authorization_failed", required=required_scope, provided=token_scopes, tool=tool_name)
                             return JSONResponse({"error": error_msg}, status_code=403)
 
                     async def receive(): return {"type": "http.request", "body": body}
                     request = Request(request.scope, receive, request._send)
+                    
+                    logger.info("mcp_tool_call_authorized", tool=tool_name, user=validated_token.get("sub"))
 
                 except Exception as e:
-                    logger.warning("authentication_failed", error=str(e))
+                    logger.warning("authentication_failed", error=str(e), path=path)
                     return JSONResponse({"error": {"message": "invalid_token", "details": str(e)}}, status_code=401)
             
-            # For all other MCP endpoints (like initialization), allow without auth
+            # For any other MCP endpoints, allow without auth (e.g., other discovery paths)
+            logger.info("mcp_endpoint_access", path=path, authenticated=False)
             return await call_next(request)
         
         # For non-MCP endpoints, require authentication
