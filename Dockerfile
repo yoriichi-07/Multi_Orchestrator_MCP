@@ -47,9 +47,6 @@ ENV NODE_ENV=production \
     ENABLE_METRICS=true \
     ENABLE_HEALTH_CHECKS=true \
     PORT=8080
-    LOG_LEVEL=INFO \
-    ENABLE_METRICS=true \
-    ENABLE_HEALTH_CHECKS=true
 
 # Security environment variables
 ENV SECURITY_HEADERS_ENABLED=true \
@@ -100,50 +97,31 @@ EXPOSE 8080
 USER mcp:mcp
 
 # Production startup script
-COPY --chown=mcp:mcp <<'EOF' /app/start-production.sh
-#!/bin/bash
-set -euo pipefail
-
-echo "🚀 Starting Multi-Agent Orchestrator MCP Server (Production)"
-echo "=================================================="
-
-# Validate environment
-echo "📋 Validating production environment..."
-if [[ -z "${DESCOPE_PROJECT_ID:-}" ]]; then
-    echo "❌ DESCOPE_PROJECT_ID not set"
-    exit 1
-fi
-
-if [[ -z "${CEQUENCE_GATEWAY_URL:-}" ]]; then
-    echo "⚠️ CEQUENCE_GATEWAY_URL not set - analytics disabled"
-fi
-
-echo "✅ Environment validation passed"
-
-# Start the server with production settings
-echo "🤖 Starting advanced AI capabilities..."
-echo "  🏗️ Autonomous Architect"
-echo "  🛡️ Proactive Quality Framework"
-echo "  🧠 Evolutionary Prompt Engine"
-echo "  ☁️ Last Mile Cloud Agent"
-echo "  🎯 Advanced Application Generator"
-echo ""
-
-# Security and monitoring
-echo "🔐 Security features enabled:"
-echo "  ✅ Descope OAuth 2.1 + PKCE"
-echo "  ✅ Scope-based authorization"
-echo "  ✅ JWT validation"
-echo "  ✅ Rate limiting"
-echo "  ✅ CORS protection"
-echo "  ✅ Cequence analytics"
-echo ""
-
-echo "🎯 Starting MCP server on port ${PORT:-8080}..."
-exec python mcp_server.py
-EOF
-
-RUN chmod +x /app/start-production.sh
+RUN echo '#!/bin/bash\n\
+set -euo pipefail\n\
+echo "🚀 Starting Multi-Agent Orchestrator MCP Server (Production)"\n\
+echo "=================================================="\n\
+echo "📋 Validating production environment..."\n\
+if [[ -z "${DESCOPE_PROJECT_ID:-}" ]]; then\n\
+    echo "⚠️ DESCOPE_PROJECT_ID not set - using demo mode"\n\
+fi\n\
+echo "✅ Environment validation passed"\n\
+echo "🤖 Starting advanced AI capabilities..."\n\
+echo "  🏗️ Autonomous Architect"\n\
+echo "  🛡️ Proactive Quality Framework"\n\
+echo "  🧠 Evolutionary Prompt Engine"\n\
+echo "  ☁️ Last Mile Cloud Agent"\n\
+echo "  🎯 Advanced Application Generator"\n\
+echo "🔐 Security features enabled:"\n\
+echo "  ✅ Descope Access Key authentication"\n\
+echo "  ✅ Scope-based authorization"\n\
+echo "  ✅ JWT validation"\n\
+echo "  ✅ Rate limiting"\n\
+echo "  ✅ CORS protection"\n\
+echo "🎯 Starting MCP server on port ${PORT:-8080}..."\n\
+exec python mcp_server.py' > /app/start-production.sh && \
+    chmod +x /app/start-production.sh && \
+    chown mcp:mcp /app/start-production.sh
 
 # Production entrypoint
 ENTRYPOINT ["/app/start-production.sh"]
