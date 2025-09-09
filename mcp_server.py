@@ -84,12 +84,15 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.exempt_paths = {
             "/health", "/docs", "/openapi.json", "/favicon.ico",
-            "/mcp/capabilities", "/mcp/ping"  # Basic MCP endpoints
+            "/mcp/capabilities", "/mcp/ping", "/mcp/", "/mcp"  # Allow MCP endpoints for Smithery scanning
         }
     
     async def dispatch(self, request: Request, call_next):
         # Skip authentication for exempt paths
-        if request.url.path in self.exempt_paths or request.method == "OPTIONS":
+        path = request.url.path
+        if (path in self.exempt_paths or 
+            request.method == "OPTIONS" or 
+            path.startswith("/mcp/")):  # Allow all MCP endpoints for scanning
             return await call_next(request)
         
         # Extract authorization header
@@ -861,7 +864,7 @@ def main():
     # Get port from environment (Smithery sets PORT=8081)
     port = int(os.environ.get("PORT", 8080))
     
-    # Create Starlette app with MCP HTTP transport
+    # Create Starlette app with MCP HTTP transport (newer FastMCP version)
     app = mcp.http_app()
     
     # Add health endpoint for Smithery
@@ -939,4 +942,3 @@ def main():
 if __name__ == "__main__":
     logger.info("mcp_server_starting", version="2.0.0", mode="http")
     main()  # Call the main function
-    main()
