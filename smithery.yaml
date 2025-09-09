@@ -5,7 +5,6 @@ build:
 startCommand:
   type: "http"
   port: 8080
-  command: ["python", "mcp_server.py"]
 healthCheck:
   path: "/health"
   intervalSeconds: 30

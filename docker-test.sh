@@ -7,13 +7,15 @@ echo "🧪 Testing Docker build and startup..."
 echo "📦 Building Docker image..."
 docker build -t mcp-server-test .
 
-# Test that the startup script exists and is executable
-echo "🔍 Verifying startup script..."
-docker run --rm mcp-server-test ls -la /app/start-production.sh
+# Test that the container starts directly with Python
+echo "🔍 Verifying Python entrypoint..."
+docker run --rm mcp-server-test python --version
 
-# Test script permissions
-echo "🔐 Checking script permissions..."
-docker run --rm mcp-server-test test -x /app/start-production.sh && echo "✅ Script is executable" || echo "❌ Script is not executable"
+# Test working directory and permissions
+echo "🔐 Checking working directory and permissions..."
+docker run --rm mcp-server-test pwd
+docker run --rm mcp-server-test whoami
+docker run --rm mcp-server-test ls -la /app/mcp_server.py
 
 # Test container startup (with timeout)
 echo "🚀 Testing container startup..."

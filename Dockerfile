@@ -97,23 +97,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Expose port
 EXPOSE 8080
 
-# Production startup script creation and cleanup (before USER switch)
-RUN echo '#!/bin/bash\n\
-set -euo pipefail\n\
-echo "🚀 Starting Multi-Agent Orchestrator MCP Server (Production)"\n\
-echo "=================================================="\n\
-echo "📋 Validating production environment..."\n\
-if [[ -z "${DESCOPE_PROJECT_ID:-}" ]]; then\n\
-    echo "⚠️ DESCOPE_PROJECT_ID not set - using demo mode"\n\
-fi\n\
-echo "✅ Environment validation passed"\n\
-echo "🤖 Starting advanced AI capabilities..."\n\
-echo " Security features enabled"\n\
-echo "🎯 Starting MCP server on port ${PORT:-8080}..."\n\
-exec python mcp_server.py' > /app/start-production.sh && \
-    chmod +x /app/start-production.sh && \
-    chown mcp:mcp /app/start-production.sh
-
 # Final production image optimizations (before USER switch)
 RUN find /app -name "*.pyc" -delete && \
     find /app -name "*.pyo" -delete && \
@@ -124,12 +107,8 @@ RUN find /app -name "*.pyc" -delete && \
 # Security: Switch to non-root user
 USER mcp:mcp
 
-# Verify startup script after user switch
-RUN ls -la /app/start-production.sh && \
-    test -x /app/start-production.sh
-
-# Production entrypoint
-ENTRYPOINT ["/app/start-production.sh"]
+# Simple entrypoint - let Smithery handle startup
+ENTRYPOINT ["python", "mcp_server.py"]
 
 # Production image metadata
 LABEL stage="production"
