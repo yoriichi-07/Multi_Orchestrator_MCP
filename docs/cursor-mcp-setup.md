@@ -35,10 +35,16 @@ Before starting, ensure you have:
 
 ### Option 1: Manual JWT Token (Simple)
 
-1. **Get your JWT token:**
+1. **Get your JWT token (using demo mode for testing):**
    ```bash
    cd "d:\intel\projects\global mcp hack"
+   set DESCOPE_DEMO_MODE=true
    python scripts/get_jwt_token.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+   ```
+
+   **For production with a real access key:**
+   ```bash
+   python scripts/get_jwt_token.py YOUR_REAL_ACCESS_KEY
    ```
 
 2. **Copy the JWT token** from the output
@@ -62,10 +68,17 @@ Before starting, ensure you have:
 
 ### Option 2: Automatic Authentication Proxy (Advanced)
 
-1. **Start the authentication proxy:**
+1. **Start the authentication proxy (demo mode for testing):**
    ```bash
    cd "d:\intel\projects\global mcp hack"
+   set DESCOPE_DEMO_MODE=true
    set DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+   python scripts/mcp_client_with_auth.py YOUR_MCP_SERVER_URL
+   ```
+
+   **For production with a real access key:**
+   ```bash
+   set DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
    python scripts/mcp_client_with_auth.py YOUR_MCP_SERVER_URL
    ```
 
@@ -88,12 +101,16 @@ Before starting, ensure you have:
 
 ### Step 1: Validate Your Setup
 
-Before making changes, validate that your authentication setup is working:
+Before making changes, validate that your authentication setup is working. **For testing purposes, use demo mode:**
 
 ```bash
 cd "d:\intel\projects\global mcp hack"
+# Test with demo mode (recommended for validation)
+set DESCOPE_DEMO_MODE=true
 python scripts/validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
 ```
+
+**Note:** If you get a 401 Unauthorized error without demo mode, this is expected since the demo access key may not be valid with the live Descope service. Demo mode allows you to test the complete authentication flow locally.
 
 This will test:
 - ✅ Descope client initialization
@@ -135,9 +152,14 @@ This will test:
 
 #### For Manual JWT Token:
 
-1. **Generate JWT Token:**
+1. **Generate JWT Token (test with demo mode first):**
    ```bash
+   # For testing/demo
+   set DESCOPE_DEMO_MODE=true
    python scripts/get_jwt_token.py [YOUR_ACCESS_KEY]
+   
+   # For production
+   python scripts/get_jwt_token.py [YOUR_REAL_ACCESS_KEY]
    ```
 
 2. **Copy the output token** (starts with `eyJ...`)
@@ -163,13 +185,21 @@ This will test:
 
 #### For Authentication Proxy:
 
-1. **Set environment variable:**
+1. **Set environment variables:**
    ```bash
-   # Windows
+   # Windows (for testing with demo mode)
+   set DESCOPE_DEMO_MODE=true
    set DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
    
-   # Linux/Mac
+   # Windows (for production)
+   set DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
+   
+   # Linux/Mac (for testing with demo mode)
+   export DESCOPE_DEMO_MODE=true
    export DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+   
+   # Linux/Mac (for production)
+   export DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
    ```
 
 2. **Start the proxy:**
@@ -231,13 +261,15 @@ This will test:
 
 ### Debug Commands
 
-1. **Test access key exchange:**
+1. **Test access key exchange (demo mode recommended for testing):**
    ```bash
+   set DESCOPE_DEMO_MODE=true
    python scripts/get_jwt_token.py YOUR_ACCESS_KEY
    ```
 
-2. **Validate complete auth flow:**
+2. **Validate complete auth flow (demo mode recommended for testing):**
    ```bash
+   set DESCOPE_DEMO_MODE=true
    python scripts/validate_auth.py YOUR_ACCESS_KEY
    ```
 
@@ -250,6 +282,12 @@ This will test:
    ```bash
    curl -H "Authorization: Bearer YOUR_JWT_TOKEN" YOUR_MCP_SERVER_URL/health
    ```
+
+### Important Notes for Demo Access Key
+
+⚠️ **If you're getting 401 Unauthorized errors:** This is expected when using the demo access key `K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo` with the live Descope service, as this key is for demonstration purposes only.
+
+✅ **Solution:** Always use `DESCOPE_DEMO_MODE=true` when testing with the demo access key. This enables a local mock authentication system that demonstrates the complete workflow without requiring a valid Descope service connection.
 
 ## 📁 Configuration Files
 

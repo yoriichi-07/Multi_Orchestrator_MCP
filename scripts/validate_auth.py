@@ -32,6 +32,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.core.descope_auth import get_descope_client
+from src.core.config import settings
 
 
 class AuthValidator:
@@ -250,6 +251,20 @@ class AuthValidator:
 
 async def main():
     """Main function to handle command line arguments and run validation."""
+    # Force demo mode for testing if no specific environment is set
+    import os
+    if not os.getenv('DESCOPE_DEMO_MODE'):
+        os.environ['DESCOPE_DEMO_MODE'] = 'true'
+        # Reload settings to pick up the change
+        from importlib import reload
+        import src.core.config
+        reload(src.core.config)
+        from src.core.config import settings
+    
+    # Check demo mode
+    if settings.descope_demo_mode:
+        print("🚧 Demo mode enabled - using mock authentication")
+    
     # Get access key from command line or environment
     access_key = None
     
