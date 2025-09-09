@@ -27,6 +27,10 @@ RUN apk update && \
         tzdata \
         bash \
         jq \
+        gcc \
+        python3-dev \
+        musl-dev \
+        linux-headers \
         && \
     rm -rf /var/cache/apk/*
 
