@@ -18,10 +18,15 @@ Example:
     python validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
 """
 
+# Set demo mode BEFORE any imports to ensure it's picked up by pydantic settings
+import os
+if not os.getenv('DESCOPE_DEMO_MODE'):
+    os.environ['DESCOPE_DEMO_MODE'] = 'true'
+    print("🚧 Demo mode auto-enabled for testing purposes")
+
 import asyncio
 import aiohttp
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -250,17 +255,7 @@ class AuthValidator:
 
 
 async def main():
-    """Main function to handle command line arguments and run validation."""
-    # Force demo mode for testing if no specific environment is set
-    import os
-    if not os.getenv('DESCOPE_DEMO_MODE'):
-        os.environ['DESCOPE_DEMO_MODE'] = 'true'
-        # Reload settings to pick up the change
-        from importlib import reload
-        import src.core.config
-        reload(src.core.config)
-        from src.core.config import settings
-    
+    """Main function to handle command line arguments and run validation."""    
     # Check demo mode
     if settings.descope_demo_mode:
         print("🚧 Demo mode enabled - using mock authentication")

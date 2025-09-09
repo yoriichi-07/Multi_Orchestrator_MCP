@@ -97,9 +97,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Expose port
 EXPOSE 8080
 
-# Security: Switch to non-root user
-USER mcp:mcp
-
 # Production startup script
 RUN echo '#!/bin/bash\n\
 set -euo pipefail\n\
@@ -126,6 +123,9 @@ echo "🎯 Starting MCP server on port ${PORT:-8080}..."\n\
 exec python mcp_server.py' > /app/start-production.sh && \
     chmod +x /app/start-production.sh && \
     chown mcp:mcp /app/start-production.sh
+
+# Security: Switch to non-root user
+USER mcp:mcp
 
 # Production entrypoint
 ENTRYPOINT ["/app/start-production.sh"]

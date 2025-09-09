@@ -35,17 +35,13 @@ Before starting, ensure you have:
 
 ### Option 1: Manual JWT Token (Simple)
 
-1. **Get your JWT token (using demo mode for testing):**
+1. **Get your JWT token:**
    ```bash
    cd "d:\intel\projects\global mcp hack"
-   set DESCOPE_DEMO_MODE=true
    python scripts/get_jwt_token.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
    ```
 
-   **For production with a real access key:**
-   ```bash
-   python scripts/get_jwt_token.py YOUR_REAL_ACCESS_KEY
-   ```
+   **Note:** Demo mode is automatically enabled for testing. For production with a real access key, simply replace with your actual access key.
 
 2. **Copy the JWT token** from the output
 
@@ -68,19 +64,14 @@ Before starting, ensure you have:
 
 ### Option 2: Automatic Authentication Proxy (Advanced)
 
-1. **Start the authentication proxy (demo mode for testing):**
+1. **Start the authentication proxy:**
    ```bash
    cd "d:\intel\projects\global mcp hack"
-   set DESCOPE_DEMO_MODE=true
    set DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
    python scripts/mcp_client_with_auth.py YOUR_MCP_SERVER_URL
    ```
 
-   **For production with a real access key:**
-   ```bash
-   set DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
-   python scripts/mcp_client_with_auth.py YOUR_MCP_SERVER_URL
-   ```
+   **Note:** Demo mode is automatically enabled for testing. For production, set your real access key.
 
 2. **Update your Cursor IDE mcp.json:**
    ```json
@@ -101,16 +92,14 @@ Before starting, ensure you have:
 
 ### Step 1: Validate Your Setup
 
-Before making changes, validate that your authentication setup is working. **For testing purposes, use demo mode:**
+Before making changes, validate that your authentication setup is working:
 
 ```bash
 cd "d:\intel\projects\global mcp hack"
-# Test with demo mode (recommended for validation)
-set DESCOPE_DEMO_MODE=true
 python scripts/validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
 ```
 
-**Note:** If you get a 401 Unauthorized error without demo mode, this is expected since the demo access key may not be valid with the live Descope service. Demo mode allows you to test the complete authentication flow locally.
+**Note:** The validation script automatically enables demo mode for testing purposes. This allows you to test the complete authentication flow locally without requiring a valid Descope service connection.
 
 This will test:
 - ✅ Descope client initialization

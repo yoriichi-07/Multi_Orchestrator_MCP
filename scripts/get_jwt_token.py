@@ -17,8 +17,12 @@ Output:
     Prints the JWT token that should be used in your Cursor IDE mcp.json configuration
 """
 
-import asyncio
+# Set demo mode BEFORE any imports to ensure it's picked up by pydantic settings
 import os
+if not os.getenv('DESCOPE_DEMO_MODE'):
+    os.environ['DESCOPE_DEMO_MODE'] = 'true'
+
+import asyncio
 import sys
 import json
 from pathlib import Path

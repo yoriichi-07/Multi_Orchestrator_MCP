@@ -19,11 +19,15 @@ Example:
     python mcp_client_with_auth.py https://your-mcp-server.com
 """
 
+# Set demo mode BEFORE any imports to ensure it's picked up by pydantic settings
+import os
+if not os.getenv('DESCOPE_DEMO_MODE'):
+    os.environ['DESCOPE_DEMO_MODE'] = 'true'
+
 import asyncio
 import aiohttp
 import json
 import logging
-import os
 import sys
 import time
 from pathlib import Path
