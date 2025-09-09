@@ -11,7 +11,7 @@ Usage:
     
 Environment Variables:
     DESCOPE_ACCESS_KEY - Your Descope Access Key (required)
-    DESCOPE_PROJECT_ID - Your Descope project ID (default: P32RbAyKnfcvEJYS69SfSEk6GPKk)
+    DESCOPE_PROJECT_ID - Your Descope project ID (set via environment variable)
     MCP_AUTH_PORT - Port for the auth proxy (default: 8090)
     MCP_AUTH_LOG_LEVEL - Logging level (default: INFO)
 
@@ -57,7 +57,7 @@ class MCPAuthProxy:
     def __init__(self, mcp_server_url: str, access_key: str, project_id: str = None):
         self.mcp_server_url = mcp_server_url.rstrip('/')
         self.access_key = access_key
-        self.project_id = project_id or 'P32RbAyKnfcvEJYS69SfSEk6GPKk'
+        self.project_id = project_id or os.getenv('DESCOPE_PROJECT_ID', '')
         
         # Token management
         self.current_jwt_token: Optional[str] = None

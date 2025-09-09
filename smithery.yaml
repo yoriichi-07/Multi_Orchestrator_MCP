@@ -36,7 +36,7 @@ configSchema:
     descope_project_id:
       type: "string"
       description: "Descope project ID for Access Key authentication"
-      example: "P32RbAyKnfcvEJYS69SfSEk6GPKk"
+      example: "YOUR_DESCOPE_PROJECT_ID"
     descope_management_key:
       type: "string"
       description: "Descope management key for administrative operations"

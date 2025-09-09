@@ -60,7 +60,7 @@ python validate_auth.py YOUR_ACCESS_KEY
 First, validate that your authentication setup works:
 
 ```bash
-python validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+python validate_auth.py YOUR_ACCESS_KEY
 ```
 
 ### 2. Choose Your Authentication Method
@@ -70,7 +70,7 @@ Best for: Testing, demos, short-term usage
 
 ```bash
 # Get JWT token
-python get_jwt_token.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+python get_jwt_token.py YOUR_ACCESS_KEY
 
 # Copy the JWT token and use it directly in your Cursor IDE configuration
 ```
@@ -138,12 +138,12 @@ python mcp_client_with_auth.py <mcp_server_url> [--port PORT]
 
 **Environment Variables:**
 - `DESCOPE_ACCESS_KEY` - Your Descope access key (required)
-- `DESCOPE_PROJECT_ID` - Descope project ID (defaults to P32RbAyKnfcvEJYS69SfSEk6GPKk)
+- `DESCOPE_PROJECT_ID` - Descope project ID (set via environment variable)
 
 **Example Usage:**
 ```bash
 # Windows
-set DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+set DESCOPE_ACCESS_KEY=YOUR_ACCESS_KEY
 python mcp_client_with_auth.py https://smithery-deployment.smithery.ai
 
 # Linux/Mac

@@ -11,7 +11,7 @@ Usage:
     
 Environment Variables:
     DESCOPE_ACCESS_KEY - The access key to exchange (if not provided as argument)
-    DESCOPE_PROJECT_ID - Your Descope project ID (default: P32RbAyKnfcvEJYS69SfSEk6GPKk)
+    DESCOPE_PROJECT_ID - Your Descope project ID (set via environment variable)
 
 Output:
     Prints the JWT token that should be used in your Cursor IDE mcp.json configuration
@@ -48,7 +48,7 @@ async def exchange_access_key_for_jwt(access_key: str, project_id: str = None) -
     try:
         # Use default project ID if not provided
         if not project_id:
-            project_id = os.getenv('DESCOPE_PROJECT_ID', 'P32RbAyKnfcvEJYS69SfSEk6GPKk')
+            project_id = os.getenv('DESCOPE_PROJECT_ID', '')
         
         # Get the Descope client
         descope_client = await get_descope_client()
@@ -144,7 +144,7 @@ async def main():
         print("   python get_jwt_token.py <access_key>")
         print("   OR set DESCOPE_ACCESS_KEY environment variable")
         print("\nExample:")
-        print("   python get_jwt_token.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ")
+        print("   python get_jwt_token.py YOUR_ACCESS_KEY")
         sys.exit(1)
     
     # Get project ID from environment (optional)

@@ -11,11 +11,11 @@ Usage:
     
 Environment Variables:
     DESCOPE_ACCESS_KEY - The access key to test (if not provided as argument)
-    DESCOPE_PROJECT_ID - Your Descope project ID (default: P32RbAyKnfcvEJYS69SfSEk6GPKk)
+    DESCOPE_PROJECT_ID - Your Descope project ID (set via environment variable)
     MCP_SERVER_URL - MCP server URL to test against (optional)
 
 Example:
-    python validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+    python validate_auth.py YOUR_ACCESS_KEY
 """
 
 # Set demo mode BEFORE any imports to ensure it's picked up by pydantic settings
@@ -47,7 +47,7 @@ class AuthValidator:
     
     def __init__(self, access_key: str, project_id: str = None, mcp_server_url: str = None):
         self.access_key = access_key
-        self.project_id = project_id or 'P32RbAyKnfcvEJYS69SfSEk6GPKk'
+        self.project_id = project_id or os.getenv('DESCOPE_PROJECT_ID', '')
         self.mcp_server_url = mcp_server_url
         self.test_results: List[Dict[str, Any]] = []
         
@@ -274,7 +274,7 @@ async def main():
         print("   python validate_auth.py <access_key>")
         print("   OR set DESCOPE_ACCESS_KEY environment variable")
         print("\nExample:")
-        print("   python validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ")
+        print("   python validate_auth.py YOUR_ACCESS_KEY")
         print("\nOptional Environment Variables:")
         print("   DESCOPE_PROJECT_ID - Your Descope project ID")
         print("   MCP_SERVER_URL - MCP server URL to test against")

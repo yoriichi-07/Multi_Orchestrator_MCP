@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for fixing the authorization issue between Cursor IDE and your Multi-Agent Orchestrator MCP server. The problem occurs when trying to use a Descope Access Key directly as a Bearer token, when Cursor IDE requires a proper JWT token format.
+This guide provides step-by-step instructions for fixing the authorization issue between Cursor IDE and your Multi-Agent Orchestrator MCP server. The problem occurs when trying to use a Descope Access Key directly as a Bearer tok⚠️ **If you're getting 401 Unauthorized errors:** This typically occurs when using invalid or expired access keys. Ensure you're using a valid access key from your Descope project dashboard."n, when Cursor IDE requires a proper JWT token format.
 
 ## 🔍 Problem Diagnosis
 
@@ -25,7 +25,7 @@ There are two approaches to fix this issue:
 
 Before starting, ensure you have:
 
-- [ ] Descope Project ID: `P32RbAyKnfcvEJYS69SfSEk6GPKk`
+- [ ] Descope Project ID: `YOUR_DESCOPE_PROJECT_ID` (replace with your actual project ID)
 - [ ] Valid Descope Access Key (the one you currently have)
 - [ ] Python 3.8+ installed
 - [ ] Access to your MCP server deployment
@@ -38,7 +38,7 @@ Before starting, ensure you have:
 1. **Get your JWT token:**
    ```bash
    cd "d:\intel\projects\global mcp hack"
-   python scripts/get_jwt_token.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+   python scripts/get_jwt_token.py YOUR_ACCESS_KEY
    ```
 
    **Note:** Demo mode is automatically enabled for testing. For production with a real access key, simply replace with your actual access key.
@@ -96,7 +96,7 @@ Before making changes, validate that your authentication setup is working:
 
 ```bash
 cd "d:\intel\projects\global mcp hack"
-python scripts/validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+python scripts/validate_auth.py YOUR_ACCESS_KEY
 ```
 
 **Note:** The validation script automatically enables demo mode for testing purposes. This allows you to test the complete authentication flow locally without requiring a valid Descope service connection.
@@ -178,14 +178,14 @@ This will test:
    ```bash
    # Windows (for testing with demo mode)
    set DESCOPE_DEMO_MODE=true
-   set DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+   set DESCOPE_ACCESS_KEY=YOUR_ACCESS_KEY
    
    # Windows (for production)
    set DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
    
    # Linux/Mac (for testing with demo mode)
    export DESCOPE_DEMO_MODE=true
-   export DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
+   export DESCOPE_ACCESS_KEY=YOUR_ACCESS_KEY
    
    # Linux/Mac (for production)
    export DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY

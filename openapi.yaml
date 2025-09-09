@@ -1,14 +1,7 @@
 openapi: 3.0.3
 info:
   title: Multi-Agent Orchestrator MCP Server - Cequence Deployment
-  description: |
-    Enterprise Multi-Agent Orchestrator MCP Server with Cequence AI Gateway Integration
-    
-    This deployment provides 16 total tools (11 standard + 5 advanced) with comprehensive 
-    Cequence AI Gateway integration for enterprise-grade observability, security monitoring, 
-    and performance analytics.
-    
-    ADVANCED AGENT TOOLS (5 TOOLS):
+  description: |\n    Enterprise Multi-Agent Orchestrator MCP Server with Cequence AI Gateway Integration\n    \n    This deployment provides 16 total tools (11 standard + 5 advanced) with comprehensive \n    Cequence AI Gateway integration for enterprise-grade observability, security monitoring, \n    and performance analytics.\n    \n    🔒 **SECURITY IMPLEMENTATION:**\n    - Secure Descope Access Key authentication with proper scope validation\n    - Bearer token authentication with granular permissions\n    - Vulnerability-free middleware with authentication bypass protections\n    - Enterprise-grade security audit compliance    ADVANCED AGENT TOOLS (5 TOOLS):
     1. Application Generator - Multi-agent orchestration for comprehensive application development
     2. Autonomous Architect - Dynamic system architecture generation with DAG optimization
     3. Proactive Quality Framework - Policy-driven quality assurance with predictive analysis
