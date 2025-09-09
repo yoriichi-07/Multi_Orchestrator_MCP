@@ -177,6 +177,24 @@ SERVER_PORT=8000
 DEBUG=false
 ```
 
+#### 🔧 Cursor IDE Authentication Setup
+
+If you're experiencing authorization issues with Cursor IDE, see our comprehensive setup guide:
+
+**📖 [Cursor IDE MCP Setup Guide](docs/cursor-mcp-setup.md)**
+
+This guide covers:
+- ✅ **Quick Fix**: Converting Descope Access Key to JWT token
+- ✅ **Automatic Solution**: Authentication proxy with token refresh
+- ✅ **Troubleshooting**: Common issues and debugging steps
+- ✅ **Production Setup**: Best practices for deployment
+
+**🔧 Authentication Tools**: The `scripts/` directory contains authentication utilities:
+- `get_jwt_token.py` - Convert Access Key to JWT token
+- `mcp_client_with_auth.py` - Authentication proxy with auto-refresh
+- `validate_auth.py` - Test authentication setup
+- See `scripts/README.md` for detailed usage instructions
+
 ### Tools
 
 The Multi-Agent Orchestrator provides 6 powerful development tools:
@@ -288,6 +306,33 @@ DESCOPE_MANAGEMENT_KEY=your_management_key
 - `tools:generate` - Code generation capabilities
 - `tools:review` - Testing and quality analysis capabilities
 
+#### 🚨 Troubleshooting Authentication Issues
+
+**Problem**: Getting authorization errors in Cursor IDE?  
+**Solution**: Cursor IDE requires JWT tokens, not raw Access Keys.
+
+**📖 [Complete Fix Guide](docs/cursor-mcp-setup.md)** - Step-by-step instructions  
+**🔧 [Authentication Scripts](scripts/README.md)** - Ready-to-use tools
+
+**Quick Fix Example:**
+```bash
+# Get JWT token from your Access Key
+python scripts/get_jwt_token.py YOUR_ACCESS_KEY
+
+# Use the JWT token in Cursor IDE configuration
+{
+  "mcpServers": {
+    "multi-orchestrator": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch", "YOUR_MCP_SERVER_URL"],
+      "env": {
+        "AUTHORIZATION": "Bearer YOUR_JWT_TOKEN_HERE"
+      }
+    }
+  }
+}
+```
+
 ### Analytics & Monitoring
 
 Integration with Cequence AI Gateway provides:
@@ -391,6 +436,8 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 - **GitHub Issues**: [Report bugs and request features](https://github.com/yoriichi-07/Multi_Orchestrator_MCP/issues)
 - **Documentation**: [Browse our comprehensive docs](docs/)
+- **Authentication Help**: [Cursor IDE Setup Guide](docs/cursor-mcp-setup.md)
+- **Authentication Tools**: [Scripts Documentation](scripts/README.md)
 
 ---
 

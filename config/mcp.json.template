@@ -1,0 +1,113 @@
+{
+  "$schema": "https://schema.cursor.com/mcp.json",
+  "description": "Cursor IDE MCP Server Configuration Template for Multi-Agent Orchestrator",
+  "mcpServers": {
+    "multi-orchestrator-direct": {
+      "description": "Direct connection using JWT token (manual token management)",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch",
+        "https://your-smithery-deployment-url.com"
+      ],
+      "env": {
+        "AUTHORIZATION": "Bearer YOUR_JWT_TOKEN_HERE"
+      }
+    },
+    "multi-orchestrator-auto": {
+      "description": "Connection via authentication proxy (automatic token refresh)",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch",
+        "http://localhost:8090"
+      ],
+      "env": {
+        "DESCOPE_ACCESS_KEY": "YOUR_DESCOPE_ACCESS_KEY_HERE",
+        "DESCOPE_PROJECT_ID": "P32RbAyKnfcvEJYS69SfSEk6GPKk"
+      }
+    }
+  },
+  "_instructions": {
+    "setup_steps": [
+      "1. Choose either 'direct' or 'auto' configuration above",
+      "2. For DIRECT: Run 'python scripts/get_jwt_token.py' to get JWT token",
+      "3. For AUTO: Run 'python scripts/mcp_client_with_auth.py <server_url>' first",
+      "4. Replace placeholder values with your actual credentials",
+      "5. Copy this configuration to your Cursor IDE mcp.json file",
+      "6. Restart Cursor IDE to apply the configuration"
+    ],
+    "troubleshooting": {
+      "authorization_errors": [
+        "Verify JWT token is not expired (use get_jwt_token.py to refresh)",
+        "Check that DESCOPE_ACCESS_KEY has the required scopes",
+        "Ensure your Descope project ID is correct",
+        "Validate that the MCP server URL is accessible"
+      ],
+      "connection_errors": [
+        "For AUTO mode: Ensure the auth proxy is running on port 8090",
+        "Check firewall settings for localhost connections",
+        "Verify the target MCP server is running and accessible",
+        "Check network connectivity to the Smithery deployment"
+      ]
+    },
+    "security_notes": [
+      "JWT tokens expire after a certain time (usually 1 hour)",
+      "Store your DESCOPE_ACCESS_KEY securely and never commit to version control",
+      "The auto proxy runs on localhost and handles token refresh automatically",
+      "For production use, consider using environment variables for all credentials"
+    ]
+  },
+  "_examples": {
+    "production_direct": {
+      "description": "Production configuration with direct JWT authentication",
+      "mcpServers": {
+        "multi-orchestrator": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-fetch",
+            "https://multi-orchestrator-mcp-production.smithery.ai"
+          ],
+          "env": {
+            "AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      }
+    },
+    "development_auto": {
+      "description": "Development configuration with automatic token refresh",
+      "mcpServers": {
+        "multi-orchestrator": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-fetch",
+            "http://localhost:8090"
+          ],
+          "env": {
+            "DESCOPE_ACCESS_KEY": "K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo",
+            "DESCOPE_PROJECT_ID": "P32RbAyKnfcvEJYS69SfSEk6GPKk"
+          }
+        }
+      }
+    },
+    "local_development": {
+      "description": "Local development against local MCP server",
+      "mcpServers": {
+        "multi-orchestrator-local": {
+          "command": "python",
+          "args": [
+            "d:/intel/projects/global mcp hack/mcp_server.py"
+          ],
+          "cwd": "d:/intel/projects/global mcp hack",
+          "env": {
+            "DESCOPE_PROJECT_ID": "P32RbAyKnfcvEJYS69SfSEk6GPKk",
+            "DESCOPE_DEMO_MODE": "true",
+            "PORT": "8080"
+          }
+        }
+      }
+    }
+  }
+}

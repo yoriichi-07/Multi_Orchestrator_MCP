@@ -1,0 +1,5 @@
+# Start the authentication proxy
+DESCOPE_DEMO_MODE=true DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo python scripts/mcp_client_with_auth.py https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp
+
+# OR generate a manual JWT token
+DESCOPE_DEMO_MODE=true DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo python scripts/get_jwt_token.py

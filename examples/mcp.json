@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "multi-orchestrator-manual": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch",
+        "https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp"
+      ],
+      "env": {
+        "AUTHORIZATION": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vX21hY2hpbmVfdXNlciIsImlzcyI6Imh0dHBzOi8vYXBpLmRlc2NvcGUuY29tL1AzMlJiQXlLbmZjdkVKWVM2OVNmU0VrNkdQS2siLCJhdWQiOiJQMzJSYkF5S25mY3ZFSllTNjlTZlNFazZHUEtrIiwiaWF0IjoxNzU3NDAxNTU3LCJleHAiOjE3NTc0MDUxNTcsInBlcm1pc3Npb25zIjpbInRvb2xzOnBpbmciLCJ0b29sczpnZW5lcmF0ZSIsInRvb2xzOnJldmlldyIsInRvb2xzOmZpeCIsInRvb2xzOmRlcGxveSIsImFkbWluOmxvZ3MiLCJhZG1pbjpjb25maWciXSwidHlwZSI6Im1hY2hpbmUiLCJ0ZW5hbnRJZCI6ImRlbW9fdGVuYW50IiwiY3VzdG9tQ2xhaW1zIjp7fSwianRpIjoiZGVtb190b2tlbl8xNzU3NDAxNTU3In0.arBXHZ1k4SsYUotayUGoBmdzyjrlptRTAd-rDKIhuvA"
+      }
+    },
+    "multi-orchestrator-proxy": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch",
+        "http://localhost:8090"
+      ],
+      "env": {}
+    }
+  }
+}
