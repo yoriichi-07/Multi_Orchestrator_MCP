@@ -27,6 +27,7 @@ from starlette.responses import Response
 
 # Import core components
 from src.core.config import settings
+from src.core.auth import AuthenticationMiddleware # Using the correct consolidated middleware
 from src.core.descope_auth import get_descope_client, AuthContext, TokenValidationError
 from src.core.cequence_integration import get_cequence_analytics, track_agent_operation, CequenceMiddleware
 from src.agents.orchestrator import AgentOrchestrator
@@ -78,144 +79,15 @@ class CorrelationMiddleware(BaseHTTPMiddleware):
         return response
 
 
-class AuthenticationMiddleware(BaseHTTPMiddleware):
-    """
-    ✅ FINAL VERSION: A robust middleware that correctly handles the entire
-    MCP session lifecycle, including initialization and per-tool scope enforcement.
-    """
-    def __init__(self, app):
-        super().__init__(app)
-        # This map is the single source of truth for tool permissions.
-        self.tool_to_scope_map = {
-            "ping": "tools:basic", # Assuming you have a 'tools:ping' or 'tools:basic' scope
-            "orchestrate_task": "tools:orchestrate",
-            "generate_architecture": "tools:architecture",
-            "auto_fix_code": "tools:fix",
-            "list_capabilities": "tools:capabilities",
-            "get_system_status": "tools:status",
-            "advanced_generate_application": "advanced:app_generator",
-            "autonomous_architect": "advanced:autonomous_architect",
-            "proactive_quality_assurance": "advanced:quality_framework",
-            "evolutionary_prompt_optimization": "advanced:prompt_engine",
-            "last_mile_cloud_deployment": "advanced:cloud_agent",
-            "debug_server_config": None # This tool is public
-        }
-
-    async def dispatch(self, request: Request, call_next):
-        from starlette.responses import JSONResponse
-        
-        path = request.url.path
-
-        # Define paths that are always public and require NO authentication
-        public_paths = {"/health", "/docs", "/openapi.json", "/mcp"}
-        if path in public_paths or request.method == "OPTIONS":
-            return await call_next(request)
-
-        # All other paths require a valid token, but handle /mcp differently
-        auth_header = request.headers.get("authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            # For /mcp endpoint, allow initialization without auth but require auth for tool calls
-            if path.startswith("/mcp"):
-                # Check if this is a tool call vs initialization
-                try:
-                    body = await request.body()
-                    if body:
-                        mcp_payload = json.loads(body)
-                        method = mcp_payload.get("method")
-                        # Allow initialization methods without auth
-                        if method in ["initialize", "notifications/initialized", "ping"]:
-                            # Restore the body so the application can read it again
-                            async def receive(): 
-                                return {"type": "http.request", "body": body}
-                            request._receive = receive
-                            return await call_next(request)
-                except (json.JSONDecodeError, Exception):
-                    pass
-            return JSONResponse({"error": "Missing or invalid authorization header"}, status_code=401)
-        
-        token = auth_header[7:]
-
-        try:
-            # Step 1: AUTHENTICATE the token for ALL secure requests.
-            descope_client = await get_descope_client()
-            validated_token = await descope_client.validate_session(session_token=token)
-            request.state.auth_context = validated_token # Attach validated data to the request
-
-            # Step 2: AUTHORIZE based on scope, ONLY for tool calls.
-            if path == "/mcp/tools/call":
-                body = await request.body()
-                # Use a try-except block in case the body is empty or not valid JSON
-                try:
-                    mcp_payload = json.loads(body)
-                    tool_name = mcp_payload.get("params", {}).get("name")
-                    required_scope = self.tool_to_scope_map.get(tool_name)
-                    
-                    if required_scope: # Check scope only if the tool is in our protected map
-                        token_scopes = validated_token.get("scope", "").split()
-                        if required_scope not in token_scopes:
-                            error_msg = f"Insufficient permissions. Tool '{tool_name}' requires scope: '{required_scope}'"
-                            logger.warning("authorization_failed", required=required_scope, provided=token_scopes)
-                            return JSONResponse({"error": error_msg}, status_code=403)
-
-                    # Restore the body so the application can read it again
-                    async def receive(): 
-                        return {"type": "http.request", "body": body}
-                    request._receive = receive
-
-                except json.JSONDecodeError:
-                    return JSONResponse({"error": "Invalid JSON in request body for tool call"}, status_code=400)
-
-            # If authentication and authorization pass, proceed to the actual tool.
-            return await call_next(request)
-
-        except Exception as e:
-            logger.warning("authentication_failed", error=str(e))
-            # Return the specific "invalid_token" error message the client expects.
-            error_payload = {
-                "error": {
-                    "type": "auth",
-                    "category": "auth",
-                    "message": "invalid_token",
-                    "statusCode": 401,
-                    "details": f"Token validation failed: {str(e)}"
-                }
-            }
-            return JSONResponse(error_payload, status_code=401)
-
-
-def require_scope(required_scope: str):
-    """Decorator to require specific scope for tool access"""
-    def decorator(func):
-        import functools
-        @functools.wraps(func)
-        async def wrapper(**kwargs):
-            # Note: Scope validation will be handled by middleware
-            # This decorator is kept for documentation and future use
-            return await func(**kwargs)
-        return wrapper
-    return decorator
-
-
-def require_any_scope(required_scopes: List[str]):
-    """Decorator to require any of the specified scopes"""
-    def decorator(func):
-        import functools
-        @functools.wraps(func)
-        async def wrapper(**kwargs):
-            # Note: Scope validation will be handled by middleware
-            # This decorator is kept for documentation and future use
-            return await func(**kwargs)
-        return wrapper
-    return decorator
+# Note: AuthenticationMiddleware is now imported from src.core.auth
+# Scope validation is handled by the consolidated middleware
 
 @mcp.tool()
-@require_scope("tools:basic")
 async def ping() -> str:
     """Simple health check ping"""
     return "pong"
 
 @mcp.tool()
-@require_scope("tools:orchestrate")
 async def orchestrate_task(
     task_description: str,
     task_type: str = "development",
@@ -275,7 +147,6 @@ async def orchestrate_task(
         }
 
 @mcp.tool()
-@require_scope("tools:architecture")
 async def generate_architecture(
     project_description: str,
     tech_stack: List[str],
@@ -312,7 +183,6 @@ async def generate_architecture(
         }
 
 @mcp.tool()
-@require_scope("tools:fix")
 async def auto_fix_code(
     code: str,
     error_message: str,
@@ -356,7 +226,6 @@ async def auto_fix_code(
         }
 
 @mcp.tool()
-@require_scope("tools:capabilities")
 async def list_capabilities() -> Dict[str, Any]:
     """List all available capabilities and agent types including advanced upgrades"""
     return {
@@ -409,7 +278,6 @@ async def list_capabilities() -> Dict[str, Any]:
     }
 
 @mcp.tool()
-@require_scope("tools:status")
 async def get_system_status() -> Dict[str, Any]:
     """Get current system status and health metrics"""
     try:
@@ -446,7 +314,6 @@ async def get_system_status() -> Dict[str, Any]:
         }
 
 @mcp.tool()
-@require_scope("advanced:app_generator")
 async def advanced_generate_application(
     description: str,
     complexity_level: str = "advanced",
@@ -502,7 +369,6 @@ async def advanced_generate_application(
         }
 
 @mcp.tool()
-@require_scope("advanced:autonomous_architect")
 async def autonomous_architect(
     project_goals: List[str],
     constraints: List[str] = None,
@@ -552,7 +418,6 @@ async def autonomous_architect(
         }
 
 @mcp.tool()
-@require_scope("advanced:quality_framework")
 async def proactive_quality_assurance(
     code_context: str,
     quality_standards: List[str] = None,
@@ -596,7 +461,6 @@ async def proactive_quality_assurance(
         }
 
 @mcp.tool()
-@require_scope("advanced:prompt_engine")
 async def evolutionary_prompt_optimization(
     base_prompt: str,
     optimization_goals: List[str] = None,
@@ -645,7 +509,6 @@ async def evolutionary_prompt_optimization(
         }
 
 @mcp.tool()
-@require_scope("advanced:cloud_agent")
 async def last_mile_cloud_deployment(
     application_context: str,
     target_environments: List[str] = None,
@@ -939,12 +802,13 @@ def main():
     # Get port from environment (Smithery deployment)
     port = int(os.environ.get("PORT", 8080))
     
-    # Create Starlette app with MCP HTTP transport (streamable-http for Smithery)
-    app = mcp.http_app(path="/mcp", transport="streamable-http")
+    # Create FastMCP app with streamable-http transport for Smithery  
+    mcp_app = mcp.http_app(transport="streamable-http")  # No path - will be handled by mounting
     
-    # Add health endpoint for Smithery
+    # Create parent Starlette app with proper lifespan handling
+    from starlette.applications import Starlette
     from starlette.responses import JSONResponse
-    from starlette.routing import Route
+    from starlette.routing import Route, Mount
     
     async def health_check(request):
         """Health check endpoint for Smithery"""
@@ -958,9 +822,14 @@ def main():
             "demo_mode": settings.descope_demo_mode
         })
     
-    # Add the health route to the app
-    health_route = Route("/health", health_check, methods=["GET"])
-    app.routes.append(health_route)
+    # Create the main Starlette app with FastMCP lifespan
+    app = Starlette(
+        routes=[
+            Route("/health", health_check, methods=["GET"]),
+            Mount("/mcp", app=mcp_app),  # Mount MCP app at /mcp path
+        ],
+        lifespan=mcp_app.lifespan,  # CRITICAL: Pass FastMCP lifespan for proper initialization
+    )
     
     # Add middleware stack (order matters - reverse of execution order)
     
