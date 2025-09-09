@@ -11,6 +11,7 @@ This server provides:
 """
 
 import os
+import sys
 import json
 import asyncio
 import structlog
@@ -689,6 +690,84 @@ async def last_mile_cloud_deployment(
         return {
             "success": False,
             "error": str(e)
+        }
+
+@mcp.tool()
+async def debug_server_config() -> Dict[str, Any]:
+    """
+    🔧 TEMPORARY DEBUG TOOL - No authentication required
+    
+    This tool bypasses authentication to help diagnose server-side configuration issues.
+    Returns environment variables and configuration status for troubleshooting.
+    
+    ⚠️ Remove this tool after debugging is complete!
+    """
+    try:
+        # Get environment variables that are critical for authentication
+        descope_project_id = os.environ.get("DESCOPE_PROJECT_ID")
+        descope_mgmt_key = os.environ.get("DESCOPE_MANAGEMENT_KEY")
+        cequence_gateway_id = os.environ.get("CEQUENCE_GATEWAY_ID")
+        cequence_api_key = os.environ.get("CEQUENCE_API_KEY")
+        
+        # Check if settings are loaded
+        settings_project_id = getattr(settings, 'descope_project_id', None)
+        settings_mgmt_key = getattr(settings, 'descope_management_key', None)
+        
+        # Try to get Descope client status
+        descope_client_status = "unknown"
+        try:
+            descope_client = get_descope_client()
+            descope_client_status = "initialized" if descope_client else "failed"
+        except Exception as e:
+            descope_client_status = f"error: {str(e)}"
+        
+        debug_info = {
+            "status": "debug_info_retrieved",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "environment_variables": {
+                "DESCOPE_PROJECT_ID": {
+                    "is_set": descope_project_id is not None,
+                    "value_preview": descope_project_id[:8] + "..." if descope_project_id and len(descope_project_id) > 8 else descope_project_id,
+                    "length": len(descope_project_id) if descope_project_id else 0
+                },
+                "DESCOPE_MANAGEMENT_KEY": {
+                    "is_set": descope_mgmt_key is not None,
+                    "length": len(descope_mgmt_key) if descope_mgmt_key else 0
+                },
+                "CEQUENCE_GATEWAY_ID": {
+                    "is_set": cequence_gateway_id is not None,
+                    "value": cequence_gateway_id  # This one is safe to show
+                },
+                "CEQUENCE_API_KEY": {
+                    "is_set": cequence_api_key is not None,
+                    "length": len(cequence_api_key) if cequence_api_key else 0
+                }
+            },
+            "settings_object": {
+                "descope_project_id": {
+                    "is_set": settings_project_id is not None,
+                    "matches_env": settings_project_id == descope_project_id
+                },
+                "descope_management_key": {
+                    "is_set": settings_mgmt_key is not None,
+                    "matches_env": settings_mgmt_key == descope_mgmt_key
+                }
+            },
+            "descope_client_status": descope_client_status,
+            "server_info": {
+                "python_version": sys.version,
+                "working_directory": os.getcwd(),
+                "deployment_platform": "smithery" if "smithery" in os.environ.get("HOSTNAME", "").lower() else "unknown"
+            }
+        }
+        
+        return debug_info
+        
+    except Exception as e:
+        return {
+            "status": "debug_error",
+            "error": str(e),
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
 @mcp.resource("mcp://capabilities")
