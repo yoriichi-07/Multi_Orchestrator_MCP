@@ -144,7 +144,7 @@ async def main():
         print("   python get_jwt_token.py <access_key>")
         print("   OR set DESCOPE_ACCESS_KEY environment variable")
         print("\nExample:")
-        print("   python get_jwt_token.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo")
+        print("   python get_jwt_token.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ")
         sys.exit(1)
     
     # Get project ID from environment (optional)

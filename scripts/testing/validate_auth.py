@@ -15,7 +15,7 @@ Environment Variables:
     MCP_SERVER_URL - MCP server URL to test against (optional)
 
 Example:
-    python validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+    python validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 """
 
 # Set demo mode BEFORE any imports to ensure it's picked up by pydantic settings
@@ -274,7 +274,7 @@ async def main():
         print("   python validate_auth.py <access_key>")
         print("   OR set DESCOPE_ACCESS_KEY environment variable")
         print("\nExample:")
-        print("   python validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo")
+        print("   python validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ")
         print("\nOptional Environment Variables:")
         print("   DESCOPE_PROJECT_ID - Your Descope project ID")
         print("   MCP_SERVER_URL - MCP server URL to test against")

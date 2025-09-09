@@ -38,7 +38,7 @@ Before starting, ensure you have:
 1. **Get your JWT token:**
    ```bash
    cd "d:\intel\projects\global mcp hack"
-   python scripts/get_jwt_token.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+   python scripts/get_jwt_token.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
    ```
 
    **Note:** Demo mode is automatically enabled for testing. For production with a real access key, simply replace with your actual access key.
@@ -96,7 +96,7 @@ Before making changes, validate that your authentication setup is working:
 
 ```bash
 cd "d:\intel\projects\global mcp hack"
-python scripts/validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+python scripts/validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 ```
 
 **Note:** The validation script automatically enables demo mode for testing purposes. This allows you to test the complete authentication flow locally without requiring a valid Descope service connection.
@@ -178,14 +178,14 @@ This will test:
    ```bash
    # Windows (for testing with demo mode)
    set DESCOPE_DEMO_MODE=true
-   set DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+   set DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
    
    # Windows (for production)
    set DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
    
    # Linux/Mac (for testing with demo mode)
    export DESCOPE_DEMO_MODE=true
-   export DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+   export DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
    
    # Linux/Mac (for production)
    export DESCOPE_ACCESS_KEY=YOUR_REAL_ACCESS_KEY
@@ -274,7 +274,7 @@ This will test:
 
 ### Important Notes for Demo Access Key
 
-⚠️ **If you're getting 401 Unauthorized errors:** This is expected when using the demo access key `K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo` with the live Descope service, as this key is for demonstration purposes only.
+⚠️ **If you're getting 401 Unauthorized errors:** This is expected when using the demo access key `K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ` with the live Descope service, as this key is for demonstration purposes only.
 
 ✅ **Solution:** Always use `DESCOPE_DEMO_MODE=true` when testing with the demo access key. This enables a local mock authentication system that demonstrates the complete workflow without requiring a valid Descope service connection.
 

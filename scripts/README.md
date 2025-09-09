@@ -60,7 +60,7 @@ python validate_auth.py YOUR_ACCESS_KEY
 First, validate that your authentication setup works:
 
 ```bash
-python validate_auth.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+python validate_auth.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 ```
 
 ### 2. Choose Your Authentication Method
@@ -70,7 +70,7 @@ Best for: Testing, demos, short-term usage
 
 ```bash
 # Get JWT token
-python get_jwt_token.py K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+python get_jwt_token.py K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 
 # Copy the JWT token and use it directly in your Cursor IDE configuration
 ```
@@ -80,7 +80,7 @@ Best for: Development, production, regular usage
 
 ```bash
 # Set environment variable
-export DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+export DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 
 # Start the authentication proxy
 python mcp_client_with_auth.py https://your-smithery-deployment.smithery.ai
@@ -143,11 +143,11 @@ python mcp_client_with_auth.py <mcp_server_url> [--port PORT]
 **Example Usage:**
 ```bash
 # Windows
-set DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+set DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 python mcp_client_with_auth.py https://smithery-deployment.smithery.ai
 
 # Linux/Mac
-export DESCOPE_ACCESS_KEY=K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo
+export DESCOPE_ACCESS_KEY=K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ
 python mcp_client_with_auth.py https://smithery-deployment.smithery.ai --port 8090
 ```
 

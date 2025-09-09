@@ -86,7 +86,7 @@
             "http://localhost:8090"
           ],
           "env": {
-            "DESCOPE_ACCESS_KEY": "K32Rp16ZalqBZSInaW3GNWSwjRfhyvUwGRiMr3bOmJL4zCnO0qP80FDXfN5b1mDQIVnuvdo",
+            "DESCOPE_ACCESS_KEY": "K32SfHHiOdaoMEde4r7cvBd7gYfdY3UPQccGHkh5gMyMwcrjfHMETV8RqzeXdrRg0dDrbMZ",
             "DESCOPE_PROJECT_ID": "P32RbAyKnfcvEJYS69SfSEk6GPKk"
           }
         }
