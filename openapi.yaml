@@ -52,13 +52,13 @@ info:
 
 servers:
   - url: https://api.cequence.ai/gateway/{gateway_id}/mcp
-    description: **Primary Production Endpoint.** All clients should connect here.
+    description: Primary Production Endpoint.** All clients should connect here.
     variables:
       gateway_id:
         default: your_gateway_id
         description: Your Cequence Gateway ID
   - url: https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp
-    description: **Origin Server.** The backend service that Cequence connects to.
+    description: Origin Server.** The backend service that Cequence connects to.
   - url: http://localhost:8080
     description: Local development server with Cequence integration
 
