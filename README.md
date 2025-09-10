@@ -1,79 +1,29 @@
-## Multi-Agent Orchestrator MCP - Revolutionary Edition
+## Multi Agent Orchestrator
 
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-brightgreen)](https://modelcontextprotocol.io)
 [![Smithery Ready](https://img.shields.io/badge/Smithery-Ready-blue)](https://smithery.ai)
-[![Access Key Auth](https://img.shields.io/badge/Auth-Access%20Key-green)](https://docs.descope.com/)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)](https://python.org)
-[![Revolutionary AI](https://img.shields.io/badge/AI-Revolutionary-red)](https://github.com)
 
-A Model Context Protocol (MCP) server that provides **revolutionary autonomous software development** through intelligent multi-agent orchestration, self-healing code generation, and enterprise-grade integrations. This server coordinates specialized AI agents to handle complete application development workflows with **legendary AI upgrades** that demonstrate the future of autonomous software engineering.
+A Model Context Protocol (MCP) server that provides autonomous software development through intelligent multi-agent orchestration. This server coordinates specialized AI agents to handle complete application development workflows with self-healing capabilities and enterprise-grade integrations.
 
-### 🚀 Revolutionary Features
+### Key Features
 
-#### 🌟 Legendary AI Agents
-- **🤖 Autonomous Architect Agent**: Dynamic strategy generation with self-improving DAG execution
-- **🛡️ Proactive Quality Agent**: Policy-as-code quality framework with auto-remediation  
-- **🧬 Evolutionary Prompt Engine**: Self-improving AI communication with performance optimization
-- **☁️ Last Mile Cloud Agent**: Autonomous deployment with intelligent verification and rollback
-
-#### 🎯 Core Capabilities
 - **Multi-agent coordination**. Orchestrates Frontend, Backend, DevOps, and QA agents for complete application development.
-- **Self-healing code generation**. Automatically detects and fixes issues during development with intelligent error recovery.
-- **Enterprise authentication**. Descope Access Key authentication with Bearer tokens supporting Non-Human Identity for secure API access.
-- **Real-time analytics**. Comprehensive monitoring and insights through Cequence AI Gateway integration.
-- **Production-ready deployment**. Built on FastMCP framework with seamless Smithery platform deployment.
-
-#### ✨ Revolutionary Innovations
-- **Autonomous Intelligence**: Self-learning and self-improving AI agents
-- **Proactive Automation**: Predictive problem prevention and resolution
-- **Evolutionary Optimization**: Continuous self-improvement across all systems  
-- **Last Mile Automation**: Complete end-to-end autonomous deployment
+- **Self-healing code generation**. Automatically detects and fixes issues during development with intelligent error recovery.  
+- **Enterprise authentication**. Descope Access Key authentication with Bearer tokens for secure API access.
+- **Real-time analytics**. Comprehensive monitoring through Cequence AI Gateway integration.
+- **Advanced AI agents**. Autonomous architect, proactive quality, evolutionary prompts, and cloud deployment agents.
 
 ### Requirements
 
 - Python 3.11 or newer
-- VS Code, Cursor, Windsurf, Claude Desktop, Goose or any other MCP client
-- Valid Descope project credentials (provided for demo)
-- Optional: Cequence AI Gateway access for production analytics
-
-### 🎯 Legendary Tools
-
-The revolutionary MCP server provides 5 legendary tools that demonstrate the future of autonomous software engineering:
-
-#### 🌟 `legendary_generate_application`
-Revolutionary application generation using all 4 legendary AI agents working in concert.
-- **Autonomous Architecture**: Dynamic system design with self-adapting execution plans
-- **Proactive Quality**: Policy-driven quality assurance with auto-remediation
-- **Evolutionary Prompts**: Self-optimizing AI communication that improves over time
-- **Last Mile Deployment**: Autonomous cloud deployment with intelligent verification
-
-#### 🤖 `autonomous_architect`
-Activate the Autonomous Architect Agent for dynamic system design that learns and improves.
-- Creates intelligent execution DAGs based on project goals
-- Self-adapts strategies based on constraints and learning objectives
-- Generates autonomous architecture recommendations
-
-#### 🛡️ `proactive_quality_assurance`
-Activate proactive quality framework with policy-as-code implementation.
-- Dynamic quality policy generation and enforcement
-- Automatic violation detection and remediation
-- Continuous quality improvement with predictive analysis
-
-#### 🧬 `evolutionary_prompt_optimization`
-Activate evolutionary prompt engine for self-improving AI communication.
-- Automatic prompt optimization based on performance metrics
-- AI-to-AI communication evolution and learning
-- Performance tracking and adaptive improvement
-
-#### ☁️ `last_mile_cloud_deployment`
-Activate Last Mile Cloud Agent for autonomous deployment and verification.
-- Intelligent deployment strategy planning
-- Automated verification and rollback capabilities
-- Multi-cloud optimization and monitoring setup
+- VS Code, Cursor, Windsurf, Claude Desktop, or any other MCP client
+- Optional: Descope project credentials for authentication
+- Optional: Cequence AI Gateway access for analytics
 
 ### Getting started
 
-First, add the Multi-Agent Orchestrator MCP server to your client configuration.
+First, add the Multi Agent Orchestrator MCP server to your client configuration.
 
 **Standard config** works in most MCP clients:
 
@@ -91,30 +41,17 @@ First, add the Multi-Agent Orchestrator MCP server to your client configuration.
 }
 ```
 
-**Cequence AI Gateway deployment** (recommended for production):
-
-Access our enterprise deployment with OAuth 2.0 protection: `https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp`
+**Production deployment** (recommended):
 
 ```json
 {
   "mcpServers": {
     "multi-orchestrator": {
-      "url": "https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp"
+      "url": "https://smithery.ai/server/@yoriichi-07/multi_orchestrator_mcp"
     }
   }
 }
 ```
-
-**Direct Smithery deployment** (for development/testing):
-
-```json
-{
-  "mcpServers": {
-    "multi-orchestrator": {
-      "url": "https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp"
-    }
-  }
-}
 ```
 
 <details>
@@ -140,12 +77,6 @@ Go to `Cursor Settings` -> `MCP` -> `Add new MCP Server`. Name to your liking, u
 <details>
 <summary>VS Code</summary>
 
-#### Click the button to install:
-
-[<img src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Server&color=0098FF" alt="Install in VS Code">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522multi-orchestrator%2522%252C%2522command%2522%253A%2522python%2522%252C%2522args%2522%253A%255B%2522mcp_server.py%2522%255D%257D) [<img alt="Install in VS Code Insiders" src="https://img.shields.io/badge/VS_Code_Insiders-VS_Code_Insiders?style=flat-square&label=Install%20Server&color=24bfa5">](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522multi-orchestrator%2522%252C%2522command%2522%253A%2522python%2522%252C%2522args%2522%253A%255B%2522mcp_server.py%2522%255D%257D)
-
-#### Or install manually:
-
 Follow the MCP install [guide](https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server), use the standard config above.
 
 </details>
@@ -159,48 +90,28 @@ Follow Windsurf MCP [documentation](https://docs.windsurf.com/windsurf/cascade/m
 
 ### Configuration
 
-The Multi-Agent Orchestrator MCP server supports configuration through environment variables:
+The Multi Agent Orchestrator MCP server supports configuration through environment variables:
 
 ```bash
-# Authentication (Descope Access Key)
+# Authentication (optional)
 DESCOPE_PROJECT_ID=your_project_id
-DESCOPE_ACCESS_KEY=your_access_key
 DESCOPE_MANAGEMENT_KEY=your_management_key
 
-# Analytics (Cequence AI Gateway)
+# Analytics (optional)
 CEQUENCE_GATEWAY_ID=your_gateway_id
 CEQUENCE_API_KEY=your_api_key
-ENABLE_ANALYTICS=true
 
 # Server Configuration
 SERVER_PORT=8000
 DEBUG=false
 ```
 
-#### 🔧 Cursor IDE Authentication Setup
-
-If you're experiencing authorization issues with Cursor IDE, see our comprehensive setup guide:
-
-**📖 [Cursor IDE MCP Setup Guide](docs/cursor-mcp-setup.md)**
-
-This guide covers:
-- ✅ **Quick Fix**: Converting Descope Access Key to JWT token
-- ✅ **Automatic Solution**: Authentication proxy with token refresh
-- ✅ **Troubleshooting**: Common issues and debugging steps
-- ✅ **Production Setup**: Best practices for deployment
-
-**🔧 Authentication Tools**: The `scripts/` directory contains authentication utilities:
-- `get_jwt_token.py` - Convert Access Key to JWT token
-- `mcp_client_with_auth.py` - Authentication proxy with auto-refresh
-- `validate_auth.py` - Test authentication setup
-- See `scripts/README.md` for detailed usage instructions
-
 ### Tools
 
-The Multi-Agent Orchestrator provides 6 powerful development tools:
+The Multi Agent Orchestrator provides powerful development tools:
 
 <details>
-<summary><b>Agent Orchestration</b></summary>
+<summary><b>Application Development</b></summary>
 
 - **orchestrate_task**
   - Description: Coordinate multiple agents for software development tasks
@@ -221,7 +132,7 @@ The Multi-Agent Orchestrator provides 6 powerful development tools:
 </details>
 
 <details>
-<summary><b>Self-Healing Development</b></summary>
+<summary><b>Code Quality & Healing</b></summary>
 
 - **auto_fix_code**
   - Description: Apply intelligent fixes to code issues
@@ -230,6 +141,27 @@ The Multi-Agent Orchestrator provides 6 powerful development tools:
     - `error_message` (string): Error description
     - `context` (string, optional): Additional context
   - Use case: Automatically resolve bugs and errors
+
+</details>
+
+<details>
+<summary><b>Advanced AI Agents</b></summary>
+
+- **autonomous_architect**
+  - Description: Dynamic system design with self-improving execution
+  - Parameters:
+    - `project_goals` (array): High-level project objectives
+    - `constraints` (array, optional): Technical or business constraints
+    - `learning_objectives` (array, optional): Areas for agent improvement
+  - Use case: Intelligent architecture planning
+
+- **proactive_quality_assurance**
+  - Description: Policy-driven quality framework with auto-remediation
+  - Parameters:
+    - `code_context` (string): Code or project context to analyze
+    - `quality_standards` (array, optional): Custom quality policies
+    - `auto_remediation` (boolean, optional): Enable automatic fixes
+  - Use case: Continuous quality improvement
 
 </details>
 
@@ -252,9 +184,9 @@ The Multi-Agent Orchestrator provides 6 powerful development tools:
 
 Access real-time system data through these MCP resources:
 
-- **mcp://capabilities** - Agent capabilities and supported technologies from live system registry
-- **mcp://analytics** - Real-time dashboard data from Cequence AI Gateway
-- **mcp://health** - System health and component status with comprehensive monitoring
+- **mcp://capabilities** - Agent capabilities and supported technologies
+- **mcp://analytics** - Real-time analytics data from Cequence AI Gateway
+- **mcp://health** - System health and component status
 
 ### Local Development Setup
 
@@ -271,15 +203,12 @@ cd Multi_Orchestrator_MCP
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment variables
+# Configure environment variables (optional)
 cp .env.example .env
 # Edit .env with your credentials
 
-# Run the MCP server (STDIO mode)
+# Run the MCP server
 python mcp_server.py
-
-# Or run HTTP server for production
-python main.py
 ```
 
 #### Docker Deployment
@@ -289,67 +218,9 @@ docker build -t multi-orchestrator-mcp .
 docker run -p 8000:8000 --env-file .env multi-orchestrator-mcp
 ```
 
-### Authentication Setup
-
-This server implements Access Key authentication using Descope:
-
-#### Required Environment Variables
-```bash
-DESCOPE_PROJECT_ID=your_project_id
-DESCOPE_ACCESS_KEY=your_access_key
-DESCOPE_MANAGEMENT_KEY=your_management_key
-```
-
-#### Supported Scopes
-- `full_access` - Complete access to all agent capabilities
-- `tools:ping` - Basic connectivity testing
-- `tools:generate` - Code generation capabilities
-- `tools:review` - Testing and quality analysis capabilities
-
-#### 🚨 Troubleshooting Authentication Issues
-
-**Problem**: Getting authorization errors in Cursor IDE?  
-**Solution**: Cursor IDE requires JWT tokens, not raw Access Keys.
-
-**📖 [Complete Fix Guide](docs/cursor-mcp-setup.md)** - Step-by-step instructions  
-**🔧 [Authentication Scripts](scripts/README.md)** - Ready-to-use tools
-
-**Quick Fix Example:**
-```bash
-# Get JWT token from your Access Key
-python scripts/get_jwt_token.py YOUR_ACCESS_KEY
-
-# Use the JWT token in Cursor IDE configuration
-{
-  "mcpServers": {
-    "multi-orchestrator": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch", "YOUR_MCP_SERVER_URL"],
-      "env": {
-        "AUTHORIZATION": "Bearer YOUR_JWT_TOKEN_HERE"
-      }
-    }
-  }
-}
-```
-
-### Analytics & Monitoring
-
-Integration with Cequence AI Gateway provides:
-
-- Real-time request analytics and performance monitoring
-- Security event detection and threat analysis
-- Agent operation tracking for workflow optimization
-- Comprehensive audit logging and compliance reporting
-
-#### Configuration
-```bash
-CEQUENCE_GATEWAY_ID=your_gateway_id
-CEQUENCE_API_KEY=your_api_key
-ENABLE_ANALYTICS=true
-```
-
 ### Testing
+
+Run the test suite to validate functionality:
 
 ```bash
 # Run all tests
@@ -364,97 +235,77 @@ pytest tests/test_cequence_integration.py -v # Analytics integration
 pytest tests/ --cov=src --cov-report=html
 ```
 
-## Team
+## Hackathon Project
 
-**Team Name**: Multi-Agent Orchestrator  
-**Members**: 
-- yoriichi-07 - Lead Developer & System Architecture
-- Multi-Agent Orchestrator Team - AI Agent Coordination Specialists
+**Team**: UpsideDown  
+**Member**: Shreesaanth R  
+**Theme**: Theme 2 - Multi-Agent Orchestration and Enterprise Integration
 
-## Demo Video
+### What we built
 
-🎥 **Watch our 5-minute demo**: *[Demo video coming soon - currently being recorded]*
+The Multi Agent Orchestrator is a sophisticated Model Context Protocol server that demonstrates the power of coordinated AI agents in software development. The system can autonomously:
 
-*The demo showcases our Multi-Agent Orchestrator MCP server in action, demonstrating autonomous software development, self-healing capabilities, and seamless integration with Cequence AI Gateway and Descope authentication.*
+- Generate complete applications by coordinating Frontend, Backend, DevOps, and QA agents
+- Self-heal code issues through intelligent error detection and automatic fixes
+- Provide enterprise-grade authentication and analytics through Descope and Cequence integrations
+- Adapt and improve through advanced AI agents that learn from each interaction
 
-## What We'd Do With More Time
+### How to run it
 
-Given additional development time, we would focus on the following enhancements:
+1. **Quick Start (Smithery)**:
+   ```json
+   {
+     "mcpServers": {
+       "multi-orchestrator": {
+         "url": "https://smithery.ai/server/@yoriichi-07/multi_orchestrator_mcp"
+       }
+     }
+   }
+   ```
 
-### 🤖 **Enhanced Agent Intelligence**
-- **Machine Learning Optimization**: Implement reinforcement learning to improve agent coordination and decision-making over time
-- **Context-Aware Agents**: Develop agents that learn from previous projects and adapt their strategies based on historical success patterns
-- **Multi-Modal Agents**: Expand agents to handle design assets, documentation, and multimedia content beyond just code
+2. **Local Development**:
+   ```bash
+   git clone https://github.com/yoriichi-07/Multi_Orchestrator_MCP.git
+   cd Multi_Orchestrator_MCP
+   pip install -r requirements.txt
+   python mcp_server.py
+   ```
 
-### 🌐 **Expanded Platform Support**
-- **Additional Programming Languages**: Support for Go, Rust, Java, C#, and other modern development stacks
-- **Cloud Platform Integration**: Native support for AWS, Azure, GCP with automated resource provisioning and optimization
-- **Mobile Development**: Specialized agents for iOS, Android, and cross-platform mobile app development
+3. **Try it**: Use the `orchestrate_task` tool with a description like "Build a REST API for a todo application" and watch the agents work together.
 
-### 📊 **Advanced Analytics & Insights**
-- **Predictive Development Metrics**: AI-powered predictions of development time, potential issues, and resource requirements
-- **Quality Prediction Models**: Advanced static analysis to predict code maintainability and technical debt
-- **Performance Optimization**: Automated performance profiling and optimization recommendations
+### Tech Stack
 
-### 🔧 **Developer Experience Enhancements**
-- **Visual Development Interface**: Web-based GUI for non-technical users to interact with the agent system
-- **Custom Agent Marketplace**: Community-driven platform for sharing and discovering specialized development agents
-- **Integration Ecosystem**: Deeper integrations with popular development tools like Jira, Slack, GitHub Actions
+- **Framework**: FastMCP for Model Context Protocol implementation
+- **Language**: Python 3.11+ with asyncio for concurrent agent coordination
+- **Authentication**: Descope Access Key authentication with JWT tokens
+- **Analytics**: Cequence AI Gateway for real-time monitoring and insights
+- **Deployment**: Docker containers with Smithery platform integration
+- **AI Integration**: Support for OpenAI and Anthropic models
+- **Architecture**: Multi-agent system with specialized Frontend, Backend, DevOps, and QA agents
+- **Monitoring**: Structured logging with health monitoring and self-healing capabilities
 
-### 🚀 **Enterprise Features**
-- **Multi-Tenant Architecture**: Support for multiple organizations with isolated environments and billing
-- **Advanced Compliance**: SOC2, HIPAA, and other enterprise compliance standards
-- **Custom Training**: Ability to train agents on organization-specific coding standards and practices
+### Demo Video
 
-### 🔬 **Research & Innovation**
-- **Autonomous Testing Strategies**: Agents that generate comprehensive test suites including edge cases and performance tests
-- **Self-Improving Architecture**: System that continuously refines its own codebase and deployment strategies
-- **Cross-Project Learning**: Knowledge sharing between different projects to accelerate development patterns
+*Demo video will be added here*
 
-### Competition Entry
+### What we'd do with more time
 
-This MCP server was developed for the **Model Context Protocol Competition** and demonstrates:
+**Enhanced Agent Intelligence**
+- Implement reinforcement learning for agent coordination optimization
+- Add context-aware agents that learn from project history and patterns
+- Develop specialized agents for mobile, ML, and blockchain development
 
-- **Required Integration**: Cequence AI Gateway for analytics and monitoring
-- **Descope Access Key Authentication**: Implemented via Descope for enterprise security
-- **Smithery Platform Deployment**: Production-ready cloud hosting
-- **Complete MCP Protocol Compliance**: Tools, resources, and prompts with full schema validation
-- **Innovation**: First-of-its-kind multi-agent orchestration for autonomous software development
+**Advanced Automation**
+- Build predictive analytics to forecast development challenges
+- Create automated testing strategies with comprehensive edge case generation
+- Implement intelligent resource optimization for cloud deployments
 
-**Live Demo**: [Cequence Production](https://ztaip-0qdv9d3o-4xp4r634bq-uc.a.run.app/mcp) | [Smithery Backend](https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp)
-**Repository**: [GitHub](https://github.com/yoriichi-07/Multi_Orchestrator_MCP)
+**Enterprise Features**
+- Add multi-tenant architecture with organization-specific agent training
+- Implement advanced compliance standards (SOC2, HIPAA, PCI-DSS)
+- Create custom agent marketplace for domain-specific development patterns
 
-### 🛠️ **Deployment Status**
-
-✅ **Fixed Smithery Deployment Issues**: 
-- Updated MCP server to use proper HTTP transport
-- Fixed authentication middleware to allow MCP endpoint scanning
-- Resolved CORS configuration for proper client connectivity
-- Cleaned repository structure for streamlined deployment
-
-✅ **Production Ready**:
-- Health checks at `/health` endpoint
-- MCP protocol endpoints accessible at `/mcp/`
-- Docker container optimized for cloud deployment
-- Environment variable configuration for flexible deployment
-
-### License
-
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
-
-### Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Support
-
-- **GitHub Issues**: [Report bugs and request features](https://github.com/yoriichi-07/Multi_Orchestrator_MCP/issues)
-- **Documentation**: [Browse our comprehensive docs](docs/)
-- **Authentication Help**: [Cursor IDE Setup Guide](docs/cursor-mcp-setup.md)
-- **Authentication Tools**: [Scripts Documentation](scripts/README.md)
-
----
-
-**Multi-Agent Orchestrator MCP** - Autonomous software development through intelligent agent coordination.
-
-*Built for the Model Context Protocol Competition by Team Multi-Agent Orchestrator*
+**Developer Experience**
+- Build visual development interface for non-technical users
+- Add integration with popular development tools (Jira, GitHub Actions, Slack)
+- Create real-time collaboration features for distributed development teams
