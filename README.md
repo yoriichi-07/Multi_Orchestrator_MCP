@@ -1,311 +1,307 @@
-## Multi Agent Orchestrator
+# Multi Agent Orchestrator MCP
 
-[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-brightgreen)](https://modelcontextprotocol.io)
-[![Smithery Ready](https://img.shields.io/badge/Smithery-Ready-blue)](https://smithery.ai)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)](https://python.org)
 
-A Model Context Protocol (MCP) server that provides autonomous software development through intelligent multi-agent orchestration. This server coordinates specialized AI agents to handle complete application development workflows with self-healing capabilities and enterprise-grade integrations.
+An enterprise‑grade Model Context Protocol (MCP) server for autonomous software engineering. It coordinates specialized agents (Architecture, Quality, Cloud, Prompt) to plan, build, test, and deploy applications with self‑healing, authentication, and analytics.
 
-### Key Features
+Check out!
 
-- **Multi-agent coordination**. Orchestrates Frontend, Backend, DevOps, and QA agents for complete application development.
-- **Self-healing code generation**. Automatically detects and fixes issues during development with intelligent error recovery.  
-- **Enterprise authentication**. Descope Access Key authentication with Bearer tokens for secure API access.
-- **Real-time analytics**. Comprehensive monitoring through Cequence AI Gateway integration.
-- **Advanced AI agents**. Autonomous architect, proactive quality, evolutionary prompts, and cloud deployment agents.
+Smithery Platfrom Deployed Link: https://smithery.ai/server/@yoriichi-07/multi_orchestrator_mcp
 
-### Requirements
+## Team
 
-- Python 3.11 or newer
-- VS Code, Cursor, Windsurf, Claude Desktop, or any other MCP client
-- Optional: Descope project credentials for authentication
-- Optional: Cequence AI Gateway access for analytics
+- Team Name : UpsideDown
+- Member : Shreesaanth R
 
-### Getting started
+## Hackathon
 
-First, add the Multi Agent Orchestrator MCP server to your client configuration.
+- Theme 2: Build a Secure MCP Server for Agents (w/ Cequence)
+- Challenge addressed: Build a production‑ready MCP server that orchestrates multiple agents with authentication (Descope), hosting (Cequence), and self‑healing to reliably execute end‑to‑end development workflows, deployable on Smithery.
 
-**Standard config** works in most MCP clients:
+---
+
+## Requirements
+- Python 3.11+
+- Git
+- An MCP‑compatible client (VS Code, Cursor, Windsurf, Claude Desktop, etc.)
+
+---
+
+## Getting started
+
+First, install the server with your MCP client. For an overview of client support and mechanics, see the official MCP quickstart: https://modelcontextprotocol.io/quickstart/user
+
+### Standard config (works in most clients)
 
 ```json
 {
   "mcpServers": {
-    "multi-orchestrator": {
-      "command": "python",
+    "multi_orchestrator_mcp": {
+      "command": "cmd",
       "args": [
-        "mcp_server.py"
-      ],
-      "cwd": "/path/to/multi-agent-orchestrator-mcp"
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@yoriichi-07/multi_orchestrator_mcp",
+        "--key",
+        "70fd8cf1-9dd3-4556-8a43-78916f617fb2"
+      ]
     }
   }
 }
-```
-
-**Production deployment** (recommended):
-
-```json
-{
-  "mcpServers": {
-    "multi-orchestrator": {
-      "url": "https://smithery.ai/server/@yoriichi-07/multi_orchestrator_mcp"
-    }
-  }
-}
-```
 ```
 
 <details>
-<summary>Claude Desktop</summary>
+<summary>VS Code</summary>
 
-Follow the MCP install [guide](https://modelcontextprotocol.io/quickstart/user), use the standard config above.
+- One Click installation
+
+[<img src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Server&color=0098FF" alt="Install in VS Code">](https://vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522multi_orchestrator_mcp%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522%2540smithery%2Fcli%2540latest%2522%252C%2522run%2522%252C%2522%2540yoriichi-07%252Fmulti_orchestrator_mcp%2522%252C%2522--key%2522%252C%252270fd8cf1-9dd3-4556-8a43-78916f617fb2%2522%255D%257D)
+[<img alt="Install in VS Code Insiders" src="https://img.shields.io/badge/VS_Code_Insiders-VS_Code_Insiders?style=flat-square&label=Install%20Server&color=24bfa5">](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522multi_orchestrator_mcp%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522%2540smithery%2Fcli%2540latest%2522%252C%2522run%2522%252C%2522%2540yoriichi-07%252Fmulti_orchestrator_mcp%2522%252C%2522--key%2522%252C%252270fd8cf1-9dd3-4556-8a43-78916f617fb2%2522%255D%257D)
+
+
+- Follow the MCP install guide: https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server
+- Or via CLI:
+
+```bash
+# VS Code (stable)
+npx -y @smithery/cli@latest install @yoriichi-07/multi_orchestrator_mcp --client vscode --key 70fd8cf1-9dd3-4556-8a43-78916f617fb2
+
+# VS Code Insiders
+npx -y @smithery/cli@latest install @yoriichi-07/multi_orchestrator_mcp --client vscode-insiders --key 70fd8cf1-9dd3-4556-8a43-78916f617fb2
+```
 
 </details>
 
 <details>
 <summary>Cursor</summary>
 
-#### Click the button to install:
+Click the button to install (if the deeplink is not supported on your OS, use the manual steps below):
 
-[<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor">](cursor://anysphere.cursor-deeplink/mcp/install?name=Multi-Agent%20Orchestrator&config=eyJjb21tYW5kIjoicHl0aG9uIG1jcF9zZXJ2ZXIucHkifQ%3D%3D)
+[<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor">](cursor://anysphere.cursor-deeplink/mcp/install?name=Multi%20Orchestrator&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBzbWl0aGVyeS9jbGlAbGF0ZXN0IiwicnVuIiwiQHlvcmlpY2hpLTA3L211bHRpX29yY2hlc3RyYXRvcl9tY3AiLCItLWtleSIsIjcwZmQ4Y2YxLTlkZDMtNDU1Ni04YTQzLTc4OTE2ZjYxN2ZiMiJdfQ==)
 
-#### Or install manually:
+Manual: Go to `Cursor Settings` → `MCP` → `Add new MCP Server`. Choose `command` type and set:
 
-Go to `Cursor Settings` -> `MCP` -> `Add new MCP Server`. Name to your liking, use `command` type with the command `python mcp_server.py` in the project directory.
+```text
+npx -y @smithery/cli@latest install @yoriichi-07/multi_orchestrator_mcp --client cursor --key 70fd8cf1-9dd3-4556-8a43-78916f617fb2
+```
 
 </details>
 
 <details>
-<summary>VS Code</summary>
+<summary>Claude Code</summary>
 
-Follow the MCP install [guide](https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server), use the standard config above.
+Use the CLI then paste the standard config above:
+
+```bash
+claude mcp add --transport http yoriichi-07-multi-orchestrator-mcp "https://server.smithery.ai/@yoriichi-07/multi_orchestrator_mcp/mcp"
+```
+
+</details>
+
+<details>
+<summary>Claude Desktop</summary>
+
+Follow the MCP quickstart: https://modelcontextprotocol.io/quickstart/user. Use the standard config above.
+
+</details>
+
+<details>
+<summary>LM Studio</summary>
+
+Use the Install → Edit `mcp.json`, paste the standard config. One-click: [![Add MCP](https://files.lmstudio.ai/deeplink/mcp-install-light.svg)](https://lmstudio.ai/install-mcp?name=multi-orchestrator&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBtb2RlbGNvbnRleHRwcm90b2NvbC9zZXJ2ZXItZmV0Y2giLCJodHRwczovL3NtaXRoZXJ5LmFpL3NlcnZlci9AeW9yaWljaGktMDcvbXVsdGlfb3JjaGVzdHJhdG9yX21jcCJdfQ==)
 
 </details>
 
 <details>
 <summary>Windsurf</summary>
 
-Follow Windsurf MCP [documentation](https://docs.windsurf.com/windsurf/cascade/mcp). Use the standard config above.
+Docs: https://docs.windsurf.com/windsurf/cascade/mcp. Use the standard config above (replace URL with `http://localhost:8080` for local).
 
 </details>
 
-### Configuration
-
-The Multi Agent Orchestrator MCP server supports configuration through environment variables:
+<details>
+<summary>Run locally</summary>
 
 ```bash
-# Authentication (optional)
-DESCOPE_PROJECT_ID=your_project_id
-DESCOPE_MANAGEMENT_KEY=your_management_key
-
-# Analytics (optional)
-CEQUENCE_GATEWAY_ID=your_gateway_id
-CEQUENCE_API_KEY=your_api_key
-
-# Server Configuration
-SERVER_PORT=8000
-DEBUG=false
-```
-
-### Tools
-
-The Multi Agent Orchestrator provides powerful development tools:
-
-<details>
-<summary><b>Application Development</b></summary>
-
-- **orchestrate_task**
-  - Description: Coordinate multiple agents for software development tasks
-  - Parameters:
-    - `task_description` (string): Description of the development task
-    - `task_type` (string, optional): Type of task (development, deployment, testing)
-    - `priority` (string, optional): Task priority level
-  - Use case: Build complete applications from requirements
-
-- **generate_architecture**
-  - Description: Create system architecture diagrams and specifications
-  - Parameters:
-    - `project_description` (string): Description of the project
-    - `tech_stack` (array): Preferred technology stack
-    - `requirements` (array): System requirements
-  - Use case: Design scalable software systems
-
-</details>
-
-<details>
-<summary><b>Code Quality & Healing</b></summary>
-
-- **auto_fix_code**
-  - Description: Apply intelligent fixes to code issues
-  - Parameters:
-    - `code` (string): Code to analyze and fix
-    - `error_message` (string): Error description
-    - `context` (string, optional): Additional context
-  - Use case: Automatically resolve bugs and errors
-
-</details>
-
-<details>
-<summary><b>Advanced AI Agents</b></summary>
-
-- **autonomous_architect**
-  - Description: Dynamic system design with self-improving execution
-  - Parameters:
-    - `project_goals` (array): High-level project objectives
-    - `constraints` (array, optional): Technical or business constraints
-    - `learning_objectives` (array, optional): Areas for agent improvement
-  - Use case: Intelligent architecture planning
-
-- **proactive_quality_assurance**
-  - Description: Policy-driven quality framework with auto-remediation
-  - Parameters:
-    - `code_context` (string): Code or project context to analyze
-    - `quality_standards` (array, optional): Custom quality policies
-    - `auto_remediation` (boolean, optional): Enable automatic fixes
-  - Use case: Continuous quality improvement
-
-</details>
-
-<details>
-<summary><b>System Monitoring</b></summary>
-
-- **get_system_status**
-  - Description: Retrieve comprehensive system health information
-  - Parameters: None
-  - Use case: Monitor server performance and component health
-
-- **list_capabilities**
-  - Description: Get available agent capabilities and supported technologies
-  - Parameters: None
-  - Use case: Discover available development tools and frameworks
-
-</details>
-
-### Resources
-
-Access real-time system data through these MCP resources:
-
-- **mcp://capabilities** - Agent capabilities and supported technologies
-- **mcp://analytics** - Real-time analytics data from Cequence AI Gateway
-- **mcp://health** - System health and component status
-
-### Local Development Setup
-
-#### Prerequisites
-- Python 3.11 or newer
-- Git
-
-#### Setup Instructions
-```bash
-# Clone the repository
+# Clone and install
 git clone https://github.com/yoriichi-07/Multi_Orchestrator_MCP.git
 cd Multi_Orchestrator_MCP
-
-# Install dependencies
 pip install -r requirements.txt
 
-# Configure environment variables (optional)
-cp .env.example .env
-# Edit .env with your credentials
+# Configure (optional)
+cp config/env.template .env
+# edit .env with DESCOPE_* if you want auth and analytics
 
-# Run the MCP server
+# Start the MCP server (HTTP transport)
 python mcp_server.py
+
+# Default: http://localhost:8080
+# MCP discovery path is served by FastMCP under the mounted app
 ```
 
-#### Docker Deployment
+</details>
+
+<details>
+<summary>Docker</summary>
+
 ```bash
-# Build and run with Docker
 docker build -t multi-orchestrator-mcp .
-docker run -p 8000:8000 --env-file .env multi-orchestrator-mcp
+docker run --rm -p 8080:8080 --env-file .env multi-orchestrator-mcp
 ```
 
-### Testing
+</details>
 
-Run the test suite to validate functionality:
+---
 
-```bash
-# Run all tests
-pytest tests/ -v
+## Configuration
 
-# Run specific test categories
-pytest tests/test_mcp_server.py -v         # MCP protocol compliance
-pytest tests/test_descope_auth.py -v       # Authentication tests
-pytest tests/test_cequence_integration.py -v # Analytics integration
+Environment variables (see `config/env.template`):
+- `DESCOPE_PROJECT_ID`, `DESCOPE_MANAGEMENT_KEY`, `DESCOPE_ACCESS_KEY` – enable Descope authentication (optional for local/dev).
+- `PORT` – server port (default `8080`).
+- `DESCOPE_DEMO_MODE` – set `true` for local testing without full auth.
+- `CEQUENCE_GATEWAY_ID`, `CEQUENCE_API_KEY` – enable Cequence analytics (optional).
+- `JWT_SECRET_KEY`, `CORS_ORIGINS`, `RATE_LIMIT_REQUESTS`, logging toggles.
 
-# Run with coverage
-pytest tests/ --cov=src --cov-report=html
-```
+Client configuration templates are provided in `config/mcp.json.template` (direct JWT or auto‑refresh proxy modes).
 
-## Hackathon Project
+---
 
-**Team**: UpsideDown  
-**Member**: Shreesaanth R  
-**Theme**: Theme 2 - Multi-Agent Orchestration and Enterprise Integration
+## Capabilities
 
-### What we built
+<details>
+<summary><b>Tools (12)</b></summary>
 
-The Multi Agent Orchestrator is a sophisticated Model Context Protocol server that demonstrates the power of coordinated AI agents in software development. The system can autonomously:
+- **orchestrate_task**
+  - Title: Orchestrate multi‑agent task
+  - Description: Coordinate Frontend/Backend/DevOps/QA agents for development, testing, or deployment.
+  - Parameters: `task_description` (string), `task_type` (enum: development|architecture|testing|deployment), `priority` (enum)
+- **generate_architecture**
+  - Title: Generate architecture
+  - Description: Produce system architecture with components and recommendations.
+  - Parameters: `project_description` (string), `tech_stack` (string[]), `requirements` (string[])
+- **auto_fix_code**
+  - Title: Self‑healing fix
+  - Description: Generate fixes for code using error context and explanations.
+  - Parameters: `code` (string), `error_message` (string), `context` (string)
+- **list_capabilities**
+  - Title: Catalog
+  - Description: Summarize available agents, tools, enterprise features, and supported tasks.
+  - Parameters: none
+- **get_system_status**
+  - Title: System status
+  - Description: Returns server health, agent availability, analytics/auth status, and timestamp.
+  - Parameters: none
+- **advanced_generate_application**
+  - Title: Enterprise app generation
+  - Description: Plan and generate an application using advanced agents and deployment strategies.
+  - Parameters: `description` (string), `complexity_level` (enum), `innovation_requirements` (string[]), `deployment_strategy` (enum)
+- **autonomous_architect**
+  - Title: Autonomous architect
+  - Description: Builds an execution DAG and adaptive strategy from goals and constraints.
+  - Parameters: `project_goals` (string[]), `constraints` (string[]), `learning_objectives` (string[])
+- **proactive_quality_assurance**
+  - Title: Proactive quality
+  - Description: Applies policy‑as‑code checks with optional auto‑remediation.
+  - Parameters: `code_context` (string), `quality_standards` (string[]), `auto_remediation` (bool)
+- **evolutionary_prompt_optimization**
+  - Title: Prompt evolution
+  - Description: Creates and evolves prompts based on goals and performance metrics.
+  - Parameters: `base_prompt` (string), `optimization_goals` (string[]), `performance_metrics` (object)
+- **last_mile_cloud_deployment**
+  - Title: Cloud deployment
+  - Description: Plans deployment, verifies environments, and returns rollback/monitoring setup.
+  - Parameters: `application_context` (string), `target_environments` (string[]), `verification_requirements` (string[])
+- **ping**
+  - Title: Health check
+  - Description: Simple liveness probe.
+  - Parameters: none
+- **debug_server_config**
+  - Title: Debug configuration (temporary)
+  - Description: Exposes non‑secret configuration metadata for diagnostics.
+  - Parameters: none
 
-- Generate complete applications by coordinating Frontend, Backend, DevOps, and QA agents
-- Self-heal code issues through intelligent error detection and automatic fixes
-- Provide enterprise-grade authentication and analytics through Descope and Cequence integrations
-- Adapt and improve through advanced AI agents that learn from each interaction
+</details>
 
-### How to run it
+<details>
+<summary><b>Resources (3)</b></summary>
 
-1. **Quick Start (Smithery)**:
-   ```json
-   {
-     "mcpServers": {
-       "multi-orchestrator": {
-         "url": "https://smithery.ai/server/@yoriichi-07/multi_orchestrator_mcp"
-       }
-     }
-   }
-   ```
+- `mcp://capabilities` — capabilities and catalog (JSON)
+- `mcp://analytics` — analytics snapshot (requires Cequence)
+- `mcp://health` — system health snapshot
 
-2. **Local Development**:
-   ```bash
-   git clone https://github.com/yoriichi-07/Multi_Orchestrator_MCP.git
-   cd Multi_Orchestrator_MCP
-   pip install -r requirements.txt
-   python mcp_server.py
-   ```
+</details>
 
-3. **Try it**: Use the `orchestrate_task` tool with a description like "Build a REST API for a todo application" and watch the agents work together.
+<details>
+<summary><b>Prompts (3)</b></summary>
 
-### Tech Stack
+- `project-setup` — guided setup plan
+- `code-review` — structured review outline
+- `revolutionary-development` — advanced strategy plan using autonomous agents
 
-- **Framework**: FastMCP for Model Context Protocol implementation
-- **Language**: Python 3.11+ with asyncio for concurrent agent coordination
-- **Authentication**: Descope Access Key authentication with JWT tokens
-- **Analytics**: Cequence AI Gateway for real-time monitoring and insights
-- **Deployment**: Docker containers with Smithery platform integration
-- **AI Integration**: Support for OpenAI and Anthropic models
-- **Architecture**: Multi-agent system with specialized Frontend, Backend, DevOps, and QA agents
-- **Monitoring**: Structured logging with health monitoring and self-healing capabilities
+</details>
 
-### Demo Video
+---
 
-*Demo video will be added here*
+## Tech stack
 
-### What we'd do with more time
 
-**Enhanced Agent Intelligence**
+<p align="center">
+  <a href="https://www.descope.com"><img alt="Descope" src="https://img.shields.io/badge/Auth-Descope-orange?style=for-the-badge"></a>
+  <a href="https://www.cequence.ai"><img alt="Cequence" src="https://img.shields.io/badge/Analytics-Cequence-6a5acd?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white">
+  <img alt="FastMCP" src="https://img.shields.io/badge/FastMCP-HTTP%20Transport-555?style=for-the-badge">
+</p>
+
+<p align="center">
+  <img alt="OpenAI" src="https://img.shields.io/badge/OpenAI-SDK-000000?style=for-the-badge&logo=openai&logoColor=white">
+  <img alt="Anthropic" src="https://img.shields.io/badge/Anthropic-Client-222?style=for-the-badge">
+</p>
+
+<p align="center">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-0db7ed?style=for-the-badge&logo=docker&logoColor=white">
+</p>
+
+Full dependencies are declared in `requirements.txt` and `pyproject.toml`.
+
+---
+
+## Demo video
+
+Link: (coming soon)
+
+---
+
+## Future Roadmap
+
+<details open>
+<summary>Detailed plan</summary>
+
+### Enhanced Agent Intelligence
 - Implement reinforcement learning for agent coordination optimization
-- Add context-aware agents that learn from project history and patterns
+- Add context‑aware agents that learn from project history and patterns
 - Develop specialized agents for mobile, ML, and blockchain development
 
-**Advanced Automation**
+### Advanced Automation
 - Build predictive analytics to forecast development challenges
 - Create automated testing strategies with comprehensive edge case generation
 - Implement intelligent resource optimization for cloud deployments
 
-**Enterprise Features**
-- Add multi-tenant architecture with organization-specific agent training
-- Implement advanced compliance standards (SOC2, HIPAA, PCI-DSS)
-- Create custom agent marketplace for domain-specific development patterns
+### Enterprise Features
+- Add multi‑tenant architecture with organization‑specific agent training
+- Implement advanced compliance standards (SOC2, HIPAA, PCI‑DSS)
+- Create custom agent marketplace for domain‑specific development patterns
 
-**Developer Experience**
-- Build visual development interface for non-technical users
-- Add integration with popular development tools (Jira, GitHub Actions, Slack)
-- Create real-time collaboration features for distributed development teams
+### Developer Experience
+- Build a visual development interface for non‑technical users
+- Integrate with Jira, GitHub Actions, Slack, and incident tooling
+- Enable real‑time collaboration for distributed development teams
+
+</details>
+
+---
